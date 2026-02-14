@@ -31,7 +31,7 @@ ${msg.content}<|eot_id|>`;
 
     // Call Hugging Face API
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct',
+      'https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct',
       {
         method: 'POST',
         headers: {
