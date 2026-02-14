@@ -11,27 +11,11 @@ export default async function handler(req, res) {
   try {
     const { messages, systemPrompt } = req.body;
 
-    // Build the prompt for Llama
-    let fullPrompt = `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-
-${systemPrompt}<|eot_id|>`;
-
-    // Add conversation history
-    for (const msg of messages) {
-      const role = msg.role === 'user' ? 'user' : 'assistant';
-      fullPrompt += `<|start_header_id|>${role}<|end_header_id|>
-
-${msg.content}<|eot_id|>`;
-    }
-
-    // Add the start of assistant response
-    fullPrompt += `<|start_header_id|>assistant<|end_header_id|>
-
-`;
+let fullPrompt = `<s>[INST] ${systemPrompt}\n\n${messages[messages.length - 1].content} [/INST]`;
 
     // Call Hugging Face API
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct',
+      'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2',
       {
         method: 'POST',
         headers: {
