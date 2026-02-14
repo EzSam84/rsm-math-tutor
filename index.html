@@ -765,79 +765,217 @@
                 const ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
+                const question = currentProblem.question.toLowerCase();
+                
                 if (currentTopic === 'geometry') {
-                    if (currentProblem.question.includes('square')) {
+                    // Extract dimensions from question
+                    const lengthMatch = question.match(/length (\d+)/);
+                    const widthMatch = question.match(/width (\d+)/);
+                    const sideMatch = question.match(/side (?:of )?(\d+)/);
+                    
+                    if (question.includes('square') && sideMatch) {
+                        // Draw square with actual dimension
+                        const side = parseInt(sideMatch[1]);
+                        const scale = Math.min(100 / side, 15); // Scale to fit canvas
+                        const size = side * scale;
+                        
                         ctx.strokeStyle = '#1cb0f6';
                         ctx.lineWidth = 3;
-                        ctx.strokeRect(100, 25, 100, 100);
-                        ctx.font = '16px Arial';
-                        ctx.fillStyle = '#3c3c3c';
-                        ctx.fillText('6 cm', 135, 145);
-                    } else if (currentProblem.question.includes('rectangle')) {
+                        ctx.strokeRect(150 - size/2, 50, size, size);
+                        
+                        // Add dimension labels
+                        ctx.font = 'bold 16px Arial';
+                        ctx.fillStyle = '#ff4b4b';
+                        ctx.fillText(`${side} cm`, 150 - size/2 + size/2 - 20, 50 - 10);
+                        ctx.fillText(`${side} cm`, 150 - size/2 - 50, 50 + size/2 + 5);
+                        
+                        // Add formula hint
+                        ctx.font = '14px Arial';
+                        ctx.fillStyle = '#666';
+                        if (question.includes('perimeter')) {
+                            ctx.fillText('Perimeter = 4 × side', 110, 135);
+                        } else if (question.includes('area')) {
+                            ctx.fillText('Area = side × side', 115, 135);
+                        }
+                        
+                    } else if (question.includes('rectangle') && lengthMatch && widthMatch) {
+                        // Draw rectangle with actual dimensions
+                        const length = parseInt(lengthMatch[1]);
+                        const width = parseInt(widthMatch[1]);
+                        const scaleL = Math.min(180 / length, 20);
+                        const scaleW = Math.min(90 / width, 20);
+                        const scale = Math.min(scaleL, scaleW);
+                        
+                        const rectWidth = length * scale;
+                        const rectHeight = width * scale;
+                        
+                        ctx.fillStyle = 'rgba(88, 204, 2, 0.1)';
+                        ctx.fillRect(200 - rectWidth/2, 60, rectWidth, rectHeight);
                         ctx.strokeStyle = '#1cb0f6';
                         ctx.lineWidth = 3;
-                        ctx.strokeRect(50, 40, 160, 80);
-                        ctx.font = '16px Arial';
-                        ctx.fillStyle = '#3c3c3c';
-                        ctx.fillText('length', 100, 135);
-                    } else if (currentProblem.question.includes('triangle')) {
+                        ctx.strokeRect(200 - rectWidth/2, 60, rectWidth, rectHeight);
+                        
+                        // Add dimension labels
+                        ctx.font = 'bold 16px Arial';
+                        ctx.fillStyle = '#ff4b4b';
+                        ctx.fillText(`${length} ${question.includes('m') ? 'm' : 'cm'}`, 200 - rectWidth/2 + rectWidth/2 - 15, 50);
+                        ctx.fillText(`${width} ${question.includes('m') ? 'm' : 'cm'}`, 200 - rectWidth/2 - 50, 60 + rectHeight/2 + 5);
+                        
+                        // Add formula hint
+                        ctx.font = '14px Arial';
+                        ctx.fillStyle = '#666';
+                        if (question.includes('perimeter')) {
+                            ctx.fillText(`Perimeter = 2(${length} + ${width})`, 100, 135);
+                        } else if (question.includes('area')) {
+                            ctx.fillText(`Area = ${length} × ${width}`, 120, 135);
+                        }
+                        
+                    } else if (question.includes('triangle')) {
                         ctx.strokeStyle = '#1cb0f6';
                         ctx.lineWidth = 3;
                         ctx.beginPath();
-                        ctx.moveTo(150, 30);
-                        ctx.lineTo(80, 120);
-                        ctx.lineTo(220, 120);
+                        ctx.moveTo(200, 30);
+                        ctx.lineTo(120, 120);
+                        ctx.lineTo(280, 120);
                         ctx.closePath();
                         ctx.stroke();
-                    } else if (currentProblem.question.includes('circle')) {
-                        ctx.strokeStyle = '#1cb0f6';
-                        ctx.lineWidth = 3;
-                        ctx.beginPath();
-                        ctx.arc(150, 75, 50, 0, 2 * Math.PI);
-                        ctx.stroke();
-                        ctx.beginPath();
-                        ctx.moveTo(150, 75);
-                        ctx.lineTo(200, 75);
-                        ctx.stroke();
-                        ctx.font = '14px Arial';
-                        ctx.fillStyle = '#3c3c3c';
-                        ctx.fillText('r', 175, 70);
-                    }
-                } else if (currentTopic === 'fractions') {
-                    const parts = 4;
-                    const partWidth = 80;
-                    const partHeight = 60;
-                    
-                    for (let i = 0; i < parts; i++) {
-                        ctx.strokeStyle = '#1cb0f6';
-                        ctx.lineWidth = 2;
-                        ctx.strokeRect(50 + i * (partWidth + 10), 45, partWidth, partHeight);
                         
-                        if (i < 2) {
-                            ctx.fillStyle = 'rgba(28, 176, 246, 0.3)';
-                            ctx.fillRect(50 + i * (partWidth + 10), 45, partWidth, partHeight);
+                        // If angles mentioned, show them
+                        const angle1 = question.match(/angles? (\d+)/);
+                        const angle2 = question.match(/and (\d+)/);
+                        if (angle1 && angle2) {
+                            ctx.font = 'bold 14px Arial';
+                            ctx.fillStyle = '#ff4b4b';
+                            ctx.fillText(`${angle1[1]}°`, 130, 110);
+                            ctx.fillText(`${angle2[1]}°`, 260, 110);
+                            ctx.fillText('?', 195, 45);
+                            
+                            ctx.font = '13px Arial';
+                            ctx.fillStyle = '#666';
+                            ctx.fillText('Triangle angles = 180°', 115, 140);
                         }
                     }
+                    
+                } else if (currentTopic === 'fractions') {
+                    // Parse the fraction from the question
+                    const fractionMatch = question.match(/(\d+)\/(\d+)/g);
+                    
+                    if (fractionMatch && fractionMatch.length >= 1) {
+                        // Get the denominator (bottom number) - determines how many parts
+                        const firstFrac = fractionMatch[0].split('/');
+                        const denominator = parseInt(firstFrac[1]);
+                        
+                        // Draw visual representation
+                        if (denominator <= 10) {
+                            const boxSize = Math.min(35, 350 / denominator);
+                            const startX = 200 - (denominator * boxSize) / 2;
+                            
+                            // Draw all boxes
+                            for (let i = 0; i < denominator; i++) {
+                                ctx.strokeStyle = '#1cb0f6';
+                                ctx.lineWidth = 2;
+                                ctx.strokeRect(startX + i * boxSize, 50, boxSize, boxSize);
+                            }
+                            
+                            // Shade for each fraction in the problem
+                            let totalShaded = 0;
+                            fractionMatch.forEach((frac, idx) => {
+                                const parts = frac.split('/');
+                                const numerator = parseInt(parts[0]);
+                                
+                                // Different colors for different fractions
+                                const colors = [
+                                    'rgba(28, 176, 246, 0.4)',
+                                    'rgba(88, 204, 2, 0.4)',
+                                    'rgba(255, 200, 0, 0.4)'
+                                ];
+                                
+                                ctx.fillStyle = colors[idx % colors.length];
+                                for (let i = totalShaded; i < totalShaded + numerator && i < denominator; i++) {
+                                    ctx.fillRect(startX + i * boxSize + 2, 52, boxSize - 4, boxSize - 4);
+                                }
+                                
+                                totalShaded += numerator;
+                            });
+                            
+                            // Add fraction labels
+                            ctx.font = 'bold 16px Arial';
+                            ctx.fillStyle = '#3c3c3c';
+                            let yPos = 110;
+                            fractionMatch.forEach((frac, idx) => {
+                                const colors = ['#1cb0f6', '#58cc02', '#ffc800'];
+                                ctx.fillStyle = colors[idx % colors.length];
+                                ctx.fillText(frac, 30, yPos + idx * 25);
+                            });
+                            
+                            if (question.includes('+')) {
+                                ctx.fillStyle = '#3c3c3c';
+                                ctx.fillText('+', 80, 110);
+                                
+                                // Show result hint
+                                ctx.font = '14px Arial';
+                                ctx.fillStyle = '#666';
+                                ctx.fillText(`Add numerators, keep /${denominator}`, 110, 135);
+                            }
+                        }
+                    }
+                    
                 } else if (currentTopic === 'algebra') {
-                    ctx.strokeStyle = '#1cb0f6';
-                    ctx.lineWidth = 3;
+                    // Parse equation from question
+                    const eqMatch = question.match(/(\d*)x\s*([+\-])\s*(\d+)\s*=\s*(\d+)/);
                     
-                    ctx.beginPath();
-                    ctx.moveTo(50, 75);
-                    ctx.lineTo(250, 75);
-                    ctx.stroke();
-                    
-                    ctx.beginPath();
-                    ctx.moveTo(150, 75);
-                    ctx.lineTo(140, 100);
-                    ctx.lineTo(160, 100);
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    ctx.font = '18px Arial';
-                    ctx.fillStyle = '#3c3c3c';
-                    ctx.fillText('?', 80, 70);
-                    ctx.fillText('=', 145, 70);
+                    if (eqMatch) {
+                        const coef = eqMatch[1] ? parseInt(eqMatch[1]) : 1;
+                        const op = eqMatch[2];
+                        const num = parseInt(eqMatch[3]);
+                        const result = parseInt(eqMatch[4]);
+                        
+                        // Draw balance scale
+                        ctx.strokeStyle = '#666';
+                        ctx.lineWidth = 2;
+                        
+                        // Scale beam
+                        ctx.beginPath();
+                        ctx.moveTo(80, 70);
+                        ctx.lineTo(320, 70);
+                        ctx.stroke();
+                        
+                        // Fulcrum
+                        ctx.beginPath();
+                        ctx.moveTo(200, 70);
+                        ctx.lineTo(200, 90);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(180, 90);
+                        ctx.lineTo(220, 90);
+                        ctx.stroke();
+                        
+                        // Left side (equation)
+                        ctx.fillStyle = '#1cb0f6';
+                        ctx.fillRect(100, 35, 40, 30);
+                        ctx.font = 'bold 16px Arial';
+                        ctx.fillStyle = 'white';
+                        ctx.fillText(`${coef > 1 ? coef : ''}x`, 110, 55);
+                        
+                        if (num > 0) {
+                            ctx.fillStyle = op === '+' ? '#58cc02' : '#ff4b4b';
+                            ctx.fillRect(145, 35, 35, 30);
+                            ctx.fillStyle = 'white';
+                            ctx.fillText(`${op}${num}`, 150, 55);
+                        }
+                        
+                        // Right side (result)
+                        ctx.fillStyle = '#ffc800';
+                        ctx.fillRect(260, 35, 40, 30);
+                        ctx.font = 'bold 16px Arial';
+                        ctx.fillStyle = 'white';
+                        ctx.fillText(result.toString(), 270, 55);
+                        
+                        // Show hint
+                        ctx.font = '14px Arial';
+                        ctx.fillStyle = '#666';
+                        ctx.fillText('Keep the scale balanced!', 120, 120);
+                    }
                 }
             }
 
