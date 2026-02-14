@@ -11,9 +11,24 @@ export default async function handler(req, res) {
   try {
     const { messages, systemPrompt } = req.body;
 
-let fullPrompt = `<s>[INST] ${systemPrompt}\n\n${messages[messages.length - 1].content} [/INST]`;
+    // Build the prompt for Mistral
+    let fullPrompt = `<s>[INST] ${systemPrompt}\n\n`;
 
-    // Call Hugging Face API
+    // Add conversation history
+    for (let i = 0; i < messages.length; i++) {
+      const msg = messages[i];
+      if (msg.role === 'user') {
+        if (i === 0) {
+          fullPrompt += `${msg.content} [/INST]`;
+        } else {
+          fullPrompt += `<s>[INST] ${msg.content} [/INST]`;
+        }
+      } else {
+        fullPrompt += ` ${msg.content}</s>`;
+      }
+    }
+
+    // Call Hugging Face API with Mistral model
     const response = await fetch(
       'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2',
       {
@@ -29,7 +44,7 @@ let fullPrompt = `<s>[INST] ${systemPrompt}\n\n${messages[messages.length - 1].c
             temperature: 0.7,
             top_p: 0.9,
             return_full_text: false,
-            stop: ['<|eot_id|>', '<|end_of_text|>']
+            stop: ['</s>', '[INST]']
           }
         })
       }
@@ -38,7 +53,7 @@ let fullPrompt = `<s>[INST] ${systemPrompt}\n\n${messages[messages.length - 1].c
     if (!response.ok) {
       const error = await response.text();
       console.error('Hugging Face API error:', error);
-      return res.status(response.status).json({ error: 'AI service error' });
+      return res.status(response.status).json({ error: 'AI service error', details: error });
     }
 
     const data = await response.json();
@@ -51,7 +66,7 @@ let fullPrompt = `<s>[INST] ${systemPrompt}\n\n${messages[messages.length - 1].c
       generatedText = data.generated_text;
     } else {
       console.error('Unexpected response format:', data);
-      return res.status(500).json({ error: 'Unexpected response format' });
+      return res.status(500).json({ error: 'Unexpected response format', details: data });
     }
 
     // Clean up the response
@@ -69,6 +84,6 @@ let fullPrompt = `<s>[INST] ${systemPrompt}\n\n${messages[messages.length - 1].c
 
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 }
