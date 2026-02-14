@@ -1,4 +1,4 @@
-// Serverless function to call Hugging Face API securely
+// Serverless function to call Groq API securely
 // This runs on Vercel's servers, not in the browser
 // Your API key stays secret here
 
@@ -11,79 +11,72 @@ export default async function handler(req, res) {
   try {
     const { messages, systemPrompt } = req.body;
 
-    // Build the prompt for Mistral
-    let fullPrompt = `<s>[INST] ${systemPrompt}\n\n`;
+    // Build messages array for Groq (OpenAI-compatible format)
+    const groqMessages = [
+      {
+        role: 'system',
+        content: systemPrompt
+      },
+      ...messages
+    ];
 
-    // Add conversation history
-    for (let i = 0; i < messages.length; i++) {
-      const msg = messages[i];
-      if (msg.role === 'user') {
-        if (i === 0) {
-          fullPrompt += `${msg.content} [/INST]`;
-        } else {
-          fullPrompt += `<s>[INST] ${msg.content} [/INST]`;
-        }
-      } else {
-        fullPrompt += ` ${msg.content}</s>`;
-      }
-    }
-
-    // Call Hugging Face API with Mistral model
+    // Call Groq API
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2',
+      'https://api.groq.com/openai/v1/chat/completions',
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          inputs: fullPrompt,
-          parameters: {
-            max_new_tokens: 500,
-            temperature: 0.7,
-            top_p: 0.9,
-            return_full_text: false,
-            stop: ['</s>', '[INST]']
-          }
+          model: 'llama-3.1-8b-instant',
+          messages: groqMessages,
+          temperature: 0.7,
+          max_tokens: 500,
+          top_p: 0.9,
+          stream: false
         })
       }
     );
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Hugging Face API error:', error);
-      return res.status(response.status).json({ error: 'AI service error', details: error });
+      console.error('Groq API error:', error);
+      return res.status(response.status).json({ 
+        error: 'AI service error', 
+        details: error 
+      });
     }
 
     const data = await response.json();
     
-    // Extract the generated text
-    let generatedText = '';
-    if (Array.isArray(data) && data[0]?.generated_text) {
-      generatedText = data[0].generated_text;
-    } else if (data.generated_text) {
-      generatedText = data.generated_text;
+    // Extract the response
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      const tutorResponse = data.choices[0].message.content;
+      
+      // Return in Anthropic-compatible format
+      res.status(200).json({
+        content: [
+          {
+            type: 'text',
+            text: tutorResponse
+          }
+        ]
+      });
     } else {
       console.error('Unexpected response format:', data);
-      return res.status(500).json({ error: 'Unexpected response format', details: data });
+      return res.status(500).json({ 
+        error: 'Unexpected response format', 
+        details: data 
+      });
     }
-
-    // Clean up the response
-    generatedText = generatedText.trim();
-
-    // Return in Anthropic-compatible format
-    res.status(200).json({
-      content: [
-        {
-          type: 'text',
-          text: generatedText
-        }
-      ]
-    });
 
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      details: error.message 
+    });
   }
 }
