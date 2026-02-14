@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSM Math Quest - Advanced Edition</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1cb0f6;
+            --secondary: #58cc02;
+            --danger: #ff4b4b;
+            --warning: #ffc800;
+            --purple: #ce82ff;
+            --bg-light: #f7f7f7;
+            --text-dark: #3c3c3c;
+            --border: #e5e5e5;
+            --gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #58cc02 0%, #47a302 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .stat-icon {
+            font-size: 1.5em;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .login-container {
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .login-subtitle {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .user-card {
+            background: linear-gradient(135deg, var(--bg-light), #fff);
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 4px solid transparent;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: var(--primary);
+        }
+
+        .user-avatar {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .user-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .user-stats {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(28, 176, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e5e5e5;
+            color: var(--text-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-hint {
+            background: var(--warning);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hint:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-tutor {
+            background: var(--purple);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-tutor:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(206, 130, 255, 0.3);
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .topic-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .topic-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .problem-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .problem-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .problem-text {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3em;
+            border: 3px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.1);
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .hint-box {
+            background: #fff3cd;
+            border: 2px solid var(--warning);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .visual-aid {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .visual-aid canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .chat-container {
+            background: #f8f9fa;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .chat-message.user {
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-message.assistant {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .chat-send {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .chat-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            padding: 12px 16px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        .parent-dashboard {
+            padding: 30px;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .student-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .stat-box p {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const AVATARS = [
+            { emoji: '👦', name: 'Hero Boy' },
+            { emoji: '👧', name: 'Magic Girl' },
+            { emoji: '🧑‍🚀', name: 'Space Cadet' },
+            { emoji: '🥷', name: 'Ninja' },
+            { emoji: '🦸‍♂️', name: 'Super Hero' },
+            { emoji: '🦸‍♀️', name: 'Wonder Girl' },
+            { emoji: '🧙‍♂️', name: 'Wizard' },
+            { emoji: '🧙‍♀️', name: 'Sorceress' },
+            { emoji: '🤖', name: 'Robot' },
+            { emoji: '👾', name: 'Pixel Hero' },
+        ];
+
+        const ACHIEVEMENTS = [
+            { id: 'first_problem', name: 'First Steps', icon: '🎯', requirement: { problemsSolved: 1 }, xp: 50 },
+            { id: 'streak_3', name: '3-Day Streak', icon: '🔥', requirement: { streak: 3 }, xp: 100 },
+            { id: 'problems_10', name: 'Problem Solver', icon: '🧠', requirement: { problemsSolved: 10 }, xp: 150 },
+            { id: 'problems_50', name: 'Math Champion', icon: '🏆', requirement: { problemsSolved: 50 }, xp: 500 },
+        ];
+
+        const LESSONS = {
+            'algebra-lesson-1': {
+                title: 'Introduction to Linear Equations',
+                topic: 'algebra',
+                warmup: [
+                    { question: "What is 5 + x when x = 3?", answer: "8", hint: "Replace x with 3", explanation: "5 + 3 = 8", xp: 5 },
+                    { question: "If y = 7, what is 2 * y?", answer: "14", hint: "Multiply 2 by 7", explanation: "2 * 7 = 14", xp: 5 },
+                ],
+                discovery: [
+                    { question: "x + 3 = 10. What is x?", answer: "7", hint: "What number plus 3 equals 10?", explanation: "10 - 3 = 7", xp: 10 },
+                    { question: "x + 5 = 12. What is x?", answer: "7", hint: "What do you notice is the same as the previous problem?", explanation: "12 - 5 = 7", xp: 10 },
+                    { question: "x + 8 = 15. What is x?", answer: "7", hint: "What pattern do you see?", explanation: "15 - 8 = 7", xp: 10 },
+                    { question: "Now try: 2x = 10. What is x?", answer: "5", hint: "What number times 2 equals 10?", explanation: "10 / 2 = 5", xp: 10 },
+                    { question: "Solve: 3x = 21", answer: "7", hint: "What operation undoes multiplication?", explanation: "21 / 3 = 7", xp: 10 },
+                ],
+                application: [
+                    { question: "Solve for x: 2x + 5 = 15", answer: "5", hint: "First subtract 5 from both sides", explanation: "2x + 5 = 15 → 2x = 10 → x = 5", xp: 15 },
+                    { question: "What is x if 3x - 7 = 14?", answer: "7", hint: "Add 7 to both sides first", explanation: "3x - 7 = 14 → 3x = 21 → x = 7", xp: 15 },
+                    { question: "Solve: 4x - 8 = 12", answer: "5", hint: "Add 8, then divide by 4", explanation: "4x - 8 = 12 → 4x = 20 → x = 5", xp: 15 },
+                    { question: "If 5x + 3 = 28, what is x?", answer: "5", hint: "What's your first step?", explanation: "5x + 3 = 28 → 5x = 25 → x = 5", xp: 15 },
+                ],
+                exitTicket: [
+                    { question: "Solve: 6x - 9 = 15", answer: "4", hint: "Use the same steps you learned", explanation: "6x - 9 = 15 → 6x = 24 → x = 4", xp: 20 },
+                    { question: "A number multiplied by 7, then decreased by 5, equals 30. What is the number?", answer: "5", hint: "Write this as 7x - 5 = 30", explanation: "7x - 5 = 30 → 7x = 35 → x = 5", xp: 25 },
+                ]
+            },
+            'geometry-lesson-1': {
+                title: 'Perimeter and Area of Rectangles',
+                topic: 'geometry',
+                warmup: [
+                    { question: "What is 5 + 5 + 3 + 3?", answer: "16", hint: "Add all four numbers", explanation: "5+5+3+3 = 16", xp: 5 },
+                    { question: "What is 5 * 3?", answer: "15", hint: "Multiply 5 by 3", explanation: "5 * 3 = 15", xp: 5 },
+                ],
+                discovery: [
+                    { question: "A rectangle has length 4 and width 2. Add all four sides. What do you get?", answer: "12", hint: "4 + 2 + 4 + 2 = ?", explanation: "4 + 2 + 4 + 2 = 12 (this is the perimeter)", xp: 10 },
+                    { question: "Same rectangle (length 4, width 2). What is length * width?", answer: "8", hint: "Multiply 4 by 2", explanation: "4 * 2 = 8 (this is the area)", xp: 10 },
+                    { question: "New rectangle: length 6, width 3. Find perimeter (add all sides)", answer: "18", hint: "6 + 3 + 6 + 3", explanation: "6+3+6+3 = 18", xp: 10 },
+                    { question: "Same rectangle (6 by 3). Find area (length * width)", answer: "18", hint: "What is 6 * 3?", explanation: "6 * 3 = 18", xp: 10 },
+                ],
+                application: [
+                    { question: "Rectangle with length 8 m and width 5 m. What is its area?", answer: "40", hint: "Area = length * width", explanation: "A = 8 * 5 = 40 m²", xp: 12 },
+                    { question: "What is the perimeter of a rectangle with length 12 cm and width 7 cm?", answer: "38", hint: "Add all four sides, or use 2(length + width)", explanation: "P = 2(12 + 7) = 2(19) = 38 cm", xp: 15 },
+                    { question: "A square has a side of 6 cm. What is its perimeter?", answer: "24", hint: "All four sides are equal in a square", explanation: "P = 4 * 6 = 24 cm", xp: 10 },
+                    { question: "A square has a side of 9 m. What is its area?", answer: "81", hint: "Area = side * side", explanation: "A = 9 * 9 = 81 m²", xp: 12 },
+                ],
+                exitTicket: [
+                    { question: "A rectangle has perimeter 30 cm. Its length is 10 cm. What is its width?", answer: "5", hint: "If perimeter is 30, then 2(length + width) = 30", explanation: "2(10 + w) = 30 → 10 + w = 15 → w = 5 cm", xp: 20 },
+                    { question: "A rectangular garden has area 48 m² and width 6 m. What is its length?", answer: "8", hint: "Area = length * width, so length = area / width", explanation: "48 / 6 = 8 m", xp: 20 },
+                ]
+            },
+            'fractions-lesson-1': {
+                title: 'Adding Fractions with Same Denominator',
+                topic: 'fractions',
+                warmup: [
+                    { question: "What is 2 + 3?", answer: "5", hint: "Simple addition", explanation: "2 + 3 = 5", xp: 5 },
+                    { question: "How many fourths make a whole?", answer: "4", hint: "4/4 = 1 whole", explanation: "Four fourths = 1", xp: 5 },
+                ],
+                discovery: [
+                    { question: "Add: 1/5 + 1/5", answer: "2/5", hint: "How many fifths do you have total?", explanation: "1 fifth + 1 fifth = 2 fifths", xp: 10 },
+                    { question: "Add: 1/5 + 2/5", answer: "3/5", hint: "Count the fifths: 1 + 2 = ?", explanation: "1/5 + 2/5 = 3/5", xp: 10 },
+                    { question: "What is 2/7 + 3/7?", answer: "5/7", hint: "Add the numerators (top numbers), keep denominator", explanation: "2/7 + 3/7 = 5/7", xp: 10 },
+                    { question: "Add: 1/4 + 1/4", answer: "2/4", alternateAnswers: ["1/2"], hint: "Add numerators, keep the 4", explanation: "1/4 + 1/4 = 2/4 = 1/2", xp: 10 },
+                ],
+                application: [
+                    { question: "What is 2/5 + 1/5?", answer: "3/5", hint: "Same denominators, just add numerators", explanation: "2/5 + 1/5 = 3/5", xp: 10 },
+                    { question: "Add: 3/8 + 2/8", answer: "5/8", hint: "Keep the denominator 8", explanation: "3/8 + 2/8 = 5/8", xp: 12 },
+                    { question: "Subtract: 5/8 - 3/8", answer: "2/8", alternateAnswers: ["1/4"], hint: "Subtract numerators, keep denominator", explanation: "5/8 - 3/8 = 2/8 = 1/4", xp: 12 },
+                    { question: "What is 4/6 + 1/6?", answer: "5/6", hint: "Add the top numbers", explanation: "4/6 + 1/6 = 5/6", xp: 12 },
+                ],
+                exitTicket: [
+                    { question: "Add: 2/9 + 5/9", answer: "7/9", hint: "Use what you learned about same denominators", explanation: "2/9 + 5/9 = 7/9", xp: 15 },
+                    { question: "Sarah ate 2/8 of a pizza. Tom ate 3/8. How much did they eat together?", answer: "5/8", hint: "Add the two fractions", explanation: "2/8 + 3/8 = 5/8 of the pizza", xp: 20 },
+                ]
+            },
+        };
+
+        const PROBLEMS = {
+            algebra: [
+                { question: "Solve for x: 2x + 5 = 15", answer: "5", hint: "Subtract 5 from both sides first", explanation: "2x + 5 = 15 → 2x = 10 → x = 5", xp: 15 },
+                { question: "What is x if 3x = 21?", answer: "7", hint: "Divide both sides by 3", explanation: "3x = 21 → x = 7", xp: 10 },
+                { question: "Solve: 4x - 8 = 12", answer: "5", hint: "Add 8, then divide by 4", explanation: "4x - 8 = 12 → 4x = 20 → x = 5", xp: 15 },
+            ],
+            geometry: [
+                { question: "A square has a side of 6 cm. What is its perimeter?", answer: "24", hint: "Perimeter = 4 * side", explanation: "P = 4 * 6 = 24 cm", xp: 10 },
+                { question: "Triangle with angles 60 degrees and 80 degrees. Find the third angle.", answer: "40", hint: "Triangle angles sum to 180 degrees", explanation: "180 - 60 - 80 = 40 degrees", xp: 15 },
+            ],
+            fractions: [
+                { question: "Add: 1/4 + 1/4", answer: "1/2", alternateAnswers: ["2/4"], hint: "Add numerators, keep denominator", explanation: "1/4 + 1/4 = 2/4 = 1/2", xp: 10 },
+                { question: "What is 1/2 of 20?", answer: "10", hint: "Divide 20 by 2", explanation: "1/2 * 20 = 20/2 = 10", xp: 10 },
+            ],
+        };
+
+        function MathLearningApp() {
+            const [users, setUsers] = useState([
+                { 
+                    id: 1, 
+                    name: 'Demo Student', 
+                    avatar: AVATARS[0], 
+                    isParent: false,
+                    stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
+                    badges: []
+                },
+                {
+                    id: 'parent',
+                    name: 'Parent',
+                    avatar: { emoji: '👨‍👩‍👧‍👦', name: 'Parent' },
+                    isParent: true,
+                    stats: null,
+                    badges: []
+                }
+            ]);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [view, setView] = useState('login');
+            const [currentTopic, setCurrentTopic] = useState(null);
+            const [currentLesson, setCurrentLesson] = useState(null);
+            const [lessonPhase, setLessonPhase] = useState(null);
+            const [phaseIndex, setPhaseIndex] = useState(0);
+            const [currentProblem, setCurrentProblem] = useState(null);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [feedback, setFeedback] = useState(null);
+            const [showHint, setShowHint] = useState(false);
+            const [showTutor, setShowTutor] = useState(false);
+            const [chatMessages, setChatMessages] = useState([]);
+            const [chatInput, setChatInput] = useState('');
+            const [isTyping, setIsTyping] = useState(false);
+            const canvasRef = useRef(null);
+            const chatMessagesRef = useRef(null);
+
+            function selectUser(user) {
+                setCurrentUser(user);
+                if (user.isParent) {
+                    setView('parent');
+                } else {
+                    setView('home');
+                }
+            }
+
+            function startLesson(lessonId) {
+                const lesson = LESSONS[lessonId];
+                setCurrentLesson(lesson);
+                setCurrentTopic(lesson.topic);
+                setLessonPhase('warmup');
+                setPhaseIndex(0);
+                setCurrentProblem(lesson.warmup[0]);
+                setView('lesson');
+                setUserAnswer('');
+                setFeedback(null);
+                setShowHint(false);
+                setShowTutor(false);
+                setChatMessages([]);
+            }
+
+            function nextProblemInLesson() {
+                const lesson = currentLesson;
+                const currentPhaseProblems = lesson[lessonPhase];
+                
+                if (phaseIndex + 1 < currentPhaseProblems.length) {
+                    setPhaseIndex(phaseIndex + 1);
+                    setCurrentProblem(currentPhaseProblems[phaseIndex + 1]);
+                    setUserAnswer('');
+                    setFeedback(null);
+                    setShowHint(false);
+                    setShowTutor(false);
+                    setChatMessages([]);
+                } else {
+                    if (lessonPhase === 'warmup') {
+                        setLessonPhase('discovery');
+                        setPhaseIndex(0);
+                        setCurrentProblem(lesson.discovery[0]);
+                        setUserAnswer('');
+                        setFeedback(null);
+                    } else if (lessonPhase === 'discovery') {
+                        setLessonPhase('application');
+                        setPhaseIndex(0);
+                        setCurrentProblem(lesson.application[0]);
+                        setUserAnswer('');
+                        setFeedback(null);
+                    } else if (lessonPhase === 'application') {
+                        setLessonPhase('exitTicket');
+                        setPhaseIndex(0);
+                        setCurrentProblem(lesson.exitTicket[0]);
+                        setUserAnswer('');
+                        setFeedback(null);
+                    } else {
+                        setView('lessonComplete');
+                    }
+                }
+            }
+
+            function startTopic(topic) {
+                setCurrentTopic(topic);
+                setCurrentLesson(null);
+                const problems = PROBLEMS[topic];
+                if (!problems || problems.length === 0) {
+                    const lessonKey = Object.keys(LESSONS).find(k => LESSONS[k].topic === topic);
+                    if (lessonKey) {
+                        startLesson(lessonKey);
+                    }
+                    return;
+                }
+                const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+                setCurrentProblem(randomProblem);
+                setView('problem');
+                setUserAnswer('');
+                setFeedback(null);
+                setShowHint(false);
+                setShowTutor(false);
+                setChatMessages([]);
+            }
+
+            function checkAnswer() {
+                const correctAnswers = [currentProblem.answer];
+                if (currentProblem.alternateAnswers) {
+                    correctAnswers.push(...currentProblem.alternateAnswers);
+                }
+                
+                const isCorrect = correctAnswers.some(ans => 
+                    userAnswer.trim().toLowerCase() === ans.toLowerCase()
+                );
+                
+                if (isCorrect) {
+                    setFeedback({ correct: true, message: 'Correct! Great job!' });
+                    
+                    setUsers(prevUsers => prevUsers.map(u => {
+                        if (u.id === currentUser.id) {
+                            const newStats = {
+                                ...u.stats,
+                                xp: u.stats.xp + currentProblem.xp,
+                                problemsSolved: u.stats.problemsSolved + 1,
+                                level: Math.floor((u.stats.xp + currentProblem.xp) / 100) + 1
+                            };
+                            const updatedUser = { ...u, stats: newStats };
+                            setCurrentUser(updatedUser);
+                            return updatedUser;
+                        }
+                        return u;
+                    }));
+                } else {
+                    setFeedback({ correct: false, message: 'Not quite. Try again!' });
+                    
+                    // Auto-open tutor and provide guidance
+                    if (!showTutor) {
+                        setShowTutor(true);
+                    }
+                    
+                    // Add tutor message about the wrong answer
+                    const tutorGuidance = identifyMisconception(userAnswer.trim(), currentProblem, currentLesson ? lessonPhase : 'practice');
+                    setTimeout(() => {
+                        setChatMessages(prev => [...prev, 
+                            { role: 'user', content: `I tried ${userAnswer} but it was wrong` },
+                            { role: 'assistant', content: tutorGuidance }
+                        ]);
+                        if (chatMessagesRef.current) {
+                            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+                        }
+                    }, 500);
+                }
+            }
+
+            function drawVisualAid() {
+                const canvas = canvasRef.current;
+                if (!canvas || !currentProblem) return;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (currentTopic === 'geometry') {
+                    if (currentProblem.question.includes('square')) {
+                        ctx.strokeStyle = '#1cb0f6';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(100, 25, 100, 100);
+                        ctx.font = '16px Arial';
+                        ctx.fillStyle = '#3c3c3c';
+                        ctx.fillText('6 cm', 135, 145);
+                    } else if (currentProblem.question.includes('rectangle')) {
+                        ctx.strokeStyle = '#1cb0f6';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(50, 40, 160, 80);
+                        ctx.font = '16px Arial';
+                        ctx.fillStyle = '#3c3c3c';
+                        ctx.fillText('length', 100, 135);
+                    } else if (currentProblem.question.includes('triangle')) {
+                        ctx.strokeStyle = '#1cb0f6';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(150, 30);
+                        ctx.lineTo(80, 120);
+                        ctx.lineTo(220, 120);
+                        ctx.closePath();
+                        ctx.stroke();
+                    } else if (currentProblem.question.includes('circle')) {
+                        ctx.strokeStyle = '#1cb0f6';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(150, 75, 50, 0, 2 * Math.PI);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(150, 75);
+                        ctx.lineTo(200, 75);
+                        ctx.stroke();
+                        ctx.font = '14px Arial';
+                        ctx.fillStyle = '#3c3c3c';
+                        ctx.fillText('r', 175, 70);
+                    }
+                } else if (currentTopic === 'fractions') {
+                    const parts = 4;
+                    const partWidth = 80;
+                    const partHeight = 60;
+                    
+                    for (let i = 0; i < parts; i++) {
+                        ctx.strokeStyle = '#1cb0f6';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(50 + i * (partWidth + 10), 45, partWidth, partHeight);
+                        
+                        if (i < 2) {
+                            ctx.fillStyle = 'rgba(28, 176, 246, 0.3)';
+                            ctx.fillRect(50 + i * (partWidth + 10), 45, partWidth, partHeight);
+                        }
+                    }
+                } else if (currentTopic === 'algebra') {
+                    ctx.strokeStyle = '#1cb0f6';
+                    ctx.lineWidth = 3;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(50, 75);
+                    ctx.lineTo(250, 75);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(150, 75);
+                    ctx.lineTo(140, 100);
+                    ctx.lineTo(160, 100);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.font = '18px Arial';
+                    ctx.fillStyle = '#3c3c3c';
+                    ctx.fillText('?', 80, 70);
+                    ctx.fillText('=', 145, 70);
+                }
+            }
+
+            useEffect(() => {
+                if ((view === 'problem' || view === 'lesson') && canvasRef.current) {
+                    drawVisualAid();
+                }
+            }, [currentProblem, view, currentTopic]);
+
+            // Advanced Socratic Dialogue Engine - RSM Framework
+            function getSocraticResponse(studentMessage, conversationHistory) {
+                const lowerMessage = studentMessage.toLowerCase();
+                const problem = currentProblem;
+                const phase = currentLesson ? lessonPhase : 'practice';
+                
+                // Track what scaffolding level we're at
+                const scaffoldLevel = conversationHistory.filter(m => m.role === 'assistant').length;
+                
+                // Scaffolding Ladder (RSM framework - escalate help gradually)
+                
+                // Level 0: Initial engagement - ask what they know
+                if (scaffoldLevel === 0) {
+                    return `Let's work through this together. First, can you tell me: what information does the problem give us? What are we being asked to find?`;
+                }
+                
+                // Check if student is asking for the answer directly
+                if (lowerMessage.includes('answer') || lowerMessage.includes('what is it') || lowerMessage.match(/^is it \d+/)) {
+                    return `I can't give you the answer - you need to discover it yourself! But I can guide you. ${getScaffoldQuestion(1, problem, phase)}`;
+                }
+                
+                // Check if student made an attempt (contains numbers or mathematical expressions)
+                const hasAttempt = /\d+|half|quarter|third|equal/.test(lowerMessage);
+                
+                if (hasAttempt) {
+                    // Extract what they think
+                    const numberMatch = lowerMessage.match(/\d+/);
+                    if (numberMatch) {
+                        const studentAnswer = numberMatch[0];
+                        const correctAnswers = [problem.answer, ...(problem.alternateAnswers || [])];
+                        
+                        if (correctAnswers.some(ans => ans.toLowerCase() === studentAnswer)) {
+                            return `Great! You got ${studentAnswer}. But can you explain WHY? What steps did you follow to reach that answer?`;
+                        } else {
+                            // Wrong answer - identify misconception
+                            return identifyMisconception(studentAnswer, problem, phase);
+                        }
+                    }
+                }
+                
+                // Student says they're stuck/confused/don't understand
+                if (lowerMessage.includes('stuck') || lowerMessage.includes('confused') || 
+                    lowerMessage.includes("don't understand") || lowerMessage.includes('help')) {
+                    return getScaffoldQuestion(scaffoldLevel, problem, phase);
+                }
+                
+                // Student asks "why" or "how"
+                if (lowerMessage.includes('why') || lowerMessage.includes('how')) {
+                    if (lowerMessage.includes('why') && scaffoldLevel < 3) {
+                        return `Good question! ${problem.hint}. Can you see why that would work?`;
+                    } else {
+                        return getScaffoldQuestion(scaffoldLevel, problem, phase);
+                    }
+                }
+                
+                // Student mentions specific concepts - engage with them
+                if (lowerMessage.includes('add') || lowerMessage.includes('subtract') || 
+                    lowerMessage.includes('multiply') || lowerMessage.includes('divide')) {
+                    return `You're thinking about operations - that's a good start! Look at what the problem is asking: "${problem.question}". Which operation makes sense here, and why?`;
+                }
+                
+                // Default: continue scaffolding
+                return getScaffoldQuestion(scaffoldLevel, problem, phase);
+            }
+            
+            function getScaffoldQuestion(level, problem, phase) {
+                const hint = problem.hint;
+                
+                // Scaffolding Ladder (from RSM framework)
+                switch(level) {
+                    case 1: // Ask what is known
+                        return `Let's break this down. What information does "${problem.question}" give you? What do you already know?`;
+                    
+                    case 2: // Ask for small example
+                        return `Let's try a simpler example first. ${hint}. Can you try that?`;
+                    
+                    case 3: // Ask what changes if you tweak
+                        if (phase === 'discovery') {
+                            return `Look at this problem and the one before it. What changed? What stayed the same? Do you notice a pattern?`;
+                        } else {
+                            return `Here's a hint: ${hint}. What would you do first with this information?`;
+                        }
+                    
+                    case 4: // Offer representation guidance
+                        if (problem.question.includes('rectangle') || problem.question.includes('square')) {
+                            return `Try drawing it out. Draw a ${problem.question.includes('square') ? 'square' : 'rectangle'} and label what you know. What does that tell you?`;
+                        } else if (problem.question.includes('fraction')) {
+                            return `Think of it visually - maybe draw circles or boxes to represent the fractions. ${hint}`;
+                        } else {
+                            return `Let me guide you step by step. ${hint}. Can you follow that and tell me what you get?`;
+                        }
+                    
+                    case 5: // Provide partial step
+                        return `Okay, let me show you the first step, then you finish it. ${problem.explanation.split('→')[0]}. Now you continue - what comes next?`;
+                    
+                    default: // After many attempts, give worked example
+                        if (level >= 6) {
+                            return `Let me show you a complete example to help: ${problem.explanation}. Now, can you explain back to me why each step works?`;
+                        } else {
+                            return `Think about: ${hint}. What would happen if you tried that?`;
+                        }
+                }
+            }
+            
+            function identifyMisconception(wrongAnswer, problem, phase) {
+                const correct = problem.answer;
+                const wrong = wrongAnswer;
+                
+                // Common misconceptions by problem type
+                if (problem.question.includes('perimeter') && problem.question.includes('rectangle')) {
+                    const lengthMatch = problem.question.match(/length (\d+)/);
+                    const widthMatch = problem.question.match(/width (\d+)/);
+                    if (lengthMatch && widthMatch) {
+                        const area = parseInt(lengthMatch[1]) * parseInt(widthMatch[1]);
+                        if (wrong == area) {
+                            return `I see you got ${wrong} - that's the AREA! But the question asks for perimeter. What's the difference between area and perimeter? Can you try again?`;
+                        }
+                    }
+                }
+                
+                if (problem.question.includes('area') && problem.question.includes('rectangle')) {
+                    const lengthMatch = problem.question.match(/length (\d+)/);
+                    const widthMatch = problem.question.match(/width (\d+)/);
+                    if (lengthMatch && widthMatch) {
+                        const perimeter = 2 * (parseInt(lengthMatch[1]) + parseInt(widthMatch[1]));
+                        if (wrong == perimeter) {
+                            return `I see ${wrong} - but that's the PERIMETER! The question asks for area. Remember: perimeter is the distance around, area is the space inside. Try again?`;
+                        }
+                    }
+                }
+                
+                if (problem.question.toLowerCase().includes('fraction')) {
+                    if (problem.question.includes('+')) {
+                        return `Hmm, ${wrong} doesn't look right. When adding fractions with the same denominator, remember: you only add the numerators (top numbers), the denominator (bottom number) stays the same. Want to try again?`;
+                    }
+                }
+                
+                // Generic wrong answer response
+                return `Not quite - I got a different answer. Let me ask you this: ${problem.hint}. Try using that approach. What do you get?`;
+            }
+
+            async function sendTutorMessage(message) {
+                if (!message.trim()) return;
+                
+                const userMessage = { role: 'user', content: message };
+                setChatMessages(prev => [...prev, userMessage]);
+                setChatInput('');
+                setIsTyping(true);
+
+                try {
+                    // Build conversation history
+                    const conversationHistory = chatMessages.map(msg => ({
+                        role: msg.role === 'assistant' ? 'assistant' : 'user',
+                        content: msg.content
+                    }));
+                    
+                    // Add current message
+                    conversationHistory.push({
+                        role: 'user',
+                        content: message
+                    });
+
+                    // System prompt with RSM pedagogical framework
+                    const systemPrompt = `You are an expert math tutor trained in the Russian School of Mathematics (RSM) style: rigorous, concept-first, guided discovery.
+
+CURRENT PROBLEM: "${currentProblem.question}"
+ANSWER: ${currentProblem.answer}
+HINT: ${currentProblem.hint}
+EXPLANATION: ${currentProblem.explanation}
+
+CRITICAL RSM PRINCIPLES:
+1. NEVER give the answer directly - guide discovery through questions
+2. Use Socratic method - ask targeted questions that reveal structure
+3. If student is stuck, use scaffolding ladder:
+   - Ask what is known / restate problem
+   - Ask for small example with numbers
+   - Ask what changes if you tweak one part
+   - Offer representation (diagram/table) guidance
+   - Provide partial step, ask them to complete
+   - Only after repeated failure: give minimal worked example for similar problem
+
+4. Require justification - don't accept "because it is"
+5. Treat errors as learning opportunities - identify misconception, give micro-problem
+6. Keep responses SHORT - one focused question at a time (2-3 sentences max)
+7. No motivational fluff - high signal only
+
+LESSON PHASE: ${currentLesson ? lessonPhase : 'practice'}
+${currentLesson ? `
+TEACHING GOAL: Student should discover the pattern through this problem sequence.
+- Warmup: Activate prior knowledge
+- Discovery: Guide students to notice the pattern themselves
+- Application: Ensure they can apply the discovered rule
+- Exit Ticket: Check for transfer to novel contexts
+` : ''}
+
+Respond as the tutor would in an RSM classroom. Keep it SHORT and focused.`;
+
+                    // Determine which backend to use
+                    // If deployed on Vercel, use /api/tutor
+                    // If running locally, use localhost:3000/api/tutor
+                    const apiUrl = window.location.hostname === 'localhost' 
+                        ? 'http://localhost:3000/api/tutor'
+                        : '/api/tutor';
+
+                    const response = await fetch(apiUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            messages: conversationHistory,
+                            systemPrompt: systemPrompt,
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Backend error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.content && data.content[0]) {
+                        const tutorResponse = data.content[0].text;
+                        const assistantMessage = { role: 'assistant', content: tutorResponse };
+                        setChatMessages(prev => [...prev, assistantMessage]);
+                    } else {
+                        throw new Error('Invalid response from backend');
+                    }
+                    
+                    setIsTyping(false);
+                    
+                    if (chatMessagesRef.current) {
+                        chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Tutor error:', error);
+                    
+                    // Fallback to rule-based tutor
+                    const fallbackResponse = getSocraticResponse(message, chatMessages);
+                    const assistantMessage = { 
+                        role: 'assistant', 
+                        content: `[AI tutor offline - using backup]\n\n${fallbackResponse}`
+                    };
+                    setChatMessages(prev => [...prev, assistantMessage]);
+                    setIsTyping(false);
+                }
+            }
+
+            useEffect(() => {
+                if (chatMessagesRef.current) {
+                    chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+                }
+            }, [chatMessages]);
+
+            // RENDER FUNCTIONS - Defined outside to prevent recreation
+            const renderLogin = () => (
+                <div className="login-container">
+                    <h1 className="login-title">RSM Math Quest</h1>
+                    <p className="login-subtitle">Select your profile to start learning</p>
+                    
+                    <div className="user-grid">
+                        {users.map(user => (
+                            <div key={user.id} className="user-card" onClick={() => selectUser(user)}>
+                                <div className="user-avatar">{user.avatar.emoji}</div>
+                                <div className="user-name">{user.name}</div>
+                                {user.stats && (
+                                    <div className="user-stats">
+                                        Level {user.stats.level} • {user.stats.xp} XP
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+
+            const renderHome = () => {
+                if (!currentUser || !currentUser.stats) return null;
+                
+                return (
+                    <div>
+                        <div className="header">
+                            <div className="header-left">
+                                <h1>Hi, {currentUser.name}!</h1>
+                                <p>Level {currentUser.stats.level} • {currentUser.stats.xp} XP</p>
+                            </div>
+                            <div className="header-stats">
+                                <div className="stat-item">
+                                    <span className="stat-icon">🔥</span>
+                                    <span className="stat-value">{currentUser.stats.streak}</span>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-icon">🎯</span>
+                                    <span className="stat-value">{currentUser.stats.problemsSolved}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="content">
+                            <button className="btn-secondary" onClick={() => setView('login')}>
+                                Back to Login
+                            </button>
+                            
+                            <h2 style={{ marginTop: '30px', marginBottom: '20px' }}>Lessons (RSM Style)</h2>
+                            
+                            <div className="topic-grid">
+                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-1')}>
+                                    <div className="topic-icon">📐</div>
+                                    <div className="topic-title">Algebra Lesson 1</div>
+                                    <p>Linear Equations</p>
+                                </div>
+                                <div className="topic-card" onClick={() => startLesson('geometry-lesson-1')}>
+                                    <div className="topic-icon">📏</div>
+                                    <div className="topic-title">Geometry Lesson 1</div>
+                                    <p>Perimeter & Area</p>
+                                </div>
+                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-1')}>
+                                    <div className="topic-icon">🍕</div>
+                                    <div className="topic-title">Fractions Lesson 1</div>
+                                    <p>Adding Same Denominator</p>
+                                </div>
+                            </div>
+
+                            <h2 style={{ marginTop: '40px', marginBottom: '20px' }}>Practice Mode</h2>
+                            
+                            <div className="topic-grid">
+                                <div className="topic-card" onClick={() => startTopic('algebra')}>
+                                    <div className="topic-icon">📐</div>
+                                    <div className="topic-title">Algebra</div>
+                                    <p>Random Problems</p>
+                                </div>
+                                <div className="topic-card" onClick={() => startTopic('geometry')}>
+                                    <div className="topic-icon">📏</div>
+                                    <div className="topic-title">Geometry</div>
+                                    <p>Random Problems</p>
+                                </div>
+                                <div className="topic-card" onClick={() => startTopic('fractions')}>
+                                    <div className="topic-icon">🍕</div>
+                                    <div className="topic-title">Fractions</div>
+                                    <p>Random Problems</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderProblem = () => {
+                if (!currentProblem) return null;
+                
+                return (
+                    <div>
+                        <div className="header">
+                            <div className="header-left">
+                                <h1>Solve It!</h1>
+                            </div>
+                            <div className="header-stats">
+                                <div className="stat-item">
+                                    <span className="stat-icon">⭐</span>
+                                    <span className="stat-value">{currentProblem.xp} XP</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="content">
+                            <button className="btn-secondary" onClick={() => setView('home')}>
+                                Back
+                            </button>
+                            
+                            <div className="problem-container">
+                                <div className="problem-card">
+                                    <div className="problem-text">{currentProblem.question}</div>
+                                    
+                                    {(currentTopic === 'geometry' || currentTopic === 'fractions' || currentTopic === 'algebra') && (
+                                        <div className="visual-aid">
+                                            <h3 style={{ marginBottom: '15px', color: 'var(--primary)' }}>
+                                                Visual Guide
+                                            </h3>
+                                            <canvas ref={canvasRef} width="400" height="150"></canvas>
+                                        </div>
+                                    )}
+                                    
+                                    <input
+                                        type="text"
+                                        className="answer-input"
+                                        value={userAnswer}
+                                        onChange={(e) => setUserAnswer(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && !feedback && checkAnswer()}
+                                        placeholder="Type your answer..."
+                                        disabled={feedback?.correct}
+                                    />
+                                    
+                                    <div style={{ marginBottom: '20px' }}>
+
+                                    
+                                        {!feedback && (
+
+                                    
+                                            <>
+
+                                    
+                                                <button className="btn-primary" onClick={checkAnswer}>
+
+                                    
+                                                    Check Answer
+
+                                    
+                                                </button>
+
+                                    
+                                                {' '}
+
+                                    
+                                                <button className="btn-hint" onClick={() => setShowHint(!showHint)}>
+
+                                    
+                                                    {showHint ? 'Hide' : 'Show'} Hint
+
+                                    
+                                                </button>
+
+                                    
+                                                {' '}
+
+                                    
+                                            </>
+
+                                    
+                                        )}
+
+                                    
+                                        <button className="btn-tutor" onClick={() => setShowTutor(!showTutor)}>
+
+                                    
+                                            {showTutor ? 'Close' : 'Open'} AI Tutor
+
+                                    
+                                        </button>
+
+                                    
+                                    </div>
+                                    
+                                    {showHint && !feedback && (
+                                        <div className="hint-box">
+                                            <strong>Hint:</strong> {currentProblem.hint}
+                                        </div>
+                                    )}
+                                    
+                                    {showTutor && (
+                                        <div className="chat-container">
+                                            <div className="chat-header">
+                                                <span style={{ fontSize: '1.5em' }}>🤖</span>
+                                                <strong>AI Math Tutor</strong>
+                                                <button 
+                                                    style={{ marginLeft: 'auto', padding: '5px 10px', fontSize: '0.8em' }}
+                                                    className="btn-secondary"
+                                                    onClick={() => setShowTutor(false)}
+                                                >
+                                                    Close
+                                                </button>
+                                            </div>
+                                            <div className="chat-messages" ref={chatMessagesRef}>
+                                                {chatMessages.length === 0 && (
+                                                    <div className="chat-message assistant">
+                                                        Hi! I'm your RSM math tutor. I'll help you discover the answer through guided questions - I won't just give it to you. What would you like to explore about this problem?
+                                                    </div>
+                                                )}
+                                                {chatMessages.map((msg, idx) => (
+                                                    <div key={idx} className={`chat-message ${msg.role}`}>
+                                                        {msg.content}
+                                                    </div>
+                                                ))}
+                                                {isTyping && (
+                                                    <div className="typing-indicator">
+                                                        <div className="typing-dots">
+                                                            <div className="typing-dot"></div>
+                                                            <div className="typing-dot"></div>
+                                                            <div className="typing-dot"></div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="chat-input-container">
+                                                <input
+                                                    type="text"
+                                                    className="chat-input"
+                                                    value={chatInput}
+                                                    onChange={(e) => setChatInput(e.target.value)}
+                                                    onKeyPress={(e) => {
+                                                        if (e.key === 'Enter' && !isTyping) {
+                                                            sendTutorMessage(chatInput);
+                                                            setTimeout(() => e.target.focus(), 100);
+                                                        }
+                                                    }}
+                                                    placeholder="Ask the tutor..."
+                                                    disabled={isTyping}
+                                                    autoFocus
+                                                />
+                                                <button 
+                                                    className="chat-send"
+                                                    onClick={() => sendTutorMessage(chatInput)}
+                                                    disabled={isTyping || !chatInput.trim()}
+                                                >
+                                                    Send
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {feedback && (
+                                        <div className={`feedback ${feedback.correct ? 'correct' : 'incorrect'}`}>
+                                            {feedback.message}
+                                            {feedback.correct && currentProblem.explanation && (
+                                                <div style={{ marginTop: '15px', fontSize: '0.95em' }}>
+                                                    <strong>Explanation:</strong> {currentProblem.explanation}
+                                                </div>
+                                            )}
+                                            {feedback.correct && (
+                                                <div style={{ marginTop: '20px' }}>
+                                                    <button className="btn-primary" onClick={() => startTopic(currentTopic)}>
+                                                        Next Problem
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderLesson = () => {
+                if (!currentProblem || !currentLesson) return null;
+                
+                const phaseNames = {
+                    'warmup': 'Warm-Up',
+                    'discovery': 'Discovery',
+                    'application': 'Application',
+                    'exitTicket': 'Exit Ticket'
+                };
+                
+                const currentPhaseProblems = currentLesson[lessonPhase];
+                const progress = phaseIndex + 1;
+                const total = currentPhaseProblems.length;
+                
+                return (
+                    <div>
+                        <div className="header">
+                            <div className="header-left">
+                                <h1>{currentLesson.title}</h1>
+                                <p>Phase: {phaseNames[lessonPhase]} ({progress}/{total})</p>
+                            </div>
+                            <div className="header-stats">
+                                <div className="stat-item">
+                                    <span className="stat-icon">⭐</span>
+                                    <span className="stat-value">{currentProblem.xp} XP</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="content">
+                            <button className="btn-secondary" onClick={() => setView('home')}>
+                                Back
+                            </button>
+                            
+                            <div style={{ 
+                                background: '#f0f0f0', 
+                                borderRadius: '10px', 
+                                padding: '20px', 
+                                marginTop: '20px',
+                                marginBottom: '20px'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                                    <span style={{ 
+                                        fontWeight: lessonPhase === 'warmup' ? 'bold' : 'normal',
+                                        color: lessonPhase === 'warmup' ? 'var(--primary)' : '#666'
+                                    }}>Warm-Up</span>
+                                    <span style={{ 
+                                        fontWeight: lessonPhase === 'discovery' ? 'bold' : 'normal',
+                                        color: lessonPhase === 'discovery' ? 'var(--primary)' : '#666'
+                                    }}>Discovery</span>
+                                    <span style={{ 
+                                        fontWeight: lessonPhase === 'application' ? 'bold' : 'normal',
+                                        color: lessonPhase === 'application' ? 'var(--primary)' : '#666'
+                                    }}>Application</span>
+                                    <span style={{ 
+                                        fontWeight: lessonPhase === 'exitTicket' ? 'bold' : 'normal',
+                                        color: lessonPhase === 'exitTicket' ? 'var(--primary)' : '#666'
+                                    }}>Exit Ticket</span>
+                                </div>
+                            </div>
+                            
+                            <div className="problem-container">
+                                <div className="problem-card">
+                                    <div className="problem-text">{currentProblem.question}</div>
+                                    
+                                    {(currentTopic === 'geometry' || currentTopic === 'fractions' || currentTopic === 'algebra') && lessonPhase !== 'warmup' && (
+                                        <div className="visual-aid">
+                                            <h3 style={{ marginBottom: '15px', color: 'var(--primary)' }}>
+                                                Visual Guide
+                                            </h3>
+                                            <canvas ref={canvasRef} width="400" height="150"></canvas>
+                                        </div>
+                                    )}
+                                    
+                                    <input
+                                        type="text"
+                                        className="answer-input"
+                                        value={userAnswer}
+                                        onChange={(e) => setUserAnswer(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && !feedback && checkAnswer()}
+                                        placeholder="Type your answer..."
+                                        disabled={feedback?.correct}
+                                    />
+                                    
+                                    <div style={{ marginBottom: '20px' }}>
+
+                                    
+                                        {!feedback && (
+
+                                    
+                                            <>
+
+                                    
+                                                <button className="btn-primary" onClick={checkAnswer}>
+
+                                    
+                                                    Check Answer
+
+                                    
+                                                </button>
+
+                                    
+                                                {' '}
+
+                                    
+                                                <button className="btn-hint" onClick={() => setShowHint(!showHint)}>
+
+                                    
+                                                    {showHint ? 'Hide' : 'Show'} Hint
+
+                                    
+                                                </button>
+
+                                    
+                                                {' '}
+
+                                    
+                                            </>
+
+                                    
+                                        )}
+
+                                    
+                                        <button className="btn-tutor" onClick={() => setShowTutor(!showTutor)}>
+
+                                    
+                                            {showTutor ? 'Close' : 'Open'} AI Tutor
+
+                                    
+                                        </button>
+
+                                    
+                                    </div>
+                                    
+                                    {showHint && !feedback && (
+                                        <div className="hint-box">
+                                            <strong>Hint:</strong> {currentProblem.hint}
+                                        </div>
+                                    )}
+                                    
+                                    {showTutor && (
+                                        <div className="chat-container">
+                                            <div className="chat-header">
+                                                <span style={{ fontSize: '1.5em' }}>🤖</span>
+                                                <strong>AI Math Tutor</strong>
+                                                <button 
+                                                    style={{ marginLeft: 'auto', padding: '5px 10px', fontSize: '0.8em' }}
+                                                    className="btn-secondary"
+                                                    onClick={() => setShowTutor(false)}
+                                                >
+                                                    Close
+                                                </button>
+                                            </div>
+                                            <div className="chat-messages" ref={chatMessagesRef}>
+                                                {chatMessages.length === 0 && (
+                                                    <div className="chat-message assistant">
+                                                        Hi! I'm your RSM math tutor. I'll help you discover the answer through guided questions - I won't just give it to you. What would you like to explore about this problem?
+                                                    </div>
+                                                )}
+                                                {chatMessages.map((msg, idx) => (
+                                                    <div key={idx} className={`chat-message ${msg.role}`}>
+                                                        {msg.content}
+                                                    </div>
+                                                ))}
+                                                {isTyping && (
+                                                    <div className="typing-indicator">
+                                                        <div className="typing-dots">
+                                                            <div className="typing-dot"></div>
+                                                            <div className="typing-dot"></div>
+                                                            <div className="typing-dot"></div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="chat-input-container">
+                                                <input
+                                                    type="text"
+                                                    className="chat-input"
+                                                    value={chatInput}
+                                                    onChange={(e) => setChatInput(e.target.value)}
+                                                    onKeyPress={(e) => {
+                                                        if (e.key === 'Enter' && !isTyping) {
+                                                            sendTutorMessage(chatInput);
+                                                            setTimeout(() => e.target.focus(), 100);
+                                                        }
+                                                    }}
+                                                    placeholder="Ask the tutor..."
+                                                    disabled={isTyping}
+                                                    autoFocus
+                                                />
+                                                <button 
+                                                    className="chat-send"
+                                                    onClick={() => sendTutorMessage(chatInput)}
+                                                    disabled={isTyping || !chatInput.trim()}
+                                                >
+                                                    Send
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {feedback && (
+                                        <div className={`feedback ${feedback.correct ? 'correct' : 'incorrect'}`}>
+                                            {feedback.message}
+                                            {feedback.correct && currentProblem.explanation && (
+                                                <div style={{ marginTop: '15px', fontSize: '0.95em' }}>
+                                                    <strong>Explanation:</strong> {currentProblem.explanation}
+                                                </div>
+                                            )}
+                                            {feedback.correct && (
+                                                <div style={{ marginTop: '20px' }}>
+                                                    <button className="btn-primary" onClick={nextProblemInLesson}>
+                                                        Next Problem
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderLessonComplete = () => (
+                <div>
+                    <div className="header">
+                        <div className="header-left">
+                            <h1>Lesson Complete!</h1>
+                        </div>
+                    </div>
+                    
+                    <div className="content" style={{ textAlign: 'center', padding: '60px 20px' }}>
+                        <div style={{ fontSize: '5em', marginBottom: '20px' }}>🎉</div>
+                        <h2 style={{ marginBottom: '15px' }}>Great job completing {currentLesson.title}!</h2>
+                        <p style={{ fontSize: '1.2em', color: '#666', marginBottom: '40px' }}>
+                            You've mastered the basics. Keep practicing!
+                        </p>
+                        <button className="btn-primary" onClick={() => setView('home')} style={{ marginRight: '10px' }}>
+                            Back to Home
+                        </button>
+                        <button className="btn-secondary" onClick={() => startLesson(Object.keys(LESSONS)[0])}>
+                            Start Another Lesson
+                        </button>
+                    </div>
+                </div>
+            );
+
+            const renderParentDashboard = () => {
+                const studentUsers = users.filter(u => !u.isParent);
+                
+                return (
+                    <div>
+                        <div className="header">
+                            <div className="header-left">
+                                <h1>Parent Dashboard</h1>
+                                <p>Monitor your children's progress</p>
+                            </div>
+                        </div>
+                        
+                        <div className="parent-dashboard">
+                            <button className="btn-secondary" onClick={() => setView('login')}>
+                                Back to Login
+                            </button>
+                            
+                            <h2 style={{ margin: '30px 0 20px' }}>Student Progress</h2>
+                            
+                            {studentUsers.map(student => (
+                                <div key={student.id} className="student-card">
+                                    <div className="student-header">
+                                        <div style={{ fontSize: '3em' }}>{student.avatar.emoji}</div>
+                                        <div style={{ flex: 1 }}>
+                                            <h3 style={{ fontSize: '1.5em', marginBottom: '5px' }}>{student.name}</h3>
+                                            <p style={{ color: '#666' }}>Level {student.stats.level} • {student.stats.xp} XP</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="stats-grid">
+                                        <div className="stat-box">
+                                            <h4>Problems Solved</h4>
+                                            <p>{student.stats.problemsSolved}</p>
+                                        </div>
+                                        <div className="stat-box">
+                                            <h4>Current Streak</h4>
+                                            <p>{student.stats.streak} 🔥</p>
+                                        </div>
+                                        <div className="stat-box">
+                                            <h4>Accuracy</h4>
+                                            <p>{student.stats.accuracy}%</p>
+                                        </div>
+                                        <div className="stat-box">
+                                            <h4>Total XP</h4>
+                                            <p>{student.stats.xp}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            
+                            {studentUsers.length === 0 && (
+                                <div style={{ 
+                                    textAlign: 'center', 
+                                    padding: '60px 20px',
+                                    background: 'white',
+                                    borderRadius: '15px'
+                                }}>
+                                    <h3 style={{ color: '#666' }}>No students added yet</h3>
+                                    <p style={{ color: '#999', marginTop: '10px' }}>
+                                        Add student profiles from the login screen
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="container">
+                    {view === 'login' && renderLogin()}
+                    {view === 'home' && renderHome()}
+                    {view === 'problem' && renderProblem()}
+                    {view === 'lesson' && renderLesson()}
+                    {view === 'lessonComplete' && renderLessonComplete()}
+                    {view === 'parent' && renderParentDashboard()}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<MathLearningApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
