@@ -20,7 +20,7 @@ export default async function handler(req, res) {
       ...messages
     ];
 
-    // Call Groq API
+    // Call Groq API with Llama 3.1 70B (upgraded for better quality)
     const response = await fetch(
       'https://api.groq.com/openai/v1/chat/completions',
       {
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: 'llama-3.1-70b-versatile',
           messages: groqMessages,
           temperature: 0.7,
           max_tokens: 500,
