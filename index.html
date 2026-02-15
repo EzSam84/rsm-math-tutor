@@ -727,13 +727,20 @@
             const [lessonPhase, setLessonPhase] = useState(null);
             const [phaseIndex, setPhaseIndex] = useState(0);
             const [currentProblem, setCurrentProblem] = useState(null);
-            const [userAnswer, setUserAnswer] = useState('');
+            const [userAnswer, setUserAnswer] = useState('')
             const [feedback, setFeedback] = useState(null);
             const [showHint, setShowHint] = useState(false);
             const [showTutor, setShowTutor] = useState(false);
             const [chatMessages, setChatMessages] = useState([]);
             const [chatInput, setChatInput] = useState('');
             const [isTyping, setIsTyping] = useState(false);
+            
+            // Discovery dialogue state
+            const [discoveryProblemsCompleted, setDiscoveryProblemsCompleted] = useState(0);
+            const [awaitingPatternResponse, setAwaitingPatternResponse] = useState(false);
+            const [awaitingArticulation, setAwaitingArticulation] = useState(false);
+            const [hasArticulated, setHasArticulated] = useState(false);
+            
             const canvasRef = useRef(null);
             const chatMessagesRef = useRef(null);
 
@@ -831,6 +838,51 @@
                 
                 if (isCorrect) {
                     setFeedback({ correct: true, message: 'Correct! Great job!' });
+                    setShowTutor(false); // Auto-close tutor on correct answer
+                    
+                    // DISCOVERY DIALOGUE TRIGGER
+                    if (lessonPhase === 'discovery') {
+                        const newCount = discoveryProblemsCompleted + 1;
+                        setDiscoveryProblemsCompleted(newCount);
+                        
+                        // After 2nd correct discovery problem, ask about patterns
+                        if (newCount === 2 && !awaitingPatternResponse) {
+                            setTimeout(() => {
+                                setShowTutor(true);
+                                setAwaitingPatternResponse(true);
+                                const patternPrompt = "Great work on these two problems! 🎯 Before we continue, I want you to look at both problems carefully. What pattern or similarity do you notice between them? Take your time and explain what you're seeing.";
+                                setChatMessages(prev => [...prev, 
+                                    { role: 'assistant', content: patternPrompt }
+                                ]);
+                                if (chatMessagesRef.current) {
+                                    chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+                                }
+                            }, 1000);
+                            return; // Don't advance yet
+                        }
+                    }
+                    
+                    // ARTICULATION CHECKPOINT (end of Discovery)
+                    if (lessonPhase === 'discovery' && !hasArticulated) {
+                        const lesson = LESSONS[currentLesson];
+                        const discoveryProblems = lesson.phases.find(p => p.name === 'discovery').problems;
+                        
+                        // If this is the last discovery problem, require articulation
+                        if (phaseIndex >= discoveryProblems.length - 1) {
+                            setTimeout(() => {
+                                setShowTutor(true);
+                                setAwaitingArticulation(true);
+                                const articulationPrompt = "Excellent! You've discovered the pattern. 🧠 Now, before we move on, I need you to explain the rule in YOUR OWN WORDS. Don't just give me an example - tell me the general rule that works for all problems like these. Why does it work?";
+                                setChatMessages(prev => [...prev, 
+                                    { role: 'assistant', content: articulationPrompt }
+                                ]);
+                                if (chatMessagesRef.current) {
+                                    chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+                                }
+                            }, 1000);
+                            return; // Block progression until they articulate
+                        }
+                    }
                     
                     setUsers(prevUsers => prevUsers.map(u => {
                         if (u.id === currentUser.id) {
