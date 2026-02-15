@@ -1309,8 +1309,59 @@
                         content: message
                     });
 
-                    // System prompt with RSM pedagogical framework
-                    const systemPrompt = `You are an expert math tutor trained in the Russian School of Mathematics (RSM) style: rigorous, concept-first, guided discovery.
+                    // SPECIAL HANDLING: Pattern Recognition Validation
+                    let systemPrompt;
+                    if (awaitingPatternResponse) {
+                        systemPrompt = `You are evaluating a student's pattern recognition in an RSM math lesson.
+
+The student just solved these two problems correctly and was asked: "What pattern do you notice?"
+
+STUDENT'S RESPONSE: "${message}"
+
+LESSON CONTEXT: ${lessonPhase} phase of ${currentLesson}
+
+CRITICAL INSTRUCTIONS:
+1. Determine if they identified a meaningful pattern (even if imperfectly expressed)
+2. If YES (pattern is correct):
+   - Start response with EXACTLY: "✅ PATTERN IDENTIFIED!"
+   - One sentence confirming what they noticed
+   - End with: "Great! Let's continue."
+   - STOP. Do not ask follow-up questions.
+3. If NO/UNCLEAR:
+   - Ask ONE specific guiding question to help them see it
+   - Be direct and concise
+
+Maximum 3 sentences total. Be encouraging but precise.`;
+                        
+                    // SPECIAL HANDLING: Articulation Validation
+                    } else if (awaitingArticulation) {
+                        systemPrompt = `You are evaluating if a student truly understands a mathematical concept.
+
+The student completed Discovery and was asked to explain the rule in their own words.
+
+STUDENT'S EXPLANATION: "${message}"
+
+LESSON: ${currentLesson}
+THE CONCEPT: ${currentProblem.explanation}
+
+CRITICAL INSTRUCTIONS:
+1. Assess if they UNDERSTAND the concept (not just memorized)
+2. Look for: reasoning, why it works, general principle (not just examples)
+3. If GOOD understanding:
+   - Start with EXACTLY: "✅ UNDERSTANDING CONFIRMED!"
+   - One sentence praising their explanation
+   - End with: "You're ready for practice!"
+   - STOP. Maximum 3 sentences.
+4. If WEAK/INCOMPLETE:
+   - Point out what's missing (the WHY)
+   - Ask them to explain the reasoning
+   - Be direct - RSM rigor
+
+Maximum 3 sentences. Be precise and rigorous.`;
+
+                    // NORMAL TUTORING
+                    } else {
+                        systemPrompt = `You are an expert math tutor trained in the Russian School of Mathematics (RSM) style: rigorous, concept-first, guided discovery.
 
 CURRENT PROBLEM: "${currentProblem.question}"
 ANSWER: ${currentProblem.answer}
@@ -1330,8 +1381,9 @@ CRITICAL RSM PRINCIPLES:
 
 4. Require justification - don't accept "because it is"
 5. Treat errors as learning opportunities - identify misconception, give micro-problem
-6. Keep responses SHORT - one focused question at a time (2-3 sentences max)
+6. Keep responses SHORT - one focused question at a time (2-3 sentences MAXIMUM)
 7. No motivational fluff - high signal only
+8. CRITICAL: STOP after making your point. Do not repeat or ramble.
 
 LESSON PHASE: ${currentLesson ? lessonPhase : 'practice'}
 ${currentLesson ? `
@@ -1342,11 +1394,9 @@ TEACHING GOAL: Student should discover the pattern through this problem sequence
 - Exit Ticket: Check for transfer to novel contexts
 ` : ''}
 
-Respond as the tutor would in an RSM classroom. Keep it SHORT and focused.`;
+Respond as the tutor would in an RSM classroom. Keep it SHORT and focused. Maximum 3 sentences.`;
+                    }
 
-                    // Determine which backend to use
-                    // If deployed on Vercel, use /api/tutor
-                    // If running locally, use localhost:3000/api/tutor
                     const apiUrl = window.location.hostname === 'localhost' 
                         ? 'http://localhost:3000/api/tutor'
                         : '/api/tutor';
@@ -1372,6 +1422,45 @@ Respond as the tutor would in an RSM classroom. Keep it SHORT and focused.`;
                         const tutorResponse = data.content[0].text;
                         const assistantMessage = { role: 'assistant', content: tutorResponse };
                         setChatMessages(prev => [...prev, assistantMessage]);
+                        
+                        // HANDLE VALIDATION RESULTS
+                        const responseLC = tutorResponse.toLowerCase();
+                        
+                        if (awaitingPatternResponse) {
+                            // If AI confirmed pattern with checkmark, they got it
+                            if (tutorResponse.includes("✅") || responseLC.includes("pattern identified")) {
+                                setAwaitingPatternResponse(false);
+                                setTimeout(() => {
+                                    setFeedback(null);
+                                    setUserAnswer('');
+                                }, 1500);
+                            }
+                        }
+                        
+                        if (awaitingArticulation) {
+                            // If AI confirmed understanding with checkmark
+                            if (tutorResponse.includes("✅") || responseLC.includes("understanding confirmed")) {
+                                setAwaitingArticulation(false);
+                                setHasArticulated(true);
+                                setTimeout(() => {
+                                    // Move to next phase
+                                    const lesson = LESSONS[currentLesson];
+                                    const currentPhaseObj = lesson.phases.find(p => p.name === lessonPhase);
+                                    const phaseIndexInLesson = lesson.phases.indexOf(currentPhaseObj);
+                                    
+                                    if (phaseIndexInLesson < lesson.phases.length - 1) {
+                                        const nextPhase = lesson.phases[phaseIndexInLesson + 1];
+                                        setLessonPhase(nextPhase.name);
+                                        setPhaseIndex(0);
+                                        setCurrentProblem(nextPhase.problems[0]);
+                                        setDiscoveryProblemsCompleted(0);
+                                    }
+                                    setFeedback(null);
+                                    setUserAnswer('');
+                                    setShowTutor(false);
+                                }, 2000);
+                            }
+                        }
                     } else {
                         throw new Error('Invalid response from backend');
                     }
