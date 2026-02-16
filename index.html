@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RSM Math Quest - Advanced Edition</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -910,7 +910,7 @@
                     const tutorGuidance = identifyMisconception(userAnswer.trim(), currentProblem, currentLesson ? lessonPhase : 'practice');
                     setTimeout(() => {
                         setChatMessages(prev => [...prev, 
-                            { role: 'user', content: `I tried ${userAnswer} but it was wrong` },
+                            { role: 'user', content: `I tried ${userAnswer.trim().slice(0, 200)} but it was wrong` },
                             { role: 'assistant', content: tutorGuidance }
                         ]);
                         if (chatMessagesRef.current) {
@@ -1309,92 +1309,35 @@
                         content: message
                     });
 
-                    // SPECIAL HANDLING: Pattern Recognition Validation
-                    let systemPrompt;
+                    // Build structured request for server-side prompt construction
+                    // (system prompts are now constructed on the server to prevent prompt injection)
+                    let promptType;
+                    let promptContext;
+
                     if (awaitingPatternResponse) {
-                        systemPrompt = `You are evaluating a student's pattern recognition in an RSM math lesson.
-
-The student just solved these two problems correctly and was asked: "What pattern do you notice?"
-
-STUDENT'S RESPONSE: "${message}"
-
-LESSON CONTEXT: ${lessonPhase} phase of ${currentLesson}
-
-CRITICAL INSTRUCTIONS:
-1. Determine if they identified a meaningful pattern (even if imperfectly expressed)
-2. If YES (pattern is correct):
-   - Start response with EXACTLY: "✅ PATTERN IDENTIFIED!"
-   - One sentence confirming what they noticed
-   - End with: "Great! Let's continue."
-   - STOP. Do not ask follow-up questions.
-3. If NO/UNCLEAR:
-   - Ask ONE specific guiding question to help them see it
-   - Be direct and concise
-
-Maximum 3 sentences total. Be encouraging but precise.`;
-                        
-                    // SPECIAL HANDLING: Articulation Validation
+                        promptType = 'pattern_recognition';
+                        promptContext = {
+                            studentMessage: message,
+                            lessonPhase: lessonPhase,
+                            lessonName: currentLesson || '',
+                        };
                     } else if (awaitingArticulation) {
-                        systemPrompt = `You are evaluating if a student truly understands a mathematical concept.
-
-The student completed Discovery and was asked to explain the rule in their own words.
-
-STUDENT'S EXPLANATION: "${message}"
-
-LESSON: ${currentLesson}
-THE CONCEPT: ${currentProblem.explanation}
-
-CRITICAL INSTRUCTIONS:
-1. Assess if they UNDERSTAND the concept (not just memorized)
-2. Look for: reasoning, why it works, general principle (not just examples)
-3. If GOOD understanding:
-   - Start with EXACTLY: "✅ UNDERSTANDING CONFIRMED!"
-   - One sentence praising their explanation
-   - End with: "You're ready for practice!"
-   - STOP. Maximum 3 sentences.
-4. If WEAK/INCOMPLETE:
-   - Point out what's missing (the WHY)
-   - Ask them to explain the reasoning
-   - Be direct - RSM rigor
-
-Maximum 3 sentences. Be precise and rigorous.`;
-
-                    // NORMAL TUTORING
+                        promptType = 'articulation';
+                        promptContext = {
+                            studentMessage: message,
+                            lessonName: currentLesson || '',
+                            problemExplanation: currentProblem.explanation || '',
+                        };
                     } else {
-                        systemPrompt = `You are an expert math tutor trained in the Russian School of Mathematics (RSM) style: rigorous, concept-first, guided discovery.
-
-CURRENT PROBLEM: "${currentProblem.question}"
-ANSWER: ${currentProblem.answer}
-HINT: ${currentProblem.hint}
-EXPLANATION: ${currentProblem.explanation}
-
-CRITICAL RSM PRINCIPLES:
-1. NEVER give the answer directly - guide discovery through questions
-2. Use Socratic method - ask targeted questions that reveal structure
-3. If student is stuck, use scaffolding ladder:
-   - Ask what is known / restate problem
-   - Ask for small example with numbers
-   - Ask what changes if you tweak one part
-   - Offer representation (diagram/table) guidance
-   - Provide partial step, ask them to complete
-   - Only after repeated failure: give minimal worked example for similar problem
-
-4. Require justification - don't accept "because it is"
-5. Treat errors as learning opportunities - identify misconception, give micro-problem
-6. Keep responses SHORT - one focused question at a time (2-3 sentences MAXIMUM)
-7. No motivational fluff - high signal only
-8. CRITICAL: STOP after making your point. Do not repeat or ramble.
-
-LESSON PHASE: ${currentLesson ? lessonPhase : 'practice'}
-${currentLesson ? `
-TEACHING GOAL: Student should discover the pattern through this problem sequence.
-- Warmup: Activate prior knowledge
-- Discovery: Guide students to notice the pattern themselves
-- Application: Ensure they can apply the discovered rule
-- Exit Ticket: Check for transfer to novel contexts
-` : ''}
-
-Respond as the tutor would in an RSM classroom. Keep it SHORT and focused. Maximum 3 sentences.`;
+                        promptType = 'tutoring';
+                        promptContext = {
+                            problemQuestion: currentProblem.question || '',
+                            problemAnswer: currentProblem.answer || '',
+                            problemHint: currentProblem.hint || '',
+                            problemExplanation: currentProblem.explanation || '',
+                            lessonPhase: currentLesson ? lessonPhase : 'practice',
+                            lessonName: currentLesson || '',
+                        };
                     }
 
                     const apiUrl = window.location.hostname === 'localhost' 
@@ -1408,7 +1351,8 @@ Respond as the tutor would in an RSM classroom. Keep it SHORT and focused. Maxim
                         },
                         body: JSON.stringify({
                             messages: conversationHistory,
-                            systemPrompt: systemPrompt,
+                            promptType: promptType,
+                            context: promptContext,
                         })
                     });
 
