@@ -6,12 +6,14 @@ Every Claude Code session that produces code changes **must** end by:
 
 1. **Committing** all changes with a clear, descriptive commit message.
 2. **Pushing** to the working branch.
-3. **Creating a pull request** against `main` using `gh pr create`. If a PR already exists for the branch, skip this step.
+3. **Creating a pull request** against `main`. If a PR already exists for the branch, skip this step.
+   - Use `gh pr create` when available. If `gh` is not authenticated, use the GitHub API or provide the user with the direct PR creation link.
    - PR title: short summary of what the session accomplished (under 70 chars).
    - PR body: use the `## Summary` / `## Test plan` format shown below.
    - Always include the session link at the bottom of the PR body.
 
-```
+```bash
+# Preferred: gh CLI
 gh pr create --title "Short title" --body "$(cat <<'EOF'
 ## Summary
 - Bullet points describing changes
@@ -22,6 +24,9 @@ gh pr create --title "Short title" --body "$(cat <<'EOF'
 <session-link>
 EOF
 )"
+
+# Fallback: provide the user with the direct link
+# https://github.com/<owner>/<repo>/compare/main...<branch>?expand=1
 ```
 
 This applies to every session — no exceptions. Do not wait for the user to ask.
