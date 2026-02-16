@@ -1,5 +1,33 @@
 # Claude.md — RSM Math Quest Development Guidelines
 
+## Session Workflow
+
+Every Claude Code session that produces code changes **must** end by:
+
+1. **Committing** all changes with a clear, descriptive commit message.
+2. **Pushing** to the working branch.
+3. **Creating a pull request** against `main` using `gh pr create`. If a PR already exists for the branch, skip this step.
+   - PR title: short summary of what the session accomplished (under 70 chars).
+   - PR body: use the `## Summary` / `## Test plan` format shown below.
+   - Always include the session link at the bottom of the PR body.
+
+```
+gh pr create --title "Short title" --body "$(cat <<'EOF'
+## Summary
+- Bullet points describing changes
+
+## Test plan
+- [ ] Steps to verify the changes
+
+<session-link>
+EOF
+)"
+```
+
+This applies to every session — no exceptions. Do not wait for the user to ask.
+
+---
+
 ## Project Overview
 
 RSM Math Quest is an AI-powered math tutoring web app for elementary/middle school students, built on the Russian School of Mathematics (RSM) pedagogical philosophy: Socratic, concept-first, guided discovery. It runs as a single-page React app with a Vercel serverless backend that proxies to the Groq AI API.
