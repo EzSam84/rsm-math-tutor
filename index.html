@@ -1147,145 +1147,191 @@
                 }
             }, [currentProblem, view, currentTopic]);
 
-            // Advanced Socratic Dialogue Engine - RSM Framework
+            // Advanced Socratic Dialogue Engine - RSM Framework (offline fallback)
             function getSocraticResponse(studentMessage, conversationHistory) {
                 const lowerMessage = studentMessage.toLowerCase();
                 const problem = currentProblem;
                 const phase = currentLesson ? lessonPhase : 'practice';
-                
-                // Track what scaffolding level we're at
+
+                // Scaffold level = number of tutor turns so far (escalate help as it increases)
                 const scaffoldLevel = conversationHistory.filter(m => m.role === 'assistant').length;
-                
-                // Scaffolding Ladder (RSM framework - escalate help gradually)
-                
-                // Level 0: Initial engagement - ask what they know
+
+                // Level 0: First contact — orient the student
                 if (scaffoldLevel === 0) {
-                    return `Let's work through this together. First, can you tell me: what information does the problem give us? What are we being asked to find?`;
+                    return `Let's figure this out together! To start: what information does the problem give you, and what are you being asked to find?`;
                 }
-                
-                // Check if student is asking for the answer directly
+
+                // Student asking for the answer directly
                 if (lowerMessage.includes('answer') || lowerMessage.includes('what is it') || lowerMessage.match(/^is it \d+/)) {
-                    return `I can't give you the answer - you need to discover it yourself! But I can guide you. ${getScaffoldQuestion(1, problem, phase)}`;
+                    return `I can't give you the answer — that part's yours to discover! Let me ask you this instead: ${getScaffoldQuestion(Math.max(1, scaffoldLevel), problem, phase)}`;
                 }
-                
-                // Check if student made an attempt (contains numbers or mathematical expressions)
-                const hasAttempt = /\d+|half|quarter|third|equal/.test(lowerMessage);
-                
+
+                // Student expresses total confusion or lack of prior knowledge
+                if (lowerMessage.includes("don't know") || lowerMessage.includes('no idea') ||
+                    lowerMessage.includes('never learned') || lowerMessage.includes('never seen')) {
+                    return getFirstPrinciplesExplanation(problem, phase);
+                }
+
+                // Student says they're stuck or confused
+                if (lowerMessage.includes('stuck') || lowerMessage.includes('confused') ||
+                    lowerMessage.includes("don't understand") || lowerMessage.includes('help') ||
+                    lowerMessage.includes("can't figure")) {
+                    // At higher scaffold levels, go straight to first principles
+                    if (scaffoldLevel >= 4) {
+                        return getFirstPrinciplesExplanation(problem, phase);
+                    }
+                    return getScaffoldQuestion(scaffoldLevel, problem, phase);
+                }
+
+                // Student asks "why" or "how does this work"
+                if (lowerMessage.includes('why') || lowerMessage.includes('how does')) {
+                    if (scaffoldLevel < 3) {
+                        return `Good question — that's the right thing to wonder about! ${problem.hint}. Does that help you see why?`;
+                    } else {
+                        return getFirstPrinciplesExplanation(problem, phase);
+                    }
+                }
+
+                // Student mentions a math operation — redirect to meaning, not just procedure
+                if (lowerMessage.includes('add') || lowerMessage.includes('subtract') ||
+                    lowerMessage.includes('multiply') || lowerMessage.includes('divide')) {
+                    return `You're thinking about operations — good instinct! Now ask yourself: why does that operation make sense for this problem? What would it mean in real life?`;
+                }
+
+                // Student made a numerical attempt
+                const hasAttempt = /\d+|half|quarter|third|double/.test(lowerMessage);
                 if (hasAttempt) {
-                    // Extract what they think
                     const numberMatch = lowerMessage.match(/\d+/);
                     if (numberMatch) {
                         const studentAnswer = numberMatch[0];
                         const correctAnswers = [problem.answer, ...(problem.alternateAnswers || [])];
-                        
                         if (correctAnswers.some(ans => ans.toLowerCase() === studentAnswer)) {
-                            return `Great! You got ${studentAnswer}. But can you explain WHY? What steps did you follow to reach that answer?`;
+                            return `You got ${studentAnswer} — nice work! Now the important part: can you explain WHY that's the answer? Walk me through your thinking.`;
                         } else {
-                            // Wrong answer - identify misconception
-                            return identifyMisconception(studentAnswer, problem, phase);
+                            return identifyMisconception(studentAnswer, problem, phase, scaffoldLevel);
                         }
                     }
                 }
-                
-                // Student says they're stuck/confused/don't understand
-                if (lowerMessage.includes('stuck') || lowerMessage.includes('confused') || 
-                    lowerMessage.includes("don't understand") || lowerMessage.includes('help')) {
-                    return getScaffoldQuestion(scaffoldLevel, problem, phase);
-                }
-                
-                // Student asks "why" or "how"
-                if (lowerMessage.includes('why') || lowerMessage.includes('how')) {
-                    if (lowerMessage.includes('why') && scaffoldLevel < 3) {
-                        return `Good question! ${problem.hint}. Can you see why that would work?`;
-                    } else {
-                        return getScaffoldQuestion(scaffoldLevel, problem, phase);
-                    }
-                }
-                
-                // Student mentions specific concepts - engage with them
-                if (lowerMessage.includes('add') || lowerMessage.includes('subtract') || 
-                    lowerMessage.includes('multiply') || lowerMessage.includes('divide')) {
-                    return `You're thinking about operations - that's a good start! Look at what the problem is asking: "${problem.question}". Which operation makes sense here, and why?`;
-                }
-                
+
                 // Default: continue scaffolding
                 return getScaffoldQuestion(scaffoldLevel, problem, phase);
             }
-            
+
             function getScaffoldQuestion(level, problem, phase) {
                 const hint = problem.hint;
-                
-                // Scaffolding Ladder (from RSM framework)
+
                 switch(level) {
-                    case 1: // Ask what is known
-                        return `Let's break this down. What information does "${problem.question}" give you? What do you already know?`;
-                    
-                    case 2: // Ask for small example
-                        return `Let's try a simpler example first. ${hint}. Can you try that?`;
-                    
-                    case 3: // Ask what changes if you tweak
+                    case 1: // Orient: what does the problem tell us?
+                        return `Let's start simple. What does this problem tell you? What facts do you have to work with?`;
+
+                    case 2: // Simplify: try a smaller version
+                        return `Sometimes it helps to try a smaller, simpler version first. ${hint} — can you start there?`;
+
+                    case 3: // Compare / look for patterns
                         if (phase === 'discovery') {
-                            return `Look at this problem and the one before it. What changed? What stayed the same? Do you notice a pattern?`;
+                            return `Compare this problem to the last one you solved. What's the same? What changed? What do you notice?`;
                         } else {
-                            return `Here's a hint: ${hint}. What would you do first with this information?`;
+                            return `Here's something to focus on: ${hint}. What would you do first using that idea?`;
                         }
-                    
-                    case 4: // Offer representation guidance
-                        if (problem.question.includes('rectangle') || problem.question.includes('square')) {
-                            return `Try drawing it out. Draw a ${problem.question.includes('square') ? 'square' : 'rectangle'} and label what you know. What does that tell you?`;
-                        } else if (problem.question.includes('fraction')) {
-                            return `Think of it visually - maybe draw circles or boxes to represent the fractions. ${hint}`;
+
+                    case 4: // Represent it visually
+                        if (problem.question.includes('rectangle') || problem.question.includes('square') || problem.question.includes('perimeter') || problem.question.includes('area')) {
+                            return `Try sketching it — draw the shape and write in the numbers you know. What does the picture tell you?`;
+                        } else if (problem.question.toLowerCase().includes('fraction')) {
+                            return `Picture it in your head — imagine a pizza or a chocolate bar cut into equal pieces. ${hint}. What does that look like?`;
                         } else {
-                            return `Let me guide you step by step. ${hint}. Can you follow that and tell me what you get?`;
+                            return `Let's make it concrete. Can you draw or write out what you know, step by step? ${hint}`;
                         }
-                    
-                    case 5: // Provide partial step
-                        return `Okay, let me show you the first step, then you finish it. ${problem.explanation.split('→')[0]}. Now you continue - what comes next?`;
-                    
-                    default: // After many attempts, give worked example
-                        if (level >= 6) {
-                            return `Let me show you a complete example to help: ${problem.explanation}. Now, can you explain back to me why each step works?`;
-                        } else {
-                            return `Think about: ${hint}. What would happen if you tried that?`;
-                        }
+
+                    case 5: // Show the first step, student continues
+                        const firstStep = problem.explanation ? problem.explanation.split('→')[0] : hint;
+                        return `Let me show you just the first move: ${firstStep}. From there — what do you think comes next?`;
+
+                    default: // First principles or worked example
+                        return getFirstPrinciplesExplanation(problem, phase);
                 }
             }
-            
-            function identifyMisconception(wrongAnswer, problem, phase) {
-                const correct = problem.answer;
+
+            function getFirstPrinciplesExplanation(problem, phase) {
+                const q = problem.question.toLowerCase();
+
+                // Geometry: perimeter
+                if (q.includes('perimeter')) {
+                    return `Let's go back to basics. Perimeter means the total distance all the way around the outside of a shape — like the length of a fence surrounding a yard. If you walked along every edge and added up all the lengths, that's the perimeter. Now look at the problem: what are the side lengths, and how would you add them all up?`;
+                }
+
+                // Geometry: area
+                if (q.includes('area')) {
+                    return `Let's think about what area means. Area is the amount of space inside a shape — like how many square tiles would cover a floor. For a rectangle, you find it by multiplying the length by the width (because you're counting rows of tiles). Look at the numbers in this problem: can you use that idea?`;
+                }
+
+                // Fractions: addition/subtraction with same denominator
+                if (q.includes('fraction') || q.includes('/')) {
+                    if (q.includes('+') || q.includes('add')) {
+                        return `Let's think about what a fraction actually means. The bottom number tells you how many equal pieces something is cut into. The top number tells you how many pieces you have. When the bottom numbers are the same, you can just add the top numbers — the pieces are the same size, so you just count more of them. Can you try that with this problem?`;
+                    }
+                    return `Fractions can be tricky, so let's start from the beginning. The bottom number (denominator) tells you how many equal pieces you've cut something into. The top number (numerator) tells you how many of those pieces you have. So 3/4 means "cut into 4 pieces, take 3 of them." With that in mind — what is this problem asking you to do?`;
+                }
+
+                // Algebra / equations
+                if (q.includes('x') || q.includes('equation') || q.includes('solve for') || q.includes('variable')) {
+                    return `Let's think about equations like a balance scale. Whatever's on the left side must weigh the same as the right side — they're equal. If you add or remove the same thing from both sides, the scale stays balanced. That's how we "solve" — we do the same thing to both sides until x is alone. What could you do to both sides of this equation to start getting x by itself?`;
+                }
+
+                // Multiplication / patterns
+                if (q.includes('multipl') || q.includes('times') || q.includes('product')) {
+                    return `Let's think about what multiplication really means. 4 × 3 means "4 groups of 3" — which is the same as 3 + 3 + 3 + 3 = 12. It's a shortcut for repeated addition. With that in mind, what are the two numbers in this problem, and what does multiplying them together actually mean in terms of groups?`;
+                }
+
+                // Generic first-principles fallback
+                return `Let's slow down and build this up from scratch. ${problem.hint} — start with just that idea, using the smallest numbers you can. Then we'll apply the same thinking to the actual problem. What do you get when you try it small first?`;
+            }
+
+            function identifyMisconception(wrongAnswer, problem, phase, scaffoldLevel) {
                 const wrong = wrongAnswer;
-                
-                // Common misconceptions by problem type
-                if (problem.question.includes('perimeter') && problem.question.includes('rectangle')) {
-                    const lengthMatch = problem.question.match(/length (\d+)/);
-                    const widthMatch = problem.question.match(/width (\d+)/);
-                    if (lengthMatch && widthMatch) {
-                        const area = parseInt(lengthMatch[1]) * parseInt(widthMatch[1]);
-                        if (wrong == area) {
-                            return `I see you got ${wrong} - that's the AREA! But the question asks for perimeter. What's the difference between area and perimeter? Can you try again?`;
+                const q = problem.question.toLowerCase();
+
+                // Perimeter problem, student gave area
+                if (q.includes('perimeter') && (q.includes('rectangle') || q.includes('square'))) {
+                    const l = (problem.question.match(/length\s*(\d+)/i) || [])[1];
+                    const w = (problem.question.match(/width\s*(\d+)/i) || [])[1];
+                    if (l && w && wrong == parseInt(l) * parseInt(w)) {
+                        return `I got a different answer. You found ${wrong} — that's actually the area (length × width). But perimeter means going all the way around the outside. Think of it like the fence around a yard: you'd need to count all four sides. Can you add up all the sides instead?`;
+                    }
+                    return `I got a different answer. Perimeter means the total distance around all the edges — like a fence around the outside. ${problem.hint}. Try adding up each side and see what you get.`;
+                }
+
+                // Area problem, student gave perimeter
+                if (q.includes('area') && (q.includes('rectangle') || q.includes('square'))) {
+                    const l = (problem.question.match(/length\s*(\d+)/i) || [])[1];
+                    const w = (problem.question.match(/width\s*(\d+)/i) || [])[1];
+                    if (l && w && wrong == 2 * (parseInt(l) + parseInt(w))) {
+                        return `I got a different answer. You found ${wrong} — that's actually the perimeter (going around the outside). Area is different: it's the space inside the shape, like how many tiles cover the floor. To find it, multiply the length by the width. Can you try that?`;
+                    }
+                    return `I got a different answer. Area is the space inside the shape — find it by multiplying length × width. ${problem.hint}. Give it another try!`;
+                }
+
+                // Fraction addition — common mistake: adding denominators
+                if (q.includes('fraction') || q.match(/\d+\/\d+/)) {
+                    if (q.includes('+')) {
+                        // Check if they added the denominators (e.g., 1/4 + 1/4 → 2/8 instead of 2/4)
+                        if (wrong.includes('/')) {
+                            return `I got a different answer. A common mistake when adding fractions is adding both the top AND bottom numbers — but we only add the top numbers (numerators). The bottom number (denominator) stays the same because the piece size doesn't change. Try again, keeping the bottom number the same!`;
                         }
+                        return `Hmm, I got something different. When adding fractions with the same bottom number, just add the top numbers and keep the bottom number as-is. ${problem.hint}. Want to try once more?`;
                     }
                 }
-                
-                if (problem.question.includes('area') && problem.question.includes('rectangle')) {
-                    const lengthMatch = problem.question.match(/length (\d+)/);
-                    const widthMatch = problem.question.match(/width (\d+)/);
-                    if (lengthMatch && widthMatch) {
-                        const perimeter = 2 * (parseInt(lengthMatch[1]) + parseInt(widthMatch[1]));
-                        if (wrong == perimeter) {
-                            return `I see ${wrong} - but that's the PERIMETER! The question asks for area. Remember: perimeter is the distance around, area is the space inside. Try again?`;
-                        }
-                    }
+
+                // Algebra: off-by-one or wrong operation
+                if (q.includes('x') || q.includes('solve')) {
+                    return `I got a different answer. Remember — equations are like a balance scale. Whatever you do to one side, you must do to the other. Check each step: did you do the same thing to both sides? ${problem.hint}`;
                 }
-                
-                if (problem.question.toLowerCase().includes('fraction')) {
-                    if (problem.question.includes('+')) {
-                        return `Hmm, ${wrong} doesn't look right. When adding fractions with the same denominator, remember: you only add the numerators (top numbers), the denominator (bottom number) stays the same. Want to try again?`;
-                    }
+
+                // Generic: escalate if already tried before
+                if (scaffoldLevel >= 3) {
+                    return getFirstPrinciplesExplanation(problem, phase);
                 }
-                
-                // Generic wrong answer response
-                return `Not quite - I got a different answer. Let me ask you this: ${problem.hint}. Try using that approach. What do you get?`;
+                return `I got a different answer — let me ask you this: ${problem.hint}. Try working through it step by step using that clue. What do you get?`;
             }
 
             async function sendTutorMessage(message) {
