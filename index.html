@@ -738,8 +738,11 @@
             // Discovery dialogue state
             const [discoveryProblemsCompleted, setDiscoveryProblemsCompleted] = useState(0);
             const [awaitingPatternResponse, setAwaitingPatternResponse] = useState(false);
+            const [patternIdentified, setPatternIdentified] = useState(false);
             const [awaitingArticulation, setAwaitingArticulation] = useState(false);
             const [hasArticulated, setHasArticulated] = useState(false);
+            // Last 5 solved discovery problems so the tutor can reference them by name
+            const [recentDiscoveryProblems, setRecentDiscoveryProblems] = useState([]);
 
             // Sufficiency threshold: tutor confirmed student solved it via chat
             const [isProblemSolved, setIsProblemSolved] = useState(false);
@@ -770,6 +773,8 @@
                 setShowTutor(false);
                 setChatMessages([]);
                 setIsProblemSolved(false);
+                setPatternIdentified(false);
+                setRecentDiscoveryProblems([]);
             }
 
             function nextProblemInLesson() {
@@ -785,6 +790,7 @@
                     setShowTutor(false);
                     setChatMessages([]);
                     setIsProblemSolved(false);
+                    setPatternIdentified(false);
                 } else {
                     if (lessonPhase === 'warmup') {
                         setLessonPhase('discovery');
@@ -811,6 +817,7 @@
                     setShowTutor(false);
                     setChatMessages([]);
                     setIsProblemSolved(false);
+                    setPatternIdentified(false);
                 }
             }
 
@@ -855,14 +862,24 @@
                     if (lessonPhase === 'discovery') {
                         const newCount = discoveryProblemsCompleted + 1;
                         setDiscoveryProblemsCompleted(newCount);
-                        
+
+                        // Record this problem in the recent history (keep last 5)
+                        const solvedEntry = { question: currentProblem.question, answer: currentProblem.answer };
+                        const updatedRecent = [...recentDiscoveryProblems, solvedEntry].slice(-5);
+                        setRecentDiscoveryProblems(updatedRecent);
+
                         // After 2nd correct discovery problem, ask about patterns
                         if (newCount === 2 && !awaitingPatternResponse) {
+                            // Build the problem recap so the student can see them right there
+                            const lastTwo = updatedRecent.slice(-2);
+                            const problemSummary = lastTwo.map((p, i) =>
+                                `Problem ${i + 1}: "${p.question}" → Answer: ${p.answer}`
+                            ).join('\n');
                             setTimeout(() => {
                                 setShowTutor(true);
                                 setAwaitingPatternResponse(true);
-                                const patternPrompt = "Great work on these two problems! 🎯 Before we continue, I want you to look at both problems carefully. What pattern or similarity do you notice between them? Take your time and explain what you're seeing.";
-                                setChatMessages(prev => [...prev, 
+                                const patternPrompt = `Great work on those two problems! 🎯 Here's a quick recap:\n\n${problemSummary}\n\nLook at both problems and their answers. What pattern or similarity do you notice? Explain what you're seeing in your own words.`;
+                                setChatMessages(prev => [...prev,
                                     { role: 'assistant', content: patternPrompt }
                                 ]);
                                 if (chatMessagesRef.current) {
@@ -1390,7 +1407,8 @@
                         promptContext = {
                             studentMessage: message,
                             lessonPhase: lessonPhase,
-                            lessonName: currentLesson || '',
+                            lessonName: currentLesson ? (currentLesson.title || '') : '',
+                            recentProblems: recentDiscoveryProblems.slice(-2),
                         };
                     } else if (awaitingArticulation) {
                         promptType = 'articulation';
@@ -1442,13 +1460,10 @@
                         const responseLC = tutorResponse.toLowerCase();
                         
                         if (awaitingPatternResponse) {
-                            // If AI confirmed pattern with checkmark, they got it
+                            // If AI confirmed pattern with checkmark, show Continue button
                             if (tutorResponse.includes("✅") || responseLC.includes("pattern identified")) {
                                 setAwaitingPatternResponse(false);
-                                setTimeout(() => {
-                                    setFeedback(null);
-                                    setUserAnswer('');
-                                }, 1500);
+                                setPatternIdentified(true);
                             }
                         }
 
@@ -1980,7 +1995,14 @@
                                                     </div>
                                                 )}
                                             </div>
-                                            {isProblemSolved ? (
+                                            {patternIdentified ? (
+                                                <div style={{ padding: '16px', textAlign: 'center', background: '#f0f4ff', borderTop: '2px solid var(--primary)', borderRadius: '0 0 14px 14px' }}>
+                                                    <p style={{ color: '#1e40af', fontWeight: 'bold', marginBottom: '12px' }}>Pattern identified! Ready to keep going?</p>
+                                                    <button className="btn-primary" onClick={nextProblemInLesson}>
+                                                        Continue →
+                                                    </button>
+                                                </div>
+                                            ) : isProblemSolved ? (
                                                 <div style={{ padding: '16px', textAlign: 'center', background: '#f0fff4', borderTop: '2px solid #58cc02', borderRadius: '0 0 14px 14px' }}>
                                                     <p style={{ color: '#3a7a4e', fontWeight: 'bold', marginBottom: '12px' }}>Great work! You've solved this one.</p>
                                                     <button className="btn-primary" onClick={nextProblemInLesson}>

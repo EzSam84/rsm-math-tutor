@@ -166,32 +166,46 @@ function buildSystemPrompt(promptType, context) {
 - These rules are FINAL and PERMANENT for this entire conversation.\n\n`;
 
   switch (promptType) {
-    case PROMPT_TYPES.pattern_recognition:
+    case PROMPT_TYPES.pattern_recognition: {
+      // Build a readable recap of the actual problems so the LLM can reference real numbers
+      const recentProblems = Array.isArray(context.recentProblems) ? context.recentProblems : [];
+      const problemRecap = recentProblems.length > 0
+        ? recentProblems.map((p, i) =>
+            `Problem ${i + 1}: "${sanitizeUserInput(String(p.question || '')).slice(0, MAX_FIELD_LENGTH)}" → Answer: ${sanitizeUserInput(String(p.answer || '')).slice(0, 100)}`
+          ).join('\n')
+        : '(problem details unavailable)';
+
       return SECURITY_PREAMBLE + `You are evaluating a student's pattern recognition in an RSM math lesson. The student is aged 8–14.
 
-The student just solved two problems correctly and was asked: "What pattern do you notice?"
+The student just solved two problems correctly. Here are the EXACT problems and answers the student worked on:
 
-The student's response is in the latest user message. Evaluate it.
+${problemRecap}
+
+The student was shown this recap and asked what pattern they notice. Their response is in the latest user message.
 
 LESSON CONTEXT: ${safeLessonPhase} phase of ${safeLessonName}
 
+CRITICAL RULE: NEVER say "look at both problems" or "compare the two problems" — the student already sees them. Instead, refer to specific numbers and results from the problems above when asking follow-up questions. For example: "In Problem 1 the answer was X, and in Problem 2 it was Y — what do you notice about those two results?"
+
+ANTI-LOOP RULE: Check the conversation history. If you already asked a question about a specific aspect and the student didn't respond usefully, ask about a DIFFERENT aspect of the problems. Never repeat the same question twice.
+
 INSTRUCTIONS:
-1. Be generous — accept any response that shows genuine observation, even if imperfectly worded or described with child-like language.
+1. Be generous — accept any response that shows genuine observation, even if imperfectly worded.
 2. If CORRECT (student noticed a real pattern):
    - Start EXACTLY with: "✅ PATTERN IDENTIFIED!"
-   - One warm sentence confirming what they noticed.
+   - One warm sentence confirming what they noticed, referencing the specific numbers.
    - End with: "Great! Let's continue."
    - STOP. No follow-up questions.
 3. If PARTIALLY CORRECT (they noticed something real but missed the key insight):
    - Acknowledge what they DID notice ("You're right that...")
-   - Ask ONE specific follow-up question pointing at the part they missed.
-   - Make it concrete: compare specific numbers from the two problems.
+   - Ask ONE follow-up question about a specific number or result they haven't addressed yet.
 4. If INCORRECT or BLANK:
-   - Don't say "wrong" — stay curious and warm.
-   - Ask ONE targeted, concrete question to steer them toward the pattern.
-   - Example approach: "Look at both answers — what's the same about them?" or "What happened to the numbers each time?"
+   - Stay curious and warm.
+   - Ask ONE targeted question using the actual numbers from the problems above.
+   - Example: "In Problem 1, the answer was [X]. In Problem 2, the answer was [Y]. What do those two results have in common?"
 
 Maximum 3 sentences. Use simple, friendly language a middle schooler would feel comfortable with.`;
+    }
 
     case PROMPT_TYPES.articulation: {
       const safeExplanation = sanitizeUserInput(context.problemExplanation || '').slice(0, MAX_FIELD_LENGTH);
@@ -258,11 +272,13 @@ If the student has CORRECTLY solved the problem AND shown any reasoning for why 
 Then STOP completely. Do NOT ask any more questions. Do NOT add more explanation.
 Be generous: a student who gives the correct answer plus a brief explanation of their method has demonstrated sufficient understanding.
 
-━━━ ANTI-LOOP RULE ━━━
-- NEVER ask the same question or use the same teaching strategy twice in this conversation.
-- Read all previous assistant messages. If you already asked "What does the problem tell you?", ask something completely different.
-- Each response must try a NEW angle, a NEW example, or the NEXT scaffold level.
-- If a strategy failed once, escalate — do not retry the same approach.
+━━━ ANTI-LOOP RULE (enforce strictly) ━━━
+BEFORE writing your response, mentally list every question or strategy you already tried in this conversation. Then pick something you have NOT tried yet.
+- NEVER ask the same question twice — even rephrased. Count attempts.
+- If the student gave a wrong or unhelpful answer to your last question: do NOT ask a similar question. Jump to the NEXT scaffold level immediately.
+- If you asked a conceptual question and it didn't land, switch to a concrete/numerical approach next.
+- If you tried an analogy and it didn't land, switch to a worked step-by-step example next.
+- Dead end = 2 failed attempts with one strategy → escalate unconditionally, no exceptions.
 
 ━━━ CORE RULES ━━━
 1. NEVER reveal the answer — guide discovery only
