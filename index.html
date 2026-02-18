@@ -740,6 +740,9 @@
             const [awaitingPatternResponse, setAwaitingPatternResponse] = useState(false);
             const [awaitingArticulation, setAwaitingArticulation] = useState(false);
             const [hasArticulated, setHasArticulated] = useState(false);
+
+            // Sufficiency threshold: tutor confirmed student solved it via chat
+            const [isProblemSolved, setIsProblemSolved] = useState(false);
             
             const canvasRef = useRef(null);
             const chatMessagesRef = useRef(null);
@@ -766,12 +769,13 @@
                 setShowHint(false);
                 setShowTutor(false);
                 setChatMessages([]);
+                setIsProblemSolved(false);
             }
 
             function nextProblemInLesson() {
                 const lesson = currentLesson;
                 const currentPhaseProblems = lesson[lessonPhase];
-                
+
                 if (phaseIndex + 1 < currentPhaseProblems.length) {
                     setPhaseIndex(phaseIndex + 1);
                     setCurrentProblem(currentPhaseProblems[phaseIndex + 1]);
@@ -780,6 +784,7 @@
                     setShowHint(false);
                     setShowTutor(false);
                     setChatMessages([]);
+                    setIsProblemSolved(false);
                 } else {
                     if (lessonPhase === 'warmup') {
                         setLessonPhase('discovery');
@@ -802,6 +807,10 @@
                     } else {
                         setView('lessonComplete');
                     }
+                    setShowHint(false);
+                    setShowTutor(false);
+                    setChatMessages([]);
+                    setIsProblemSolved(false);
                 }
             }
 
@@ -824,6 +833,7 @@
                 setShowHint(false);
                 setShowTutor(false);
                 setChatMessages([]);
+                setIsProblemSolved(false);
             }
 
             function checkAnswer() {
@@ -839,6 +849,7 @@
                 if (isCorrect) {
                     setFeedback({ correct: true, message: 'Correct! Great job!' });
                     setShowTutor(false); // Auto-close tutor on correct answer
+                    setIsProblemSolved(false); // Reset — they solved it via answer box
                     
                     // DISCOVERY DIALOGUE TRIGGER
                     if (lessonPhase === 'discovery') {
@@ -1206,6 +1217,12 @@
                         const studentAnswer = numberMatch[0];
                         const correctAnswers = [problem.answer, ...(problem.alternateAnswers || [])];
                         if (correctAnswers.some(ans => ans.toLowerCase() === studentAnswer)) {
+                            // If the student also gave a reason (any explanation alongside the number), mark solved
+                            const hasReasoning = lowerMessage.length > (studentAnswer.length + 5) ||
+                                /because|since|so|added|subtracted|multipl|divided|sides|top|bottom|times|equal|rule/.test(lowerMessage);
+                            if (hasReasoning || scaffoldLevel >= 2) {
+                                return `✅ PROBLEM SOLVED! Great job working through that — you've got the right answer and the right thinking. You're ready to move on!`;
+                            }
                             return `You got ${studentAnswer} — nice work! Now the important part: can you explain WHY that's the answer? Walk me through your thinking.`;
                         } else {
                             return identifyMisconception(studentAnswer, problem, phase, scaffoldLevel);
@@ -1213,8 +1230,16 @@
                     }
                 }
 
-                // Default: continue scaffolding
-                return getScaffoldQuestion(scaffoldLevel, problem, phase);
+                // Student gave an explanation or reasoning (no number, but substantive text)
+                const hasSubstantiveText = lowerMessage.split(' ').length >= 6;
+                const hasReasoningKeywords = /because|since|you (add|subtract|multipl|divid)|the rule|that means|so i|total|each side|same|equal/.test(lowerMessage);
+                if (hasSubstantiveText && hasReasoningKeywords && scaffoldLevel >= 2) {
+                    // Treat it as "close enough" — praise and move on rather than looping
+                    return `That's solid reasoning! I can see you understand the concept. Try entering your answer in the answer box to confirm it — you're on the right track.`;
+                }
+
+                // Default: continue scaffolding — but never repeat level 0 question
+                return getScaffoldQuestion(Math.max(1, scaffoldLevel), problem, phase);
             }
 
             function getScaffoldQuestion(level, problem, phase) {
@@ -1426,7 +1451,14 @@
                                 }, 1500);
                             }
                         }
-                        
+
+                        // Sufficiency threshold: tutor confirmed the student solved it via chat
+                        if (!awaitingPatternResponse && !awaitingArticulation) {
+                            if (tutorResponse.includes("✅ PROBLEM SOLVED")) {
+                                setIsProblemSolved(true);
+                            }
+                        }
+
                         if (awaitingArticulation) {
                             // If AI confirmed understanding with checkmark
                             if (tutorResponse.includes("✅") || responseLC.includes("understanding confirmed")) {
@@ -1462,14 +1494,20 @@
                     }
                 } catch (error) {
                     console.error('Tutor error:', error);
-                    
+
                     // Fallback to rule-based tutor
                     const fallbackResponse = getSocraticResponse(message, chatMessages);
-                    const assistantMessage = { 
-                        role: 'assistant', 
+                    const assistantMessage = {
+                        role: 'assistant',
                         content: `[AI tutor offline - using backup]\n\n${fallbackResponse}`
                     };
                     setChatMessages(prev => [...prev, assistantMessage]);
+
+                    // Check sufficiency threshold in fallback path too
+                    if (fallbackResponse.includes("✅ PROBLEM SOLVED")) {
+                        setIsProblemSolved(true);
+                    }
+
                     setIsTyping(false);
                 }
             }
@@ -1708,33 +1746,42 @@
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="chat-input-container">
-                                                <input
-                                                    type="text"
-                                                    className="chat-input"
-                                                    value={chatInput}
-                                                    onChange={(e) => setChatInput(e.target.value)}
-                                                    onKeyPress={(e) => {
-                                                        if (e.key === 'Enter' && !isTyping) {
-                                                            sendTutorMessage(chatInput);
-                                                            setTimeout(() => e.target.focus(), 100);
-                                                        }
-                                                    }}
-                                                    placeholder="Ask the tutor..."
-                                                    disabled={isTyping}
-                                                    autoFocus
-                                                />
-                                                <button 
-                                                    className="chat-send"
-                                                    onClick={() => sendTutorMessage(chatInput)}
-                                                    disabled={isTyping || !chatInput.trim()}
-                                                >
-                                                    Send
-                                                </button>
-                                            </div>
+                                            {isProblemSolved ? (
+                                                <div style={{ padding: '16px', textAlign: 'center', background: '#f0fff4', borderTop: '2px solid #58cc02', borderRadius: '0 0 14px 14px' }}>
+                                                    <p style={{ color: '#3a7a4e', fontWeight: 'bold', marginBottom: '12px' }}>Great work! You've solved this one.</p>
+                                                    <button className="btn-primary" onClick={() => startTopic(currentTopic)}>
+                                                        Next Problem →
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="chat-input-container">
+                                                    <input
+                                                        type="text"
+                                                        className="chat-input"
+                                                        value={chatInput}
+                                                        onChange={(e) => setChatInput(e.target.value)}
+                                                        onKeyPress={(e) => {
+                                                            if (e.key === 'Enter' && !isTyping) {
+                                                                sendTutorMessage(chatInput);
+                                                                setTimeout(() => e.target.focus(), 100);
+                                                            }
+                                                        }}
+                                                        placeholder="Ask the tutor..."
+                                                        disabled={isTyping}
+                                                        autoFocus
+                                                    />
+                                                    <button
+                                                        className="chat-send"
+                                                        onClick={() => sendTutorMessage(chatInput)}
+                                                        disabled={isTyping || !chatInput.trim()}
+                                                    >
+                                                        Send
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
-                                    
+
                                     {feedback && (
                                         <div className={`feedback ${feedback.correct ? 'correct' : 'incorrect'}`}>
                                             {feedback.message}
@@ -1933,33 +1980,42 @@
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="chat-input-container">
-                                                <input
-                                                    type="text"
-                                                    className="chat-input"
-                                                    value={chatInput}
-                                                    onChange={(e) => setChatInput(e.target.value)}
-                                                    onKeyPress={(e) => {
-                                                        if (e.key === 'Enter' && !isTyping) {
-                                                            sendTutorMessage(chatInput);
-                                                            setTimeout(() => e.target.focus(), 100);
-                                                        }
-                                                    }}
-                                                    placeholder="Ask the tutor..."
-                                                    disabled={isTyping}
-                                                    autoFocus
-                                                />
-                                                <button 
-                                                    className="chat-send"
-                                                    onClick={() => sendTutorMessage(chatInput)}
-                                                    disabled={isTyping || !chatInput.trim()}
-                                                >
-                                                    Send
-                                                </button>
-                                            </div>
+                                            {isProblemSolved ? (
+                                                <div style={{ padding: '16px', textAlign: 'center', background: '#f0fff4', borderTop: '2px solid #58cc02', borderRadius: '0 0 14px 14px' }}>
+                                                    <p style={{ color: '#3a7a4e', fontWeight: 'bold', marginBottom: '12px' }}>Great work! You've solved this one.</p>
+                                                    <button className="btn-primary" onClick={nextProblemInLesson}>
+                                                        Next Problem →
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="chat-input-container">
+                                                    <input
+                                                        type="text"
+                                                        className="chat-input"
+                                                        value={chatInput}
+                                                        onChange={(e) => setChatInput(e.target.value)}
+                                                        onKeyPress={(e) => {
+                                                            if (e.key === 'Enter' && !isTyping) {
+                                                                sendTutorMessage(chatInput);
+                                                                setTimeout(() => e.target.focus(), 100);
+                                                            }
+                                                        }}
+                                                        placeholder="Ask the tutor..."
+                                                        disabled={isTyping}
+                                                        autoFocus
+                                                    />
+                                                    <button
+                                                        className="chat-send"
+                                                        onClick={() => sendTutorMessage(chatInput)}
+                                                        disabled={isTyping || !chatInput.trim()}
+                                                    >
+                                                        Send
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
-                                    
+
                                     {feedback && (
                                         <div className={`feedback ${feedback.correct ? 'correct' : 'incorrect'}`}>
                                             {feedback.message}
