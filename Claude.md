@@ -1,5 +1,26 @@
 # Claude.md — RSM Math Quest Development Guidelines
 
+## Session Start
+
+**Before writing any code**, sync with `main` to ensure you're working from the latest codebase:
+
+```bash
+git fetch origin
+git rebase origin/main
+```
+
+If your branch doesn't exist yet, create it from the updated `main`:
+
+```bash
+git checkout -b claude/<descriptive-name>-<sessionId>
+```
+
+This prevents stale-branch issues when multiple sessions run in parallel or when PRs have been merged since your branch was created.
+
+**Multi-chat workflow:** Run one chat per logical task. Finish the task → commit → push → open PR → user merges → then open the next chat. Do not run parallel chats that touch the same files.
+
+---
+
 ## Session Workflow
 
 Every Claude Code session that produces code changes **must** end by:
@@ -187,11 +208,17 @@ When adding new lessons:
 - System prompts are constructed **server-side only** in `buildSystemPrompt()`. Never send system prompts from the client.
 - Three prompt types exist: `pattern_recognition`, `articulation`, `tutoring`. New types must be added to the server-side allowlist.
 - Prompts must include the anti-injection security note. Copy the pattern from existing prompts.
-- AI responses are capped at 300 tokens / 3 sentences. Keep responses concise — the audience is children.
+- AI responses are capped at 450 tokens. Keep responses concise — the audience is children.
+
+**Key rules baked into the `tutoring` prompt — preserve these when editing:**
+
+- **RESOLUTION RULE**: If the student gives a correct answer *and* any reasoning (even informal), the tutor must confirm with "✅ PROBLEM SOLVED!" and stop. Do not pile on more questions after a correct answer.
+- **ANTI-LOOP RULE**: The tutor must never repeat the same question or strategy twice in a conversation. Each turn must try a new angle or escalate the scaffold level.
+- **Scaffolding ladder**: Turns 1–2 orient conceptually, turns 3–4 get concrete, turns 5–6 rebuild from first principles, turns 7+ give a worked parallel example. Never skip levels or regress.
 
 ### Groq API
 
-- Model: `llama-3.1-8b-instant`. Change only if there's a clear reason (cost, quality, deprecation).
+- Model: `llama-3.3-70b-versatile`. Change only if there's a clear reason (cost, quality, deprecation).
 - The backend is a **thin proxy**. It should not grow into a general-purpose API server. One endpoint, one responsibility.
 - Rate limit: 30 requests/minute/IP. In-memory storage resets per serverless instance — this is acceptable for the current scale.
 
@@ -218,6 +245,10 @@ Before merging any change, verify:
 ---
 
 ## Evolving the Codebase
+
+### Known Documentation Debt
+
+- `SETUP-GUIDE.md` still references `HUGGINGFACE_API_KEY` — the backend was migrated to Groq. The correct variable is `GROQ_API_KEY`. Fix this when updating the setup guide.
 
 ### Recommended Next Steps (Not Urgent, Do When Asked)
 
@@ -250,8 +281,8 @@ These are known improvements. Do not implement proactively — only when explici
 
 | File | Lines | Purpose |
 |---|---|---|
-| `index.html` | ~2050 | Full frontend: CSS, React SPA, canvas rendering, fallback tutor |
-| `api/tutor.js` | ~300 | Serverless backend: validation, rate limiting, prompt construction, Groq proxy |
+| `index.html` | ~2300 | Full frontend: CSS, React SPA, canvas rendering, fallback tutor |
+| `api/tutor.js` | ~410 | Serverless backend: validation, rate limiting, prompt construction, Groq proxy |
 | `vercel.json` | ~30 | Deployment config, security headers, function settings |
 | `package.json` | ~15 | Minimal config: `"type": "module"`, dev/deploy scripts |
 | `.gitignore` | ~30 | Standard ignores: node_modules, .env, .vercel, OS/editor files |
