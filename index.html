@@ -581,6 +581,54 @@
             margin-bottom: 16px;
             letter-spacing: -0.025em;
         }
+
+        /* Parent dashboard: Add Student form */
+        .add-student-form {
+            background: white;
+            border-radius: 15px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 2px solid var(--primary);
+        }
+
+        .add-student-form h3 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .avatar-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0 20px;
+        }
+
+        .avatar-option {
+            font-size: 1.8em;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            line-height: 1;
+        }
+
+        .avatar-option:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .avatar-option.selected {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .add-student-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
@@ -925,25 +973,38 @@
             ],
         };
 
+        const STORAGE_KEY = 'rsm-math-quest-users';
+
+        const DEFAULT_USERS = [
+            {
+                id: 1,
+                name: 'Demo Student',
+                avatar: AVATARS[0],
+                isParent: false,
+                stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
+                badges: [],
+                lastPlayed: null,
+            },
+            {
+                id: 'parent',
+                name: 'Parent',
+                avatar: { emoji: '👨‍👩‍👧‍👦', name: 'Parent' },
+                isParent: true,
+                stats: null,
+                badges: [],
+                lastPlayed: null,
+            },
+        ];
+
         function MathLearningApp() {
-            const [users, setUsers] = useState([
-                { 
-                    id: 1, 
-                    name: 'Demo Student', 
-                    avatar: AVATARS[0], 
-                    isParent: false,
-                    stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
-                    badges: []
-                },
-                {
-                    id: 'parent',
-                    name: 'Parent',
-                    avatar: { emoji: '👨‍👩‍👧‍👦', name: 'Parent' },
-                    isParent: true,
-                    stats: null,
-                    badges: []
+            const [users, setUsers] = useState(() => {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    return saved ? JSON.parse(saved) : DEFAULT_USERS;
+                } catch {
+                    return DEFAULT_USERS;
                 }
-            ]);
+            });
             const [currentUser, setCurrentUser] = useState(null);
             const [view, setView] = useState('login');
             const [currentTopic, setCurrentTopic] = useState(null);
@@ -979,6 +1040,17 @@
 
             const canvasRef = useRef(null);
             const chatMessagesRef = useRef(null);
+
+            // Persist all user profiles (stats, XP, badges, streaks) to localStorage
+            useEffect(() => {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(users)); }
+                catch { /* storage unavailable — progress won't survive refresh */ }
+            }, [users]);
+
+            // State for the parent-dashboard "Add Student" form
+            const [showAddStudent, setShowAddStudent] = useState(false);
+            const [newStudentName, setNewStudentName] = useState('');
+            const [newStudentAvatar, setNewStudentAvatar] = useState(AVATARS[0]);
 
             // Build a shuffled warmup pool by mixing the lesson's own warmup questions
             // with QUESTION_BANK difficulty-1 questions for variety each session.
@@ -1017,12 +1089,45 @@
             }
 
             function selectUser(user) {
-                setCurrentUser(user);
-                if (user.isParent) {
-                    setView('parent');
-                } else {
-                    setView('home');
+                let updatedUser = user;
+                if (!user.isParent && user.stats) {
+                    const today = new Date().toDateString();
+                    const yesterday = new Date(Date.now() - 86_400_000).toDateString();
+                    const last = user.lastPlayed;
+                    const newStreak = last === today ? user.stats.streak
+                        : last === yesterday ? user.stats.streak + 1
+                        : 1;
+                    updatedUser = {
+                        ...user,
+                        lastPlayed: today,
+                        stats: { ...user.stats, streak: newStreak },
+                    };
+                    setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
                 }
+                setCurrentUser(updatedUser);
+                setView(updatedUser.isParent ? 'parent' : 'home');
+            }
+
+            function createStudent() {
+                const name = newStudentName.trim();
+                if (!name) return;
+                const newUser = {
+                    id: Date.now(),
+                    name,
+                    avatar: newStudentAvatar,
+                    isParent: false,
+                    stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
+                    badges: [],
+                    lastPlayed: null,
+                };
+                setUsers(prev => {
+                    const parent = prev.find(u => u.isParent);
+                    const students = prev.filter(u => !u.isParent);
+                    return parent ? [...students, newUser, parent] : [...students, newUser];
+                });
+                setNewStudentName('');
+                setNewStudentAvatar(AVATARS[0]);
+                setShowAddStudent(false);
             }
 
             function startLesson(lessonId) {
@@ -2407,7 +2512,7 @@
 
             const renderParentDashboard = () => {
                 const studentUsers = users.filter(u => !u.isParent);
-                
+
                 return (
                     <div>
                         <div className="header">
@@ -2416,14 +2521,59 @@
                                 <p>Monitor your children's progress</p>
                             </div>
                         </div>
-                        
+
                         <div className="parent-dashboard">
-                            <button className="btn-secondary" onClick={() => setView('login')}>
-                                Back to Login
-                            </button>
-                            
+                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
+                                <button className="btn-secondary" onClick={() => setView('login')}>
+                                    Back to Login
+                                </button>
+                                <button className="btn-primary" onClick={() => setShowAddStudent(s => !s)}>
+                                    {showAddStudent ? 'Cancel' : '＋ Add Student'}
+                                </button>
+                            </div>
+
+                            {showAddStudent && (
+                                <div className="add-student-form">
+                                    <h3>New Student Profile</h3>
+                                    <input
+                                        className="answer-input"
+                                        type="text"
+                                        placeholder="Student name"
+                                        value={newStudentName}
+                                        onChange={e => setNewStudentName(e.target.value)}
+                                        onKeyDown={e => e.key === 'Enter' && createStudent()}
+                                        maxLength={40}
+                                        autoFocus
+                                    />
+                                    <div className="avatar-picker">
+                                        {AVATARS.map(av => (
+                                            <button
+                                                key={av.name}
+                                                className={`avatar-option${newStudentAvatar.name === av.name ? ' selected' : ''}`}
+                                                onClick={() => setNewStudentAvatar(av)}
+                                                title={av.name}
+                                            >
+                                                {av.emoji}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="add-student-actions">
+                                        <button className="btn-primary" onClick={createStudent} disabled={!newStudentName.trim()}>
+                                            Create Profile
+                                        </button>
+                                        <button className="btn-secondary" onClick={() => {
+                                            setShowAddStudent(false);
+                                            setNewStudentName('');
+                                            setNewStudentAvatar(AVATARS[0]);
+                                        }}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
                             <h2 style={{ margin: '30px 0 20px' }}>Student Progress</h2>
-                            
+
                             {studentUsers.map(student => (
                                 <div key={student.id} className="student-card">
                                     <div className="student-header">
@@ -2433,7 +2583,7 @@
                                             <p style={{ color: '#666' }}>Level {student.stats.level} • {student.stats.xp} XP</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="stats-grid">
                                         <div className="stat-box">
                                             <h4>Problems Solved</h4>
@@ -2454,17 +2604,17 @@
                                     </div>
                                 </div>
                             ))}
-                            
-                            {studentUsers.length === 0 && (
-                                <div style={{ 
-                                    textAlign: 'center', 
+
+                            {studentUsers.length === 0 && !showAddStudent && (
+                                <div style={{
+                                    textAlign: 'center',
                                     padding: '60px 20px',
                                     background: 'white',
                                     borderRadius: '15px'
                                 }}>
-                                    <h3 style={{ color: '#666' }}>No students added yet</h3>
+                                    <h3 style={{ color: '#666' }}>No students yet</h3>
                                     <p style={{ color: '#999', marginTop: '10px' }}>
-                                        Add student profiles from the login screen
+                                        Use "＋ Add Student" above to create the first profile.
                                     </p>
                                 </div>
                             )}
