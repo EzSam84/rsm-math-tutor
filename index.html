@@ -890,6 +890,47 @@
             margin-top: 28px;
             flex-wrap: wrap;
         }
+
+        /* Grade picker — child registration */
+        .grade-picker {
+            display: flex;
+            gap: 8px;
+            margin: 8px 0 20px;
+        }
+
+        .grade-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .grade-btn.active {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+        }
+
+        /* Grade badge on lesson cards */
+        .grade-badge {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-top: 6px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -1060,6 +1101,160 @@
                     },
                 },
             },
+            'algebra-lesson-2': {
+    title: 'Two-Step Equations',
+    topic: 'algebra',
+    ruleToDiscover: 'To solve a two-step equation, undo operations in reverse order — first undo addition/subtraction, then undo multiplication/division.',
+    warmup: [
+        { question: 'What is 2x + 3 when x = 4?', answer: '11', hint: 'First substitute x = 4, then follow the order of operations.', explanation: '2 × 4 = 8, then 8 + 3 = 11.', xp: 5 },
+        { question: 'What is 3x - 5 when x = 6?', answer: '13', hint: 'First multiply 3 by x, then subtract 5.', explanation: '3 × 6 = 18, then 18 - 5 = 13.', xp: 5 },
+    ],
+    discovery: [
+        { question: 'x + 5 = 9. What do you do to both sides to get x by itself?', answer: 'subtract 5', hint: 'Think about what operation is being done to x. How do you undo it?', explanation: 'Adding 5 is undone by subtracting 5. x + 5 - 5 = 9 - 5, so x = 4.', xp: 10, alternateAnswers: ['subtract 5 from both sides', '-5', 'take away 5'] },
+        { question: '2x = 10. What do you do to both sides to find x?', answer: 'divide by 2', hint: 'x is being multiplied by 2. What is the opposite of multiplying?', explanation: 'Multiplying by 2 is undone by dividing by 2. 2x ÷ 2 = 10 ÷ 2, so x = 5.', xp: 10, alternateAnswers: ['divide both sides by 2', '÷2', 'divide 2'] },
+        { question: '2x + 1 = 7. There are TWO steps. Which do you undo first — the +1 or the ×2?', answer: '+1', hint: 'Undo operations in reverse order. The +1 was done last, so undo it first.', explanation: 'Undo +1 first: 2x = 6. Then undo ×2: x = 3.', xp: 10, alternateAnswers: ['the addition', 'the plus 1', 'undo the addition first'] },
+        { question: 'Finish it: 2x + 1 = 7. After subtracting 1 from both sides you get 2x = 6. What is x?', answer: '3', hint: 'Divide both sides by 2.', explanation: '2x = 6, so x = 6 ÷ 2 = 3. Check: 2(3) + 1 = 7.', xp: 10 },
+        { question: 'Solve: 3x - 2 = 10. What is x?', answer: '4', hint: 'Step 1: add 2 to both sides. Step 2: divide both sides by 3.', explanation: '3x = 12, x = 4. Check: 3(4) - 2 = 10.', xp: 10 },
+    ],
+    application: [
+        { question: 'Solve: 4x + 3 = 19. What is x?', answer: '4', hint: 'First subtract 3, then divide by 4.', explanation: '4x = 16, x = 4.', xp: 12 },
+        { question: 'Solve: 5x - 7 = 18. What is x?', answer: '5', hint: 'First add 7, then divide by 5.', explanation: '5x = 25, x = 5.', xp: 12 },
+        { question: 'Solve: 2x + 9 = 21. What is x?', answer: '6', hint: 'Undo addition first, then multiplication.', explanation: '2x = 12, x = 6.', xp: 12 },
+        { question: 'Solve: 6x - 4 = 14. What is x?', answer: '3', hint: 'Add 4 to both sides first.', explanation: '6x = 18, x = 3.', xp: 12 },
+        { question: 'Solve: 3x + 7 = 25. What is x?', answer: '6', hint: 'Subtract 7 first, then divide by 3.', explanation: '3x = 18, x = 6.', xp: 12 },
+        { question: 'Solve: 10x - 5 = 45. What is x?', answer: '5', hint: 'Add 5 to both sides, then divide by 10.', explanation: '10x = 50, x = 5.', xp: 12 },
+    ],
+    exitTicket: [
+        { question: 'A number is doubled and then increased by 5 to get 17. What is the number?', answer: '6', hint: 'Write the equation: 2x + 5 = 17.', explanation: '2x = 12, x = 6.', xp: 20 },
+        { question: 'Maya earns $8 per hour. After buying lunch for $4, she has $28 left. How many hours did she work?', answer: '4', hint: '8x - 4 = 28.', explanation: '8x = 32, x = 4 hours.', xp: 20 },
+        { question: 'Three times a number, minus 9, equals 15. What is the number?', answer: '8', hint: '3x - 9 = 15.', explanation: '3x = 24, x = 8.', xp: 20 },
+        { question: 'A box of crayons costs $5. Sam also bought a notebook for $3. He spent $23 in total. How many boxes did he buy?', answer: '4', hint: '5x + 3 = 23.', explanation: '5x = 20, x = 4 boxes.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Two-Step Word Problems',
+        explanation: 'Word problems often hide a two-step equation. Find the quantity being multiplied or divided, assign it a variable, then write and solve the equation in reverse order.',
+        example: {
+            problem: '"A number is tripled and then 4 is subtracted to get 11. What is the number?"',
+            steps: ['Write the equation: 3x − 4 = 11', 'Step 1 — undo subtraction: add 4 → 3x = 15', 'Step 2 — undo multiplication: divide by 3 → x = 5', 'Check: 3(5) − 4 = 11. Correct!'],
+            answer: '5',
+        },
+    },
+},
+'geometry-lesson-2': {
+    title: 'Area of Triangles',
+    topic: 'geometry',
+    ruleToDiscover: 'A triangle is exactly half of a rectangle with the same base and height, so its area = (base × height) ÷ 2.',
+    warmup: [
+        { question: 'What is the area of a rectangle with length 5 and width 4?', answer: '20', hint: 'Area = length × width.', explanation: 'Area = 5 × 4 = 20 square units.', xp: 5 },
+        { question: 'What is the area of a rectangle with base 7 and height 3?', answer: '21', hint: 'Multiply base × height.', explanation: 'Area = 7 × 3 = 21 square units.', xp: 5 },
+    ],
+    discovery: [
+        { question: 'A rectangle is 4 units wide and 6 units tall. What is its area?', answer: '24', hint: 'Area = base × height.', explanation: '4 × 6 = 24 square units.', xp: 10 },
+        { question: 'Draw a diagonal from corner to corner of that rectangle. What fraction of the rectangle is each triangle created?', answer: '1/2', hint: 'The diagonal splits the rectangle into two equal pieces.', explanation: 'Two equal triangles are created. Each is 1/2 of the rectangle.', xp: 10, alternateAnswers: ['half', 'one half', '0.5'] },
+        { question: 'The rectangle was 4 × 6 = 24 square units. Each triangle is half. What is the area of one triangle?', answer: '12', hint: 'Half of 24 is...?', explanation: '24 ÷ 2 = 12 square units.', xp: 10 },
+        { question: 'Which formula gives the area of a triangle with base b and height h? (A) b × h  (B) b × h ÷ 2  (C) b + h', answer: 'B', hint: 'The triangle is half the rectangle.', explanation: 'Area = (base × height) ÷ 2. Answer B.', xp: 10, alternateAnswers: ['b × h ÷ 2', 'base times height divided by 2'] },
+    ],
+    application: [
+        { question: 'Find the area of a triangle with base 6 and height 4.', answer: '12', hint: 'Area = (base × height) ÷ 2.', explanation: '(6 × 4) ÷ 2 = 12.', xp: 12 },
+        { question: 'Find the area of a triangle with base 10 and height 5.', answer: '25', hint: 'Multiply then halve.', explanation: '(10 × 5) ÷ 2 = 25.', xp: 12 },
+        { question: 'Find the area of a triangle with base 8 and height 9.', answer: '36', hint: 'Area = (b × h) ÷ 2.', explanation: '(8 × 9) ÷ 2 = 36.', xp: 12 },
+        { question: 'Find the area of a triangle with base 3 and height 14.', answer: '21', hint: 'Multiply first, then halve.', explanation: '(3 × 14) ÷ 2 = 21.', xp: 12 },
+        { question: 'Find the area of a triangle with base 11 and height 6.', answer: '33', hint: 'Area = (base × height) ÷ 2.', explanation: '(11 × 6) ÷ 2 = 33.', xp: 12 },
+        { question: 'A right triangle has legs 7 and 8. What is its area?', answer: '28', hint: 'The two legs are the base and height.', explanation: '(7 × 8) ÷ 2 = 28.', xp: 12 },
+    ],
+    exitTicket: [
+        { question: 'A triangular garden has base 12 m and height 5 m. What is its area?', answer: '30', hint: 'Use the triangle area formula.', explanation: '(12 × 5) ÷ 2 = 30 sq m.', xp: 20 },
+        { question: 'A triangular sail has area 40 sq ft and base 8 ft. What is its height?', answer: '10', hint: 'Rearrange: height = (area × 2) ÷ base.', explanation: '(40 × 2) ÷ 8 = 10 ft.', xp: 20 },
+        { question: 'A triangle has area 27 sq units and height 6. What is its base?', answer: '9', hint: 'base = (area × 2) ÷ height.', explanation: '(27 × 2) ÷ 6 = 9 units.', xp: 20 },
+        { question: 'Two triangles each have base 5 cm and height 8 cm. What is their combined area?', answer: '40', hint: 'Find the area of one, then double it.', explanation: 'One triangle: 20 sq cm. Two: 40 sq cm.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Working Backwards with Area',
+        explanation: 'When you know the area and need a missing side, rearrange the formula. Since area = (base × height) ÷ 2, you can write: base × height = area × 2, then divide by the known side.',
+        example: {
+            problem: '"A triangle has area 18 sq units and base 9. Find the height."',
+            steps: ['Write the formula: 18 = (9 × height) ÷ 2', 'Multiply both sides by 2: 36 = 9 × height', 'Divide by 9: height = 4', 'Check: (9 × 4) ÷ 2 = 18. Correct!'],
+            answer: '4',
+        },
+    },
+},
+'fractions-lesson-2': {
+    title: 'Multiplying Fractions',
+    topic: 'fractions',
+    ruleToDiscover: 'To multiply fractions, multiply the numerators together and the denominators together. No common denominator needed!',
+    warmup: [
+        { question: 'A pizza is cut into 4 equal slices and you eat 3. What fraction did you eat?', answer: '3/4', hint: 'Part eaten ÷ total slices.', explanation: '3 out of 4 slices = 3/4.', xp: 5 },
+        { question: 'A ribbon is cut into 8 equal pieces and you take 5. What fraction do you have?', answer: '5/8', hint: 'Pieces you have ÷ total pieces.', explanation: '5 out of 8 pieces = 5/8.', xp: 5 },
+    ],
+    discovery: [
+        { question: 'Take a square, shade 1/2 of it. Then cut that shaded half in half again. What fraction of the whole square is now shaded?', answer: '1/4', hint: 'The square is now in 4 equal pieces. How many are shaded?', explanation: '1/2 × 1/2 = 1/4. Multiply top × top, bottom × bottom.', xp: 10 },
+        { question: 'So what is 1/2 × 1/2?', answer: '1/4', hint: 'Use the pattern: multiply numerators, multiply denominators.', explanation: '(1 × 1) ÷ (2 × 2) = 1/4.', xp: 10 },
+        { question: 'What is 2/3 × 1/2? (Multiply top × top, bottom × bottom.)', answer: '2/6', hint: 'Numerator: 2 × 1. Denominator: 3 × 2.', explanation: '2/6 = 1/3.', xp: 10, alternateAnswers: ['1/3'] },
+        { question: 'What is 3/4 × 2/5?', answer: '6/20', hint: 'Multiply the two numerators. Multiply the two denominators.', explanation: '(3 × 2) ÷ (4 × 5) = 6/20 = 3/10.', xp: 10, alternateAnswers: ['3/10'] },
+    ],
+    application: [
+        { question: 'Multiply: 1/3 × 1/4', answer: '1/12', hint: '1 × 1 = 1. 3 × 4 = 12.', explanation: '1/12.', xp: 12 },
+        { question: 'Multiply: 2/3 × 3/4', answer: '6/12', hint: 'Top × top, bottom × bottom.', explanation: '6/12 = 1/2.', xp: 12, alternateAnswers: ['1/2'] },
+        { question: 'Multiply: 3/5 × 2/3', answer: '6/15', hint: 'Multiply across top and bottom.', explanation: '6/15 = 2/5.', xp: 12, alternateAnswers: ['2/5'] },
+        { question: 'Multiply: 4/7 × 1/2', answer: '4/14', hint: '4 × 1 = 4. 7 × 2 = 14.', explanation: '4/14 = 2/7.', xp: 12, alternateAnswers: ['2/7'] },
+        { question: 'Multiply: 5/6 × 3/5', answer: '15/30', hint: 'Top × top, bottom × bottom, then simplify.', explanation: '15/30 = 1/2.', xp: 12, alternateAnswers: ['1/2'] },
+        { question: 'Multiply: 2/9 × 3/4', answer: '6/36', hint: 'Multiply numerators and denominators.', explanation: '6/36 = 1/6.', xp: 12, alternateAnswers: ['1/6'] },
+    ],
+    exitTicket: [
+        { question: '1/3 of 18 apples — how many apples?', answer: '6', hint: '"Of" means multiply. 1/3 × 18 = 18 ÷ 3.', explanation: '18 ÷ 3 = 6 apples.', xp: 20 },
+        { question: 'A rope is 20 m long. You use 2/5 of it. How many meters did you use?', answer: '8', hint: '2/5 × 20: divide by 5, then multiply by 2.', explanation: '(20 ÷ 5) × 2 = 8 m.', xp: 20 },
+        { question: 'A class has 24 students. 3/4 of them packed lunch. How many packed lunch?', answer: '18', hint: 'Divide 24 by 4, then multiply by 3.', explanation: '(24 ÷ 4) × 3 = 18 students.', xp: 20 },
+        { question: 'A bag of flour weighs 5/6 kg. You use 1/2 of the bag. How many kg did you use?', answer: '5/12', hint: '5/6 × 1/2: top × top, bottom × bottom.', explanation: '5/12 kg.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Fractions of a Whole Number',
+        explanation: 'When you see "fraction of a number", it always means multiply. To keep numbers manageable, divide by the denominator first, then multiply by the numerator.',
+        example: {
+            problem: '"Find 3/4 of 12."',
+            steps: ['"Of" means ×: write 3/4 × 12', 'Divide by denominator first: 12 ÷ 4 = 3', 'Multiply by numerator: 3 × 3 = 9', 'Check: 3/4 × 12 = 36/4 = 9. Correct!'],
+            answer: '9',
+        },
+    },
+},
+'ratios-lesson-1': {
+    title: 'Introduction to Ratios',
+    topic: 'ratios',
+    ruleToDiscover: 'A ratio compares two quantities. Equivalent ratios are formed by multiplying or dividing both parts by the same number — just like equivalent fractions.',
+    warmup: [
+        { question: 'There are 4 apples and 6 oranges in a bowl. How many fruits are there in total?', answer: '10', hint: 'Add apples and oranges.', explanation: '4 + 6 = 10 fruits.', xp: 5 },
+        { question: 'In a class there are 3 boys and 5 girls. For every 3 boys, how many girls are there?', answer: '5', hint: 'Read the comparison directly.', explanation: 'For every 3 boys there are 5 girls — that is the ratio 3:5.', xp: 5 },
+    ],
+    discovery: [
+        { question: 'There are 4 red tiles and 6 blue tiles. Write the ratio of red to blue.', answer: '4:6', hint: 'Red comes first because the question says "red to blue."', explanation: '4 red to 6 blue = 4:6.', xp: 10 },
+        { question: 'The ratio 4:6 can be simplified. Divide both numbers by 2. What is the simplified ratio?', answer: '2:3', hint: '4 ÷ 2 = ?, 6 ÷ 2 = ?', explanation: '4 ÷ 2 = 2, 6 ÷ 2 = 3. Simplified: 2:3.', xp: 10 },
+        { question: 'Are 2:3 and 4:6 equivalent? Explain by multiplying 2:3 by 2.', answer: 'yes', hint: 'Multiply both parts of 2:3 by 2.', explanation: '2 × 2 = 4, 3 × 2 = 6. So 2:3 = 4:6. They are equivalent.', xp: 10, alternateAnswers: ['yes they are', 'they are equivalent', 'yes, equivalent'] },
+        { question: 'Starting from 1:4, what ratio do you get if you multiply both parts by 3?', answer: '3:12', hint: '1 × 3 = ?, 4 × 3 = ?', explanation: '1 × 3 = 3, 4 × 3 = 12. Equivalent ratio: 3:12.', xp: 10 },
+        { question: 'Simplify the ratio 10:15 by dividing both parts by 5.', answer: '2:3', hint: '10 ÷ 5 = ?, 15 ÷ 5 = ?', explanation: '10 ÷ 5 = 2, 15 ÷ 5 = 3. Simplified: 2:3.', xp: 10 },
+    ],
+    application: [
+        { question: 'Write the ratio of cats to dogs if there are 5 cats and 8 dogs.', answer: '5:8', hint: 'Cats first.', explanation: '5 cats to 8 dogs = 5:8.', xp: 12 },
+        { question: 'Simplify the ratio 6:9.', answer: '2:3', hint: 'Divide both by 3.', explanation: '6 ÷ 3 = 2, 9 ÷ 3 = 3. Simplified: 2:3.', xp: 12 },
+        { question: 'Simplify the ratio 8:12.', answer: '2:3', hint: 'Divide both by 4.', explanation: '8 ÷ 4 = 2, 12 ÷ 4 = 3. Simplified: 2:3.', xp: 12 },
+        { question: 'Find an equivalent ratio to 3:5 by multiplying both parts by 4.', answer: '12:20', hint: '3 × 4 = ?, 5 × 4 = ?', explanation: '12:20.', xp: 12 },
+        { question: 'Is 3:4 equivalent to 9:12?', answer: 'yes', hint: 'Try multiplying 3:4 by 3.', explanation: '3 × 3 = 9, 4 × 3 = 12. Yes, they are equivalent.', xp: 12, alternateAnswers: ['yes they are', 'they are equivalent'] },
+        { question: 'The ratio of green to yellow marbles is 2:5. There are 10 yellow marbles. How many green marbles are there?', answer: '4', hint: '5 × ? = 10. Apply the same multiplier to green.', explanation: '5 × 2 = 10, so 2 × 2 = 4 green marbles.', xp: 12 },
+    ],
+    exitTicket: [
+        { question: 'A recipe needs 2 cups of flour for every 3 cups of sugar. How many cups of flour for 9 cups of sugar?', answer: '6', hint: '3 × ? = 9. Apply to flour too.', explanation: '3 × 3 = 9, so 2 × 3 = 6 cups of flour.', xp: 20 },
+        { question: 'A car travels 60 miles in 2 hours. At the same speed, how far in 5 hours?', answer: '150', hint: 'Find miles per hour first: 60 ÷ 2. Then multiply by 5.', explanation: '30 mph × 5 hours = 150 miles.', xp: 20 },
+        { question: 'A team has a wins-to-losses ratio of 3:1. They played 20 games total. How many wins?', answer: '15', hint: '3 + 1 = 4 games per cycle. 20 ÷ 4 = 5 cycles. Wins = 5 × 3.', explanation: '5 cycles × 3 wins = 15 wins.', xp: 20 },
+        { question: 'A juice mix uses 1 part syrup to 4 parts water. You want 15 cups total. How many cups of water?', answer: '12', hint: '1 + 4 = 5 parts. 15 ÷ 5 = 3 cups per part. Water = 4 parts.', explanation: '4 × 3 = 12 cups of water.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Scaling with Ratios',
+        explanation: 'To find an equivalent ratio, decide what number you need to multiply one part by, then apply that same multiplier to the other part. This is the same idea as scaling up a recipe.',
+        example: {
+            problem: '"A paint mix uses blue:white = 2:3. How much blue for 12 cups of white?"',
+            steps: ['Write the ratio: 2:3', 'White goes from 3 to 12: multiply by 4', 'Apply the same to blue: 2 × 4 = 8', 'Check: 8:12 → divide by 4 → 2:3. Correct!'],
+            answer: '8',
+        },
+    },
+},
         };
 
         const PROBLEMS = {
@@ -1259,6 +1454,26 @@
                 { difficulty: 5, question: "3/4 + 1/6 = ?", answer: "11/12", hint: "Find the common denominator: both go into 12", explanation: "9/12 + 2/12 = 11/12", xp: 25 },
                 { difficulty: 5, question: "What fraction of 12 is 9?", answer: "3/4", hint: "Write it as 9/12 and simplify", explanation: "9/12 = 3/4", xp: 25 },
             ],
+            ratios: [
+                // --- Difficulty 1: Reading and writing ratios ---
+                { difficulty: 1, question: "There are 3 red balls and 2 blue balls. What is the ratio of red to blue?", answer: "3:2", hint: "Red comes first. Write red:blue.", explanation: "3 red to 2 blue = 3:2", xp: 5 },
+                { difficulty: 1, question: "A bag has 5 apples and 4 oranges. Write the ratio of apples to oranges.", answer: "5:4", hint: "Apples first, then oranges.", explanation: "5 apples to 4 oranges = 5:4", xp: 5 },
+                { difficulty: 1, question: "Write the ratio of 7 to 3.", answer: "7:3", hint: "Write them in the order given.", explanation: "7 to 3 is written as 7:3", xp: 5 },
+                { difficulty: 1, question: "In a class there are 12 boys and 15 girls. What is the ratio of boys to girls?", answer: "12:15", hint: "Boys first, girls second.", explanation: "12 boys to 15 girls = 12:15", xp: 5 },
+                { difficulty: 1, question: "A recipe uses 2 cups of oats and 1 cup of sugar. What is the ratio of oats to sugar?", answer: "2:1", hint: "Oats are mentioned first.", explanation: "2 cups oats : 1 cup sugar = 2:1", xp: 5 },
+                // --- Difficulty 2: Equivalent ratios and simplifying ---
+                { difficulty: 2, question: "Simplify the ratio 4:6.", answer: "2:3", hint: "Divide both numbers by their greatest common factor.", explanation: "4 ÷ 2 = 2, 6 ÷ 2 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Simplify the ratio 10:15.", answer: "2:3", hint: "What number divides both 10 and 15?", explanation: "10 ÷ 5 = 2, 15 ÷ 5 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Are 3:4 and 9:12 equivalent ratios?", answer: "yes", hint: "Multiply both parts of 3:4 by 3. What do you get?", explanation: "3 × 3 = 9, 4 × 3 = 12. So 3:4 = 9:12. Yes, equivalent.", xp: 10, alternateAnswers: ["yes they are", "they are equivalent"] },
+                { difficulty: 2, question: "Find the missing value: 2:5 = ?:15", answer: "6", hint: "5 × 3 = 15. Multiply the other part by 3 too.", explanation: "5 × 3 = 15, so 2 × 3 = 6. The ratio is 6:15.", xp: 10 },
+                { difficulty: 2, question: "Find the missing value: 3:7 = 9:?", answer: "21", hint: "3 × 3 = 9. What do you do to 7?", explanation: "3 × 3 = 9, so 7 × 3 = 21. The ratio is 9:21.", xp: 10 },
+                // --- Difficulty 3: Unit rate and word problems ---
+                { difficulty: 3, question: "A car travels 120 miles in 3 hours. What is its speed in miles per hour?", answer: "40", hint: "Divide total miles by total hours to get miles per 1 hour.", explanation: "120 ÷ 3 = 40 miles per hour.", xp: 15 },
+                { difficulty: 3, question: "5 apples cost $2.50. How much does 1 apple cost?", answer: "0.50", hint: "Divide the total price by the number of apples.", explanation: "$2.50 ÷ 5 = $0.50 per apple.", xp: 15, alternateAnswers: ["$0.50", "50 cents"] },
+                { difficulty: 3, question: "A recipe for 4 people needs 6 cups of flour. How much flour is needed for 1 person?", answer: "1.5", hint: "Divide total flour by number of people.", explanation: "6 ÷ 4 = 1.5 cups per person.", xp: 15, alternateAnswers: ["3/2", "1 1/2"] },
+                { difficulty: 3, question: "The ratio of wins to losses is 4:1. Out of 20 games total, how many were wins?", answer: "16", hint: "4 wins + 1 loss = 5 games per cycle. How many cycles in 20 games?", explanation: "20 ÷ 5 = 4 cycles. Wins = 4 × 4 = 16.", xp: 15 },
+                { difficulty: 3, question: "A map scale is 1 cm = 5 km. If two cities are 8 cm apart on the map, how far apart are they in real life?", answer: "40", hint: "Multiply the map distance by the scale factor.", explanation: "8 cm × 5 km/cm = 40 km.", xp: 15 },
+            ],
         };
 
         // ─── Skill hierarchy: one tree per domain, 5 nodes each mapping to QUESTION_BANK difficulty 1-5 ───
@@ -1299,6 +1514,11 @@
                 { id: 'multiply-divide',          name: 'Multiply & Divide',           difficulty: 5,
                   description: 'Fraction multiplication, division, complex operations' },
             ],
+            ratios: [
+                { id: 'ratio-concepts',    name: 'Ratio Concepts',    difficulty: 1, description: 'Understanding what a ratio means and how to write one' },
+                { id: 'equivalent-ratios', name: 'Equivalent Ratios', difficulty: 2, description: 'Scaling ratios up and down like equivalent fractions' },
+                { id: 'unit-rate',         name: 'Unit Rate',         difficulty: 3, description: 'Finding the rate per one unit' },
+            ],
         };
 
         const STORAGE_KEY = 'rsm-math-quest-v2';
@@ -1316,6 +1536,15 @@
         function verifyPassword(input, storedHash) {
             return hashPassword(input) === storedHash;
         }
+
+        // Returns the student's current grade, auto-advancing each school year.
+        function getCurrentGrade(user) {
+            if (!user?.gradeInfo) return null;
+            const yearsElapsed = new Date().getFullYear() - user.gradeInfo.enrollYear;
+            return user.gradeInfo.grade + yearsElapsed;
+        }
+
+        const ORDINAL = { 5: '5th', 6: '6th', 7: '7th', 8: '8th', 9: '9th' };
 
         function MathLearningApp() {
             const [users, setUsers] = useState(() => {
@@ -1380,6 +1609,7 @@
             const [regAvatar, setRegAvatar] = useState(AVATARS[0]);
             const [regError, setRegError] = useState('');
             const [regSuccess, setRegSuccess] = useState('');
+            const [regGrade, setRegGrade] = useState(6);
 
             // Build a shuffled warmup pool by mixing the lesson's own warmup questions
             // with QUESTION_BANK difficulty-1 questions for variety each session.
@@ -1446,7 +1676,7 @@
             function resetRegForm() {
                 setRegName(''); setRegUsername(''); setRegPassword('');
                 setRegParentUsername(''); setRegAvatar(AVATARS[0]);
-                setRegError(''); setRegSuccess('');
+                setRegError(''); setRegSuccess(''); setRegGrade(6);
             }
 
             function login() {
@@ -1529,6 +1759,7 @@
                     avatar: regAvatar,
                     parentId: parent.id,
                     pendingApproval: true,
+                    gradeInfo: { grade: regGrade, enrollYear: new Date().getFullYear() },
                     stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
                     badges: [],
                     conceptMastery: {},
@@ -2552,6 +2783,17 @@
                                 ))}
                             </div>
 
+                            <label className="form-label">Current Grade</label>
+                            <div className="grade-picker">
+                                {[5, 6, 7, 8].map(g => (
+                                    <button key={g}
+                                        className={`grade-btn${regGrade === g ? ' active' : ''}`}
+                                        onClick={() => setRegGrade(g)}>
+                                        {ORDINAL[g]}
+                                    </button>
+                                ))}
+                            </div>
+
                             <div className="form-actions">
                                 <button className="btn-primary" onClick={registerChild}>Request Account</button>
                                 <button className="btn-secondary" onClick={() => { resetRegForm(); setView('login'); }}>Back</button>
@@ -2585,7 +2827,7 @@
                         <div className="header">
                             <div className="header-left">
                                 <h1>Hi, {currentUser.name}!</h1>
-                                <p>Level {currentUser.stats.level} • {currentUser.stats.xp} XP</p>
+                                <p>Level {currentUser.stats.level} · {currentUser.stats.xp} XP{getCurrentGrade(currentUser) ? ` · ${ORDINAL[getCurrentGrade(currentUser)] ?? getCurrentGrade(currentUser) + 'th'} Grade` : ''}</p>
                             </div>
                             <div className="header-stats">
                                 <div className="stat-item">
@@ -2605,30 +2847,57 @@
                             </button>
 
                             <h2 style={{ marginTop: '30px', marginBottom: '20px' }}>Lessons (RSM Style)</h2>
-                            
+
                             <div className="topic-grid">
-                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-1')}>
-                                    <div className="topic-icon">📐</div>
-                                    <div className="topic-title">Algebra Lesson 1</div>
-                                    <p>Linear Equations</p>
+                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-1')}>
+                                    <div className="topic-icon">🍕</div>
+                                    <div className="topic-title">Fractions 1</div>
+                                    <p>Adding Same Denominator</p>
+                                    <span className="grade-badge">Grade 5</span>
+                                </div>
+                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-2')}>
+                                    <div className="topic-icon">✖️</div>
+                                    <div className="topic-title">Fractions 2</div>
+                                    <p>Multiplying Fractions</p>
+                                    <span className="grade-badge">Grade 5–6</span>
                                 </div>
                                 <div className="topic-card" onClick={() => startLesson('geometry-lesson-1')}>
                                     <div className="topic-icon">📏</div>
-                                    <div className="topic-title">Geometry Lesson 1</div>
+                                    <div className="topic-title">Geometry 1</div>
                                     <p>Perimeter & Area</p>
+                                    <span className="grade-badge">Grade 5–6</span>
                                 </div>
-                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-1')}>
-                                    <div className="topic-icon">🍕</div>
-                                    <div className="topic-title">Fractions Lesson 1</div>
-                                    <p>Adding Same Denominator</p>
+                                <div className="topic-card" onClick={() => startLesson('ratios-lesson-1')}>
+                                    <div className="topic-icon">⚖️</div>
+                                    <div className="topic-title">Ratios 1</div>
+                                    <p>Introduction to Ratios</p>
+                                    <span className="grade-badge">Grade 6</span>
+                                </div>
+                                <div className="topic-card" onClick={() => startLesson('geometry-lesson-2')}>
+                                    <div className="topic-icon">📐</div>
+                                    <div className="topic-title">Geometry 2</div>
+                                    <p>Area of Triangles</p>
+                                    <span className="grade-badge">Grade 6</span>
+                                </div>
+                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-1')}>
+                                    <div className="topic-icon">🔢</div>
+                                    <div className="topic-title">Algebra 1</div>
+                                    <p>One-Step Equations</p>
+                                    <span className="grade-badge">Grade 6–7</span>
+                                </div>
+                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-2')}>
+                                    <div className="topic-icon">🧮</div>
+                                    <div className="topic-title">Algebra 2</div>
+                                    <p>Two-Step Equations</p>
+                                    <span className="grade-badge">Grade 6–7</span>
                                 </div>
                             </div>
 
                             <h2 style={{ marginTop: '40px', marginBottom: '20px' }}>Practice Mode</h2>
-                            
+
                             <div className="topic-grid">
                                 <div className="topic-card" onClick={() => startTopic('algebra')}>
-                                    <div className="topic-icon">📐</div>
+                                    <div className="topic-icon">🔢</div>
                                     <div className="topic-title">Algebra</div>
                                     <p>Random Problems</p>
                                 </div>
@@ -2640,6 +2909,11 @@
                                 <div className="topic-card" onClick={() => startTopic('fractions')}>
                                     <div className="topic-icon">🍕</div>
                                     <div className="topic-title">Fractions</div>
+                                    <p>Random Problems</p>
+                                </div>
+                                <div className="topic-card" onClick={() => startTopic('ratios')}>
+                                    <div className="topic-icon">⚖️</div>
+                                    <div className="topic-title">Ratios</div>
                                     <p>Random Problems</p>
                                 </div>
                             </div>
@@ -3214,7 +3488,7 @@
                                         <div style={{ fontSize: '3em' }}>{student.avatar.emoji}</div>
                                         <div style={{ flex: 1 }}>
                                             <h3 style={{ fontSize: '1.5em', marginBottom: '5px' }}>{student.name}</h3>
-                                            <p style={{ color: '#666' }}>@{student.username} · Level {student.stats.level} · {student.stats.xp} XP</p>
+                                            <p style={{ color: '#666' }}>@{student.username} · Level {student.stats.level} · {student.stats.xp} XP{getCurrentGrade(student) ? ` · ${ORDINAL[getCurrentGrade(student)] ?? getCurrentGrade(student) + 'th'} Grade` : ''}</p>
                                         </div>
                                     </div>
 
@@ -3241,7 +3515,7 @@
                                         {Object.entries(SKILL_TREE).map(([domain, nodes]) => (
                                             <div key={domain} className="skill-domain-block">
                                                 <div className="skill-domain-label">
-                                                    {({ algebra: '📐 Algebra', geometry: '📏 Geometry', fractions: '🍕 Fractions' })[domain]}
+                                                    {({ algebra: '📐 Algebra', geometry: '📏 Geometry', fractions: '🍕 Fractions', ratios: '⚖️ Ratios' })[domain]}
                                                 </div>
                                                 {nodes.map(node => {
                                                     const key = `${domain}.${node.id}`;
