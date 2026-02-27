@@ -613,6 +613,8 @@
             'algebra-lesson-1': {
                 title: 'Introduction to Linear Equations',
                 topic: 'algebra',
+                // The structural insight students should discover during the discovery phase
+                ruleToDiscover: 'To isolate x in an equation, apply the inverse (opposite) operation to both sides — if something is added to x, subtract it from both sides; if x is multiplied by a number, divide both sides by that number.',
                 warmup: [
                     { question: "What is 5 + x when x = 3?", answer: "8", hint: "Replace x with 3", explanation: "5 + 3 = 8", xp: 5 },
                     { question: "If y = 7, what is 2 * y?", answer: "14", hint: "Multiply 2 by 7", explanation: "2 * 7 = 14", xp: 5 },
@@ -651,6 +653,7 @@
             'geometry-lesson-1': {
                 title: 'Perimeter and Area of Rectangles',
                 topic: 'geometry',
+                ruleToDiscover: 'Adding all four sides gives perimeter (since opposite sides of a rectangle are equal, this equals 2×length + 2×width). Multiplying length × width gives area. These are two different operations because perimeter measures distance around the outside and area measures the space inside.',
                 warmup: [
                     { question: "How many sides does a rectangle have?", answer: "4", hint: "Count them: top, bottom, left, right", explanation: "A rectangle has 4 sides", xp: 5 },
                     { question: "Opposite sides of a rectangle are equal. If one length is 7 cm, what is the length of the opposite side?", answer: "7", hint: "Opposite sides always match in a rectangle", explanation: "Opposite sides of a rectangle are equal, so the other length is also 7 cm", xp: 5 },
@@ -687,6 +690,7 @@
             'fractions-lesson-1': {
                 title: 'Adding Fractions with Same Denominator',
                 topic: 'fractions',
+                ruleToDiscover: 'When fractions share the same denominator, add or subtract only the numerators (top numbers) and keep the denominator unchanged. The denominator represents the size of each piece — you are just counting how many same-sized pieces you have, not changing what size the pieces are.',
                 warmup: [
                     { question: "How many halves make a whole?", answer: "2", hint: "2/2 = 1 whole", explanation: "Two halves = 1", xp: 5 },
                     { question: "How many fourths make a whole?", answer: "4", hint: "4/4 = 1 whole", explanation: "Four fourths = 1", xp: 5 },
@@ -1154,7 +1158,7 @@
                             setTimeout(() => {
                                 setShowTutor(true);
                                 setAwaitingPatternResponse(true);
-                                const patternPrompt = "Great work on these two problems! 🎯 Before we continue, I want you to look at both problems carefully. What pattern or similarity do you notice between them? Take your time and explain what you're seeing.";
+                                const patternPrompt = "Great work on these two problems! 🎯 Before we continue — think about HOW you solved them. What operation or method did you use? And why do you think that approach worked for both?";
                                 setChatMessages(prev => [...prev, 
                                     { role: 'assistant', content: patternPrompt }
                                 ]);
@@ -1182,9 +1186,9 @@
 
                     // ARTICULATION CHECKPOINT (end of Discovery)
                     if (lessonPhase === 'discovery' && !hasArticulated) {
-                        const lesson = LESSONS[currentLesson];
-                        const discoveryProblems = lesson.phases.find(p => p.name === 'discovery').problems;
-                        
+                        const lesson = currentLesson;
+                        const discoveryProblems = lesson.discovery;
+
                         // If this is the last discovery problem, require articulation
                         if (phaseIndex >= discoveryProblems.length - 1) {
                             setTimeout(() => {
@@ -1709,13 +1713,16 @@
                         promptContext = {
                             studentMessage: message,
                             lessonPhase: lessonPhase,
-                            lessonName: currentLesson || '',
+                            lessonName: currentLesson?.title || '',
+                            ruleToDiscover: currentLesson?.ruleToDiscover || '',
+                            problem1: currentLesson?.discovery?.[0]?.question || '',
+                            problem2: currentLesson?.discovery?.[1]?.question || '',
                         };
                     } else if (awaitingArticulation) {
                         promptType = 'articulation';
                         promptContext = {
                             studentMessage: message,
-                            lessonName: currentLesson || '',
+                            lessonName: currentLesson?.title || '',
                             problemExplanation: currentProblem.explanation || '',
                         };
                     } else {
@@ -1726,7 +1733,7 @@
                             problemHint: currentProblem.hint || '',
                             problemExplanation: currentProblem.explanation || '',
                             lessonPhase: currentLesson ? lessonPhase : 'practice',
-                            lessonName: currentLesson || '',
+                            lessonName: currentLesson?.title || '',
                         };
                     }
 
@@ -1784,18 +1791,15 @@
                                 setAwaitingArticulation(false);
                                 setHasArticulated(true);
                                 setTimeout(() => {
-                                    // Move to next phase
-                                    const lesson = LESSONS[currentLesson];
-                                    const currentPhaseObj = lesson.phases.find(p => p.name === lessonPhase);
-                                    const phaseIndexInLesson = lesson.phases.indexOf(currentPhaseObj);
-                                    
-                                    if (phaseIndexInLesson < lesson.phases.length - 1) {
-                                        const nextPhase = lesson.phases[phaseIndexInLesson + 1];
-                                        setLessonPhase(nextPhase.name);
-                                        setPhaseIndex(0);
-                                        setCurrentProblem(nextPhase.problems[0]);
-                                        setDiscoveryProblemsCompleted(0);
-                                    }
+                                    // Articulation always ends the discovery phase — advance to application
+                                    const lesson = currentLesson;
+                                    const firstApp = pickAdaptiveQuestion(lesson.topic, adaptiveDifficulty)
+                                        || lesson.application[0];
+                                    setLessonPhase('application');
+                                    setApplicationProblemsShown(0);
+                                    setPhaseIndex(0);
+                                    setCurrentProblem(firstApp);
+                                    setDiscoveryProblemsCompleted(0);
                                     setFeedback(null);
                                     setUserAnswer('');
                                     setShowTutor(false);
