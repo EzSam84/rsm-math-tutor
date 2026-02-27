@@ -2680,7 +2680,7 @@
                     <h1 className="login-title">RSM Math Quest</h1>
                     <p className="login-subtitle">Sign in to continue learning</p>
 
-                    <div className="login-form">
+                    <form className="login-form" onSubmit={e => { e.preventDefault(); login(); }}>
                         {loginError && <div className="login-error">{loginError}</div>}
 
                         <label className="form-label">Username</label>
@@ -2690,7 +2690,6 @@
                             placeholder="Enter your username"
                             value={loginUsername}
                             onChange={e => { setLoginUsername(e.target.value); setLoginError(''); }}
-                            onKeyDown={e => e.key === 'Enter' && login()}
                             autoFocus
                             autoComplete="username"
                         />
@@ -2702,11 +2701,10 @@
                             placeholder="Enter your password"
                             value={loginPassword}
                             onChange={e => { setLoginPassword(e.target.value); setLoginError(''); }}
-                            onKeyDown={e => e.key === 'Enter' && login()}
                             autoComplete="current-password"
                         />
 
-                        <button className="btn-primary" style={{ width: '100%' }} onClick={login}>
+                        <button type="submit" className="btn-primary" style={{ width: '100%' }}>
                             Log In
                         </button>
 
@@ -2722,7 +2720,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             );
 
