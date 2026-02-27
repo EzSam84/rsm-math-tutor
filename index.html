@@ -133,46 +133,159 @@
             font-weight: 500;
         }
 
-        .user-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-            max-width: 900px;
+        .login-form {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 36px;
+            max-width: 420px;
             margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
         }
 
-        .user-card {
-            background: var(--bg-primary);
-            padding: 32px;
-            border-radius: 20px;
+        .role-toggle {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 4px;
+            gap: 4px;
+            margin-bottom: 28px;
+        }
+
+        .role-toggle button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .role-toggle button.active {
+            background: var(--bg-primary);
+            color: var(--primary);
             box-shadow: var(--shadow-sm);
         }
 
-        .user-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary);
-        }
-
-        .user-avatar {
-            font-size: 4rem;
+        .login-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
             margin-bottom: 16px;
         }
 
-        .user-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
+        .login-links {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
 
-        .user-stats {
-            font-size: 0.875rem;
+        .login-links p {
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            font-weight: 500;
+        }
+
+        .login-links-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .link-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .pending-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 48px 36px;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .pending-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .approve-reject-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .btn-approve:hover { opacity: 0.9; }
+
+        .btn-reject {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reject:hover { opacity: 0.8; }
+
+        .pending-approval-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pending-approval-card .student-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
         }
 
         .content {
@@ -582,8 +695,7 @@
             letter-spacing: -0.025em;
         }
 
-        /* Parent dashboard: Add Student form */
-        .add-student-form {
+        .form-card {
             background: white;
             border-radius: 15px;
             padding: 24px;
@@ -591,10 +703,19 @@
             border: 2px solid var(--primary);
         }
 
-        .add-student-form h3 {
+        .form-card h3 {
             font-size: 1.1rem;
             margin-bottom: 16px;
             color: var(--text-primary);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            margin-top: 14px;
         }
 
         .avatar-picker {
@@ -624,10 +745,10 @@
             background: rgba(37, 99, 235, 0.08);
         }
 
-        .add-student-actions {
+        .form-actions {
             display: flex;
             gap: 12px;
-            margin-top: 4px;
+            margin-top: 20px;
         }
 
         /* Skill tree — parent dashboard */
@@ -1057,38 +1178,29 @@
             ],
         };
 
-        const STORAGE_KEY = 'rsm-math-quest-users';
+        const STORAGE_KEY = 'rsm-math-quest-v2';
 
-        const DEFAULT_USERS = [
-            {
-                id: 1,
-                name: 'Demo Student',
-                avatar: AVATARS[0],
-                isParent: false,
-                stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
-                badges: [],
-                conceptMastery: {},
-                lastPlayed: null,
-            },
-            {
-                id: 'parent',
-                name: 'Parent',
-                avatar: { emoji: '👨‍👩‍👧‍👦', name: 'Parent' },
-                isParent: true,
-                stats: null,
-                badges: [],
-                conceptMastery: {},
-                lastPlayed: null,
-            },
-        ];
+        // djb2 non-cryptographic hash — sufficient for localStorage-only child app
+        function hashPassword(str) {
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) + hash) + str.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return (hash >>> 0).toString(16);
+        }
+
+        function verifyPassword(input, storedHash) {
+            return hashPassword(input) === storedHash;
+        }
 
         function MathLearningApp() {
             const [users, setUsers] = useState(() => {
                 try {
                     const saved = localStorage.getItem(STORAGE_KEY);
-                    return saved ? JSON.parse(saved) : DEFAULT_USERS;
+                    return saved ? JSON.parse(saved) : [];
                 } catch {
-                    return DEFAULT_USERS;
+                    return [];
                 }
             });
             const [currentUser, setCurrentUser] = useState(null);
@@ -1133,10 +1245,18 @@
                 catch { /* storage unavailable — progress won't survive refresh */ }
             }, [users]);
 
-            // State for the parent-dashboard "Add Student" form
-            const [showAddStudent, setShowAddStudent] = useState(false);
-            const [newStudentName, setNewStudentName] = useState('');
-            const [newStudentAvatar, setNewStudentAvatar] = useState(AVATARS[0]);
+            // Auth form state
+            const [loginUsername, setLoginUsername] = useState('');
+            const [loginPassword, setLoginPassword] = useState('');
+            const [loginError, setLoginError] = useState('');
+            // Shared registration form state (used by both parent and child register views)
+            const [regName, setRegName] = useState('');
+            const [regUsername, setRegUsername] = useState('');
+            const [regPassword, setRegPassword] = useState('');
+            const [regParentUsername, setRegParentUsername] = useState('');
+            const [regAvatar, setRegAvatar] = useState(AVATARS[0]);
+            const [regError, setRegError] = useState('');
+            const [regSuccess, setRegSuccess] = useState('');
 
             // Build a shuffled warmup pool by mixing the lesson's own warmup questions
             // with QUESTION_BANK difficulty-1 questions for variety each session.
@@ -1200,47 +1320,108 @@
                 return picked;
             }
 
-            function selectUser(user) {
-                let updatedUser = user;
-                if (!user.isParent && user.stats) {
+            function resetRegForm() {
+                setRegName(''); setRegUsername(''); setRegPassword('');
+                setRegParentUsername(''); setRegAvatar(AVATARS[0]);
+                setRegError(''); setRegSuccess('');
+            }
+
+            function login() {
+                const uname = loginUsername.trim().toLowerCase();
+                const user = users.find(u => u.username === uname);
+                if (!user || !verifyPassword(loginPassword, user.passwordHash)) {
+                    setLoginError('Incorrect username or password.');
+                    return;
+                }
+                setLoginError('');
+                setLoginUsername('');
+                setLoginPassword('');
+                if (user.role === 'child' && user.pendingApproval) {
+                    setCurrentUser(user);
+                    setView('pending-approval');
+                    return;
+                }
+                // Update streak on child login
+                let activeUser = user;
+                if (user.role === 'child' && user.stats) {
                     const today = new Date().toDateString();
                     const yesterday = new Date(Date.now() - 86_400_000).toDateString();
                     const last = user.lastPlayed;
                     const newStreak = last === today ? user.stats.streak
                         : last === yesterday ? user.stats.streak + 1
                         : 1;
-                    updatedUser = {
-                        ...user,
-                        lastPlayed: today,
-                        stats: { ...user.stats, streak: newStreak },
-                    };
-                    setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
+                    activeUser = { ...user, lastPlayed: today, stats: { ...user.stats, streak: newStreak } };
+                    setUsers(prev => prev.map(u => u.id === user.id ? activeUser : u));
                 }
-                setCurrentUser(updatedUser);
-                setView(updatedUser.isParent ? 'parent' : 'home');
+                setCurrentUser(activeUser);
+                setView(activeUser.role === 'parent' ? 'parent' : 'home');
             }
 
-            function createStudent() {
-                const name = newStudentName.trim();
-                if (!name) return;
-                const newUser = {
-                    id: Date.now(),
+            function registerParent() {
+                const name = regName.trim();
+                const uname = regUsername.trim().toLowerCase();
+                const pass = regPassword;
+                if (!name) { setRegError('Display name is required.'); return; }
+                if (!uname) { setRegError('Username is required.'); return; }
+                if (pass.length < 4) { setRegError('Password must be at least 4 characters.'); return; }
+                if (users.some(u => u.username === uname)) { setRegError('That username is already taken.'); return; }
+                const newParent = {
+                    id: Date.now().toString(),
+                    username: uname,
+                    passwordHash: hashPassword(pass),
+                    role: 'parent',
                     name,
-                    avatar: newStudentAvatar,
-                    isParent: false,
+                    avatar: regAvatar,
+                    parentId: null,
+                    pendingApproval: false,
+                    stats: null,
+                    badges: [],
+                    conceptMastery: {},
+                    lastPlayed: null,
+                };
+                setUsers(prev => [...prev, newParent]);
+                resetRegForm();
+                setCurrentUser(newParent);
+                setView('parent');
+            }
+
+            function registerChild() {
+                const name = regName.trim();
+                const uname = regUsername.trim().toLowerCase();
+                const pass = regPassword;
+                const puname = regParentUsername.trim().toLowerCase();
+                if (!name) { setRegError('Display name is required.'); return; }
+                if (!uname) { setRegError('Username is required.'); return; }
+                if (pass.length < 4) { setRegError('Password must be at least 4 characters.'); return; }
+                if (!puname) { setRegError("Enter your parent's username."); return; }
+                if (users.some(u => u.username === uname)) { setRegError('That username is already taken.'); return; }
+                const parent = users.find(u => u.username === puname && u.role === 'parent');
+                if (!parent) { setRegError("No parent account found with that username."); return; }
+                const newChild = {
+                    id: Date.now().toString(),
+                    username: uname,
+                    passwordHash: hashPassword(pass),
+                    role: 'child',
+                    name,
+                    avatar: regAvatar,
+                    parentId: parent.id,
+                    pendingApproval: true,
                     stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
                     badges: [],
                     conceptMastery: {},
                     lastPlayed: null,
                 };
-                setUsers(prev => {
-                    const parent = prev.find(u => u.isParent);
-                    const students = prev.filter(u => !u.isParent);
-                    return parent ? [...students, newUser, parent] : [...students, newUser];
-                });
-                setNewStudentName('');
-                setNewStudentAvatar(AVATARS[0]);
-                setShowAddStudent(false);
+                setUsers(prev => [...prev, newChild]);
+                resetRegForm();
+                setRegSuccess(`Account created! Ask ${parent.name} to log in and approve your profile.`);
+            }
+
+            function approveChild(childId) {
+                setUsers(prev => prev.map(u => u.id === childId ? { ...u, pendingApproval: false } : u));
+            }
+
+            function rejectChild(childId) {
+                setUsers(prev => prev.filter(u => u.id !== childId));
             }
 
             function startLesson(lessonId) {
@@ -2105,20 +2286,167 @@
             const renderLogin = () => (
                 <div className="login-container">
                     <h1 className="login-title">RSM Math Quest</h1>
-                    <p className="login-subtitle">Select your profile to start learning</p>
-                    
-                    <div className="user-grid">
-                        {users.map(user => (
-                            <div key={user.id} className="user-card" onClick={() => selectUser(user)}>
-                                <div className="user-avatar">{user.avatar.emoji}</div>
-                                <div className="user-name">{user.name}</div>
-                                {user.stats && (
-                                    <div className="user-stats">
-                                        Level {user.stats.level} • {user.stats.xp} XP
-                                    </div>
-                                )}
+                    <p className="login-subtitle">Sign in to continue learning</p>
+
+                    <div className="login-form">
+                        {loginError && <div className="login-error">{loginError}</div>}
+
+                        <label className="form-label">Username</label>
+                        <input
+                            className="answer-input"
+                            type="text"
+                            placeholder="Enter your username"
+                            value={loginUsername}
+                            onChange={e => { setLoginUsername(e.target.value); setLoginError(''); }}
+                            onKeyDown={e => e.key === 'Enter' && login()}
+                            autoFocus
+                            autoComplete="username"
+                        />
+
+                        <label className="form-label">Password</label>
+                        <input
+                            className="answer-input"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={loginPassword}
+                            onChange={e => { setLoginPassword(e.target.value); setLoginError(''); }}
+                            onKeyDown={e => e.key === 'Enter' && login()}
+                            autoComplete="current-password"
+                        />
+
+                        <button className="btn-primary" style={{ width: '100%' }} onClick={login}>
+                            Log In
+                        </button>
+
+                        <div className="login-links">
+                            <p>New here?</p>
+                            <div className="login-links-row">
+                                <button className="link-btn" onClick={() => { resetRegForm(); setView('register-parent'); }}>
+                                    Create parent account
+                                </button>
+                                <span style={{ color: 'var(--text-tertiary)' }}>·</span>
+                                <button className="link-btn" onClick={() => { resetRegForm(); setView('register-child'); }}>
+                                    Register as student
+                                </button>
                             </div>
-                        ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderRegisterParent = () => (
+                <div className="login-container">
+                    <h1 className="login-title">RSM Math Quest</h1>
+                    <p className="login-subtitle">Create a parent account</p>
+                    <div className="login-form">
+                        {regError && <div className="login-error">{regError}</div>}
+
+                        <label className="form-label">Your Name</label>
+                        <input className="answer-input" type="text" placeholder="e.g. Jane Smith"
+                            value={regName} onChange={e => { setRegName(e.target.value); setRegError(''); }}
+                            maxLength={40} autoFocus />
+
+                        <label className="form-label">Username</label>
+                        <input className="answer-input" type="text" placeholder="Choose a username"
+                            value={regUsername} onChange={e => { setRegUsername(e.target.value); setRegError(''); }}
+                            maxLength={30} autoComplete="username" />
+
+                        <label className="form-label">Password</label>
+                        <input className="answer-input" type="password" placeholder="At least 4 characters"
+                            value={regPassword} onChange={e => { setRegPassword(e.target.value); setRegError(''); }}
+                            maxLength={100} autoComplete="new-password"
+                            onKeyDown={e => e.key === 'Enter' && registerParent()} />
+
+                        <label className="form-label">Avatar</label>
+                        <div className="avatar-picker">
+                            {AVATARS.map(av => (
+                                <button key={av.name}
+                                    className={`avatar-option${regAvatar.name === av.name ? ' selected' : ''}`}
+                                    onClick={() => setRegAvatar(av)} title={av.name}>
+                                    {av.emoji}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="form-actions">
+                            <button className="btn-primary" onClick={registerParent}>Create Account</button>
+                            <button className="btn-secondary" onClick={() => { resetRegForm(); setView('login'); }}>Back</button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderRegisterChild = () => (
+                <div className="login-container">
+                    <h1 className="login-title">RSM Math Quest</h1>
+                    <p className="login-subtitle">Create a student account</p>
+                    <div className="login-form">
+                        {regError && <div className="login-error">{regError}</div>}
+                        {regSuccess && (
+                            <div style={{ background: '#d1fae5', color: '#065f46', border: '1px solid #6ee7b7',
+                                borderRadius: '10px', padding: '12px 16px', marginBottom: '16px', fontWeight: 500 }}>
+                                {regSuccess}
+                                <div style={{ marginTop: '10px' }}>
+                                    <button className="link-btn" onClick={() => { resetRegForm(); setView('login'); }}>
+                                        Back to login
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {!regSuccess && (<>
+                            <label className="form-label">Your Name</label>
+                            <input className="answer-input" type="text" placeholder="e.g. Alex"
+                                value={regName} onChange={e => { setRegName(e.target.value); setRegError(''); }}
+                                maxLength={40} autoFocus />
+
+                            <label className="form-label">Username</label>
+                            <input className="answer-input" type="text" placeholder="Choose a username"
+                                value={regUsername} onChange={e => { setRegUsername(e.target.value); setRegError(''); }}
+                                maxLength={30} autoComplete="username" />
+
+                            <label className="form-label">Password</label>
+                            <input className="answer-input" type="password" placeholder="At least 4 characters"
+                                value={regPassword} onChange={e => { setRegPassword(e.target.value); setRegError(''); }}
+                                maxLength={100} autoComplete="new-password" />
+
+                            <label className="form-label">Parent's Username</label>
+                            <input className="answer-input" type="text" placeholder="Ask your parent for their username"
+                                value={regParentUsername} onChange={e => { setRegParentUsername(e.target.value); setRegError(''); }}
+                                maxLength={30}
+                                onKeyDown={e => e.key === 'Enter' && registerChild()} />
+
+                            <label className="form-label">Avatar</label>
+                            <div className="avatar-picker">
+                                {AVATARS.map(av => (
+                                    <button key={av.name}
+                                        className={`avatar-option${regAvatar.name === av.name ? ' selected' : ''}`}
+                                        onClick={() => setRegAvatar(av)} title={av.name}>
+                                        {av.emoji}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="form-actions">
+                                <button className="btn-primary" onClick={registerChild}>Request Account</button>
+                                <button className="btn-secondary" onClick={() => { resetRegForm(); setView('login'); }}>Back</button>
+                            </div>
+                        </>)}
+                    </div>
+                </div>
+            );
+
+            const renderPendingApproval = () => (
+                <div className="login-container">
+                    <div className="pending-card">
+                        <div className="pending-icon">⏳</div>
+                        <h2 style={{ marginBottom: '12px' }}>Waiting for Approval</h2>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '28px' }}>
+                            Your account is waiting for your parent to approve it.
+                            Ask your parent to log in and approve your profile from their dashboard.
+                        </p>
+                        <button className="btn-secondary" onClick={() => { setCurrentUser(null); setView('login'); }}>
+                            Back to Login
+                        </button>
                     </div>
                 </div>
             );
@@ -2146,10 +2474,10 @@
                         </div>
                         
                         <div className="content">
-                            <button className="btn-secondary" onClick={() => setView('login')}>
-                                Back to Login
+                            <button className="btn-secondary" onClick={() => { setCurrentUser(null); setView('login'); }}>
+                                Sign Out
                             </button>
-                            
+
                             <h2 style={{ marginTop: '30px', marginBottom: '20px' }}>Lessons (RSM Style)</h2>
                             
                             <div className="topic-grid">
@@ -2649,76 +2977,61 @@
             );
 
             const renderParentDashboard = () => {
-                const studentUsers = users.filter(u => !u.isParent);
+                if (!currentUser) return null;
+                const pendingChildren = users.filter(u => u.role === 'child' && u.parentId === currentUser.id && u.pendingApproval);
+                const activeChildren = users.filter(u => u.role === 'child' && u.parentId === currentUser.id && !u.pendingApproval);
 
                 return (
                     <div>
                         <div className="header">
                             <div className="header-left">
-                                <h1>Parent Dashboard</h1>
+                                <h1>{currentUser.name}'s Dashboard</h1>
                                 <p>Monitor your children's progress</p>
                             </div>
                         </div>
 
                         <div className="parent-dashboard">
-                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-                                <button className="btn-secondary" onClick={() => setView('login')}>
-                                    Back to Login
-                                </button>
-                                <button className="btn-primary" onClick={() => setShowAddStudent(s => !s)}>
-                                    {showAddStudent ? 'Cancel' : '＋ Add Student'}
-                                </button>
-                            </div>
+                            <button className="btn-secondary" style={{ marginBottom: '24px' }}
+                                onClick={() => { setCurrentUser(null); setView('login'); }}>
+                                Sign Out
+                            </button>
 
-                            {showAddStudent && (
-                                <div className="add-student-form">
-                                    <h3>New Student Profile</h3>
-                                    <input
-                                        className="answer-input"
-                                        type="text"
-                                        placeholder="Student name"
-                                        value={newStudentName}
-                                        onChange={e => setNewStudentName(e.target.value)}
-                                        onKeyDown={e => e.key === 'Enter' && createStudent()}
-                                        maxLength={40}
-                                        autoFocus
-                                    />
-                                    <div className="avatar-picker">
-                                        {AVATARS.map(av => (
-                                            <button
-                                                key={av.name}
-                                                className={`avatar-option${newStudentAvatar.name === av.name ? ' selected' : ''}`}
-                                                onClick={() => setNewStudentAvatar(av)}
-                                                title={av.name}
-                                            >
-                                                {av.emoji}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div className="add-student-actions">
-                                        <button className="btn-primary" onClick={createStudent} disabled={!newStudentName.trim()}>
-                                            Create Profile
-                                        </button>
-                                        <button className="btn-secondary" onClick={() => {
-                                            setShowAddStudent(false);
-                                            setNewStudentName('');
-                                            setNewStudentAvatar(AVATARS[0]);
-                                        }}>
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
+                            {pendingChildren.length > 0 && (
+                                <>
+                                    <h2 style={{ margin: '0 0 16px' }}>Pending Approvals</h2>
+                                    {pendingChildren.map(child => (
+                                        <div key={child.id} className="pending-approval-card">
+                                            <div className="student-info">
+                                                <div style={{ fontSize: '2.5em' }}>{child.avatar.emoji}</div>
+                                                <div>
+                                                    <strong>{child.name}</strong>
+                                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                                                        @{child.username}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="approve-reject-row">
+                                                <button className="btn-approve" onClick={() => approveChild(child.id)}>
+                                                    ✓ Approve
+                                                </button>
+                                                <button className="btn-reject" onClick={() => rejectChild(child.id)}>
+                                                    ✕ Reject
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </>
                             )}
 
                             <h2 style={{ margin: '30px 0 20px' }}>Student Progress</h2>
 
-                            {studentUsers.map(student => (
+                            {activeChildren.map(student => (
                                 <div key={student.id} className="student-card">
                                     <div className="student-header">
                                         <div style={{ fontSize: '3em' }}>{student.avatar.emoji}</div>
                                         <div style={{ flex: 1 }}>
                                             <h3 style={{ fontSize: '1.5em', marginBottom: '5px' }}>{student.name}</h3>
-                                            <p style={{ color: '#666' }}>Level {student.stats.level} • {student.stats.xp} XP</p>
+                                            <p style={{ color: '#666' }}>@{student.username} · Level {student.stats.level} · {student.stats.xp} XP</p>
                                         </div>
                                     </div>
 
@@ -2766,16 +3079,11 @@
                                 </div>
                             ))}
 
-                            {studentUsers.length === 0 && !showAddStudent && (
-                                <div style={{
-                                    textAlign: 'center',
-                                    padding: '60px 20px',
-                                    background: 'white',
-                                    borderRadius: '15px'
-                                }}>
+                            {activeChildren.length === 0 && pendingChildren.length === 0 && (
+                                <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: '15px' }}>
                                     <h3 style={{ color: '#666' }}>No students yet</h3>
                                     <p style={{ color: '#999', marginTop: '10px' }}>
-                                        Use "＋ Add Student" above to create the first profile.
+                                        Have your child register at the login screen using your username.
                                     </p>
                                 </div>
                             )}
@@ -2787,6 +3095,9 @@
             return (
                 <div className="container">
                     {view === 'login' && renderLogin()}
+                    {view === 'register-parent' && renderRegisterParent()}
+                    {view === 'register-child' && renderRegisterChild()}
+                    {view === 'pending-approval' && renderPendingApproval()}
                     {view === 'home' && renderHome()}
                     {view === 'problem' && renderProblem()}
                     {view === 'lesson' && renderLesson()}
