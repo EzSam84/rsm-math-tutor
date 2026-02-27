@@ -629,6 +629,50 @@
             gap: 12px;
             margin-top: 4px;
         }
+
+        /* Skill tree — parent dashboard */
+        .skill-tree-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .skill-domain-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .skill-domain-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .skill-node {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            cursor: default;
+        }
+
+        .skill-not-started { background: var(--bg-secondary); color: var(--text-secondary); }
+        .skill-learning    { background: #fef9c3; color: #854d0e; }
+        .skill-practicing  { background: #dbeafe; color: #1e40af; }
+        .skill-mastered    { background: #dcfce7; color: #166534; }
+        .skill-struggling  { background: #fee2e2; color: #991b1b; }
+
+        .skill-node-name  { font-weight: 500; }
+        .skill-node-count { font-weight: 700; font-size: 0.8rem; opacity: 0.85; }
     </style>
 </head>
 <body>
@@ -973,6 +1017,46 @@
             ],
         };
 
+        // ─── Skill hierarchy: one tree per domain, 5 nodes each mapping to QUESTION_BANK difficulty 1-5 ───
+        const SKILL_TREE = {
+            algebra: [
+                { id: 'variable-substitution',    name: 'Variables & Substitution',    difficulty: 1,
+                  description: 'Reading and evaluating algebraic expressions' },
+                { id: 'one-step-equations',       name: 'One-Step Equations',          difficulty: 2,
+                  description: 'Solving equations with a single inverse operation' },
+                { id: 'two-step-equations',       name: 'Two-Step Equations',          difficulty: 3,
+                  description: 'Solving ax ± b = c with two inverse operations' },
+                { id: 'multi-step-word-problems', name: 'Multi-Step & Word Problems',  difficulty: 4,
+                  description: 'Distribution, combining like terms, problem translation' },
+                { id: 'variables-both-sides',     name: 'Variables on Both Sides',     difficulty: 5,
+                  description: 'Equations requiring consolidation of variable terms' },
+            ],
+            geometry: [
+                { id: 'shape-properties',         name: 'Shape Properties',            difficulty: 1,
+                  description: 'Sides, angles, and vocabulary of basic shapes' },
+                { id: 'perimeter-area-direct',    name: 'Perimeter & Area',            difficulty: 2,
+                  description: 'Computing perimeter and area from given dimensions' },
+                { id: 'inverse-dimensions',       name: 'Missing Dimensions',          difficulty: 3,
+                  description: 'Finding a side length from perimeter or area' },
+                { id: 'multi-step-geometry',      name: 'Multi-Step Geometry',         difficulty: 4,
+                  description: 'Combining formulas, algebraic setup, word problems' },
+                { id: 'advanced-geometry',        name: 'Advanced Geometry',           difficulty: 5,
+                  description: 'Pythagorean theorem, angle equations, compound shapes' },
+            ],
+            fractions: [
+                { id: 'fraction-concepts',        name: 'Fraction Concepts',           difficulty: 1,
+                  description: 'Understanding numerator, denominator, and part-whole' },
+                { id: 'same-denominator',         name: 'Same-Denominator Arithmetic', difficulty: 2,
+                  description: 'Adding and subtracting with matching denominators' },
+                { id: 'simplification',           name: 'Simplification & Equivalence',difficulty: 3,
+                  description: 'Reducing fractions using GCD, equivalent fractions' },
+                { id: 'unlike-denominators',      name: 'Unlike Denominators',         difficulty: 4,
+                  description: 'Finding LCM and converting to common denominators' },
+                { id: 'multiply-divide',          name: 'Multiply & Divide',           difficulty: 5,
+                  description: 'Fraction multiplication, division, complex operations' },
+            ],
+        };
+
         const STORAGE_KEY = 'rsm-math-quest-users';
 
         const DEFAULT_USERS = [
@@ -983,6 +1067,7 @@
                 isParent: false,
                 stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
                 badges: [],
+                conceptMastery: {},
                 lastPlayed: null,
             },
             {
@@ -992,6 +1077,7 @@
                 isParent: true,
                 stats: null,
                 badges: [],
+                conceptMastery: {},
                 lastPlayed: null,
             },
         ];
@@ -1054,6 +1140,32 @@
 
             // Build a shuffled warmup pool by mixing the lesson's own warmup questions
             // with QUESTION_BANK difficulty-1 questions for variety each session.
+
+            // Returns the SKILL_TREE node key for the current problem, e.g. "algebra.one-step-equations".
+            // QUESTION_BANK problems have an explicit .difficulty; lesson problems infer it from phase.
+            function getSkillNodeKey(topic, problem, phase, adaptiveDiff) {
+                if (!topic || !SKILL_TREE[topic]) return null;
+                const diffLevel = problem.difficulty
+                    ?? (phase === 'warmup'      ? 1
+                      : phase === 'discovery'   ? 2
+                      : phase === 'exitTicket'  ? 3
+                      : phase === 'application' ? adaptiveDiff
+                      : null);
+                if (!diffLevel) return null;
+                const node = SKILL_TREE[topic].find(n => n.difficulty === diffLevel);
+                return node ? `${topic}.${node.id}` : null;
+            }
+
+            // Returns a mastery tier string based on correct/attempted counts.
+            function getMasteryLevel(entry) {
+                if (!entry || !entry.attempted) return 'not-started';
+                const rate = entry.correct / entry.attempted;
+                if (entry.correct >= 5 && rate >= 0.70) return 'mastered';
+                if (entry.correct >= 3 && rate >= 0.50) return 'practicing';
+                if (entry.correct >= 1)                 return 'learning';
+                return 'struggling';
+            }
+
             function buildShuffledWarmup(lesson) {
                 const bankDiff1 = (QUESTION_BANK[lesson.topic] || []).filter(q => q.difficulty === 1);
                 const combined = [...lesson.warmup, ...bankDiff1];
@@ -1118,6 +1230,7 @@
                     isParent: false,
                     stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
                     badges: [],
+                    conceptMastery: {},
                     lastPlayed: null,
                 };
                 setUsers(prev => {
@@ -1311,6 +1424,7 @@
                         }
                     }
                     
+                    const skillKey = getSkillNodeKey(currentTopic, currentProblem, lessonPhase, adaptiveDifficulty);
                     setUsers(prevUsers => prevUsers.map(u => {
                         if (u.id === currentUser.id) {
                             const newStats = {
@@ -1319,7 +1433,15 @@
                                 problemsSolved: u.stats.problemsSolved + 1,
                                 level: Math.floor((u.stats.xp + currentProblem.xp) / 100) + 1
                             };
-                            const updatedUser = { ...u, stats: newStats };
+                            const cm = u.conceptMastery || {};
+                            const newCM = skillKey ? {
+                                ...cm,
+                                [skillKey]: {
+                                    correct:   (cm[skillKey]?.correct   || 0) + 1,
+                                    attempted: (cm[skillKey]?.attempted || 0) + 1,
+                                },
+                            } : cm;
+                            const updatedUser = { ...u, stats: newStats, conceptMastery: newCM };
                             setCurrentUser(updatedUser);
                             return updatedUser;
                         }
@@ -1338,6 +1460,22 @@
                             setAdaptiveDifficulty(d => Math.max(d - 1, 1));
                             setConsecutiveWrong(0);
                         }
+                    }
+
+                    // Track wrong attempt in concept mastery so accuracy is reflected
+                    const skillKeyWrong = getSkillNodeKey(currentTopic, currentProblem, lessonPhase, adaptiveDifficulty);
+                    if (skillKeyWrong) {
+                        setUsers(prev => prev.map(u => {
+                            if (u.id !== currentUser.id) return u;
+                            const cm = u.conceptMastery || {};
+                            return { ...u, conceptMastery: {
+                                ...cm,
+                                [skillKeyWrong]: {
+                                    correct:   cm[skillKeyWrong]?.correct   || 0,
+                                    attempted: (cm[skillKeyWrong]?.attempted || 0) + 1,
+                                },
+                            }};
+                        }));
                     }
 
                     // Auto-open tutor and provide guidance
@@ -2601,6 +2739,29 @@
                                             <h4>Total XP</h4>
                                             <p>{student.stats.xp}</p>
                                         </div>
+                                    </div>
+
+                                    <div className="skill-tree-section">
+                                        {Object.entries(SKILL_TREE).map(([domain, nodes]) => (
+                                            <div key={domain} className="skill-domain-block">
+                                                <div className="skill-domain-label">
+                                                    {({ algebra: '📐 Algebra', geometry: '📏 Geometry', fractions: '🍕 Fractions' })[domain]}
+                                                </div>
+                                                {nodes.map(node => {
+                                                    const key = `${domain}.${node.id}`;
+                                                    const entry = student.conceptMastery?.[key];
+                                                    const level = getMasteryLevel(entry);
+                                                    return (
+                                                        <div key={key} className={`skill-node skill-${level}`} title={node.description}>
+                                                            <span className="skill-node-name">{node.name}</span>
+                                                            <span className="skill-node-count">
+                                                                {entry ? `${entry.correct}/${entry.attempted}` : '—'}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             ))}
