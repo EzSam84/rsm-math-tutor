@@ -75,11 +75,19 @@ There is no build step. Babel transpiles JSX in the browser. React is loaded fro
 ## Commands
 
 ```bash
-# Local development
-npx vercel dev            # Start local dev server (requires GROQ_API_KEY in .env)
+# Install dependencies (first time only)
+npm install
 
-# Production deploy
-npx vercel --prod         # Deploy to Vercel
+# Local development (requires ANTHROPIC_API_KEY in .env)
+npm run dev               # Starts Express server on http://localhost:3000
+
+# Production deploy — Railway (recommended)
+# 1. Push branch to GitHub
+# 2. Connect repo on railway.app, set ANTHROPIC_API_KEY env var
+# Railway auto-deploys on every push; no CLI needed.
+
+# Production deploy — Vercel (still supported)
+npx vercel --prod         # vercel.json + api/tutor.js still work unchanged
 
 # No test or lint commands exist yet — see "Evolving the Codebase" below
 ```
@@ -282,7 +290,8 @@ These are known improvements. Do not implement proactively — only when explici
 | File | Lines | Purpose |
 |---|---|---|
 | `index.html` | ~2300 | Full frontend: CSS, React SPA, canvas rendering, fallback tutor |
-| `api/tutor.js` | ~410 | Serverless backend: validation, rate limiting, prompt construction, Groq proxy |
-| `vercel.json` | ~30 | Deployment config, security headers, function settings |
-| `package.json` | ~15 | Minimal config: `"type": "module"`, dev/deploy scripts |
+| `api/tutor.js` | ~410 | API handler: validation, rate limiting, prompt construction, Anthropic proxy |
+| `server.js` | ~35 | Express server: serves frontend + mounts api/tutor.js for non-Vercel deploys |
+| `vercel.json` | ~30 | Vercel-only: security headers and function settings (not used on Railway) |
+| `package.json` | ~15 | Dependencies (express, dotenv) and start script |
 | `.gitignore` | ~30 | Standard ignores: node_modules, .env, .vercel, OS/editor files |
