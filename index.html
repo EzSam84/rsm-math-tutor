@@ -794,6 +794,102 @@
 
         .skill-node-name  { font-weight: 500; }
         .skill-node-count { font-weight: 700; font-size: 0.8rem; opacity: 0.85; }
+
+        /* Exit ticket bridge — mini-tutorial card */
+        .bridge-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 36px;
+            margin-top: 28px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--accent);
+        }
+
+        .bridge-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .bridge-card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .bridge-card > p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .bridge-example {
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            padding: 24px;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+        }
+
+        .bridge-problem {
+            font-size: 1.0625rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .bridge-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .bridge-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+        }
+
+        .bridge-step-num {
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .bridge-answer {
+            font-weight: 700;
+            color: var(--secondary-dark);
+            font-size: 1rem;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .bridge-actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -861,7 +957,16 @@
                     { question: "A number multiplied by 7, then decreased by 5, equals 30. What is the number?", answer: "5", hint: "Write this as 7x - 5 = 30", explanation: "7x - 5 = 30 → 7x = 35 → x = 5", xp: 25 },
                     { question: "Solve: 8x + 5 = 53", answer: "6", hint: "What's your first step?", explanation: "8x + 5 = 53 → 8x = 48 → x = 6", xp: 20 },
                     { question: "Twice a number minus 9 equals 11. What is the number?", answer: "10", hint: "Write this as 2x - 9 = 11", explanation: "2x - 9 = 11 → 2x = 20 → x = 10", xp: 25 },
-                ]
+                ],
+                exitTicketBridge: {
+                    concept: 'Word Problems',
+                    explanation: "The exit ticket uses word problems — real situations described in words that you translate into an equation, then solve. The steps are the same ones you just practiced!",
+                    example: {
+                        problem: '"A number times 4, then minus 3, equals 21. What is the number?"',
+                        steps: ['Write it as an equation: 4x − 3 = 21', 'Add 3 to both sides: 4x = 24', 'Divide both sides by 4: x = 6'],
+                        answer: 'x = 6',
+                    },
+                },
             },
             'geometry-lesson-1': {
                 title: 'Perimeter and Area of Rectangles',
@@ -898,7 +1003,16 @@
                     { question: "A rectangular garden has area 48 m² and width 6 m. What is its length?", answer: "8", hint: "Area = length * width, so length = area / width", explanation: "48 / 6 = 8 m", xp: 20 },
                     { question: "A square has a perimeter of 36 cm. What is the length of one side?", answer: "9", hint: "Perimeter = 4 * side, so side = perimeter / 4", explanation: "36 / 4 = 9 cm", xp: 20 },
                     { question: "A rectangle has area 72 m² and length 9 m. What is its width?", answer: "8", hint: "Area = length * width, so width = area / length", explanation: "72 / 9 = 8 m", xp: 20 },
-                ]
+                ],
+                exitTicketBridge: {
+                    concept: 'Working Backwards',
+                    explanation: "Instead of finding perimeter or area from given dimensions, these problems give you the result and ask for a missing side. Use the same formulas — just rearrange them.",
+                    example: {
+                        problem: '"A rectangle has a perimeter of 24 cm and a length of 8 cm. What is its width?"',
+                        steps: ['Use the formula: 2(length + width) = perimeter', 'Plug in: 2(8 + w) = 24 → 8 + w = 12', 'Subtract 8: w = 4 cm'],
+                        answer: 'Width = 4 cm',
+                    },
+                },
             },
             'fractions-lesson-1': {
                 title: 'Adding Fractions with Same Denominator',
@@ -935,7 +1049,16 @@
                     { question: "Sarah ate 2/8 of a pizza. Tom ate 3/8. How much did they eat together?", answer: "5/8", hint: "Add the two fractions", explanation: "2/8 + 3/8 = 5/8 of the pizza", xp: 20 },
                     { question: "Add: 3/11 + 7/11", answer: "10/11", hint: "Add the numerators, keep the denominator 11", explanation: "3/11 + 7/11 = 10/11", xp: 15 },
                     { question: "Jake ate 3/6 of a pizza and Maria ate 2/6. How much did they eat together?", answer: "5/6", hint: "Add the two fractions with the same denominator", explanation: "3/6 + 2/6 = 5/6 of the pizza", xp: 20 },
-                ]
+                ],
+                exitTicketBridge: {
+                    concept: 'Fractions in the Real World',
+                    explanation: "You'll apply fraction addition to real-life situations. The math is the same — just read the situation, identify the fractions, and add them like you practiced.",
+                    example: {
+                        problem: '"Sara ate 1/6 of a cake and Tom ate 2/6. How much did they eat together?"',
+                        steps: ['Identify the fractions: 1/6 and 2/6', 'Same denominator — just add numerators: 1 + 2 = 3', 'Answer: 3/6 of the cake'],
+                        answer: '3/6',
+                    },
+                },
             },
         };
 
@@ -1495,6 +1618,9 @@
                         setApplicationProblemsShown(nextShown);
                         setPhaseIndex(nextShown);
                         setCurrentProblem(nextQ);
+                    } else if (lesson.exitTicketBridge) {
+                        setLessonPhase('exitTicketBridge');
+                        setCurrentProblem(null);
                     } else {
                         setLessonPhase('exitTicket');
                         setPhaseIndex(0);
@@ -2718,20 +2844,77 @@
             };
 
             const renderLesson = () => {
-                if (!currentProblem || !currentLesson) return null;
-                
+                if (!currentLesson) return null;
+
+                // Bridge screen shown between application and exit ticket
+                if (lessonPhase === 'exitTicketBridge') {
+                    const bridge = currentLesson.exitTicketBridge;
+                    return (
+                        <div>
+                            <div className="header">
+                                <div className="header-left">
+                                    <h1>{currentLesson.title}</h1>
+                                    <p>Phase: Exit Ticket</p>
+                                </div>
+                            </div>
+                            <div className="content">
+                                <button className="btn-secondary" onClick={() => setView('home')}>
+                                    Back to Home
+                                </button>
+                                <div className="bridge-card">
+                                    <div className="bridge-badge">New Concept</div>
+                                    <h2>{bridge.concept}</h2>
+                                    <p>{bridge.explanation}</p>
+                                    <div className="bridge-example">
+                                        <div className="bridge-problem">{bridge.example.problem}</div>
+                                        <div className="bridge-steps">
+                                            {bridge.example.steps.map((s, i) => (
+                                                <div key={i} className="bridge-step">
+                                                    <span className="bridge-step-num">{i + 1}</span>
+                                                    <span>{s}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="bridge-answer">Answer: {bridge.example.answer}</div>
+                                    </div>
+                                    <div className="bridge-actions">
+                                        <button className="btn-primary" onClick={() => {
+                                            setLessonPhase('exitTicket');
+                                            setPhaseIndex(0);
+                                            setCurrentProblem(currentLesson.exitTicket[0]);
+                                            setFeedback(null);
+                                            setUserAnswer('');
+                                            setShowTutor(false);
+                                        }}>
+                                            Try the Exit Ticket
+                                        </button>
+                                        <button className="btn-secondary" onClick={() => setView('lessonComplete')}>
+                                            Finish Lesson
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                if (!currentProblem) return null;
+
                 const phaseNames = {
                     'warmup': 'Warm-Up',
                     'discovery': 'Discovery',
                     'application': 'Application',
-                    'exitTicket': 'Exit Ticket'
+                    'exitTicket': 'Exit Ticket',
+                    'exitTicketBridge': 'Exit Ticket',
                 };
-                
+
                 const progress = lessonPhase === 'application' ? applicationProblemsShown + 1 : phaseIndex + 1;
                 const total = lessonPhase === 'application' ? 6
                     : lessonPhase === 'warmup' ? (warmupQueue.length || currentLesson.warmup.length)
-                    : currentLesson[lessonPhase].length;
-                
+                    : currentLesson[lessonPhase]?.length ?? 0;
+
+                const isExitTicketActive = lessonPhase === 'exitTicket' || lessonPhase === 'exitTicketBridge';
+
                 return (
                     <div>
                         <div className="header">
@@ -2746,35 +2929,35 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="content">
                             <button className="btn-secondary" onClick={() => setView('home')}>
                                 Back
                             </button>
-                            
-                            <div style={{ 
-                                background: '#f0f0f0', 
-                                borderRadius: '10px', 
-                                padding: '20px', 
+
+                            <div style={{
+                                background: '#f0f0f0',
+                                borderRadius: '10px',
+                                padding: '20px',
                                 marginTop: '20px',
                                 marginBottom: '20px'
                             }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                                    <span style={{ 
+                                    <span style={{
                                         fontWeight: lessonPhase === 'warmup' ? 'bold' : 'normal',
                                         color: lessonPhase === 'warmup' ? 'var(--primary)' : '#666'
                                     }}>Warm-Up</span>
-                                    <span style={{ 
+                                    <span style={{
                                         fontWeight: lessonPhase === 'discovery' ? 'bold' : 'normal',
                                         color: lessonPhase === 'discovery' ? 'var(--primary)' : '#666'
                                     }}>Discovery</span>
-                                    <span style={{ 
+                                    <span style={{
                                         fontWeight: lessonPhase === 'application' ? 'bold' : 'normal',
                                         color: lessonPhase === 'application' ? 'var(--primary)' : '#666'
                                     }}>Application</span>
-                                    <span style={{ 
-                                        fontWeight: lessonPhase === 'exitTicket' ? 'bold' : 'normal',
-                                        color: lessonPhase === 'exitTicket' ? 'var(--primary)' : '#666'
+                                    <span style={{
+                                        fontWeight: isExitTicketActive ? 'bold' : 'normal',
+                                        color: isExitTicketActive ? 'var(--primary)' : '#666'
                                     }}>Exit Ticket</span>
                                 </div>
                             </div>
