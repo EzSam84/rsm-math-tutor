@@ -14,25 +14,18 @@ This guide will walk you through setting up the AI-powered math tutor. **Total t
 
 ## 🎯 Setup Steps
 
-### **STEP 1: Get a Free Hugging Face Account** (2 minutes)
+### **STEP 1: Get an Anthropic API Key** (2 minutes)
 
-1. Go to: https://huggingface.co/join
-2. Click "Sign up"
-3. Enter your email and create a password
-4. Verify your email (check inbox)
-5. Log in to Hugging Face
+1. Go to: https://console.anthropic.com
+2. Click "Sign up" and create an account
+3. Verify your email (check inbox) and log in
+4. Click "Get API Keys" or go to the "API Keys" section
+5. Click "Create Key"
+6. Name it: "RSM Math Tutor"
+7. **COPY THE KEY** - it looks like: `sk-ant-xxxxxxxxxxxxxxxxxx`
+8. Save it in a text file for now (you'll need it soon)
 
-**Get your API key:**
-1. Once logged in, click your profile picture (top right)
-2. Click "Settings"
-3. Click "Access Tokens" on the left sidebar
-4. Click "New token"
-5. Name it: "RSM Math Tutor"
-6. Select "Read" permission
-7. Click "Generate"
-8. **COPY THE TOKEN** - it looks like: `hf_xxxxxxxxxxxxxxxxxx`
-9. Save it in a text file for now (you'll need it soon)
-
+> **Note:** Anthropic offers a free trial with credits. After that, usage is pay-as-you-go at very low cost (~$0.25 per 1 million tokens). Typical student use is well under $1/month.
 
 ---
 
@@ -75,7 +68,7 @@ This guide will walk you through setting up the AI-powered math tutor. **Total t
 ### **STEP 5: Download and Prepare the Files** (2 minutes)
 
 1. Download these 4 files I created (they should all be in your Downloads folder):
-   - `rsm-math-app.html`
+   - `index.html`
    - `package.json`
    - `vercel.json`
    - `api/tutor.js` (this will be in a folder called "api")
@@ -89,7 +82,7 @@ This guide will walk you through setting up the AI-powered math tutor. **Total t
 Your folder should look like:
 ```
 RSM-Math-Tutor/
-  ├── rsm-math-app.html
+  ├── index.html
   ├── package.json
   ├── vercel.json
   └── api/
@@ -146,15 +139,15 @@ RSM-Math-Tutor/
 
 ---
 
-### **STEP 9: Add Your Hugging Face API Key to Vercel** (2 minutes)
+### **STEP 9: Add Your Anthropic API Key to Vercel** (2 minutes)
 
 1. Go to: https://vercel.com/dashboard
 2. Click on your project: "rsm-math-tutor"
 3. Click "Settings" (top menu)
 4. Click "Environment Variables" (left sidebar)
 5. Add a new variable:
-   - **Name:** Type exactly: `HUGGINGFACE_API_KEY`
-   - **Value:** Paste your Hugging Face token (from Step 1)
+   - **Name:** Type exactly: `ANTHROPIC_API_KEY`
+   - **Value:** Paste your Anthropic API key (from Step 1)
    - **Environment:** Leave "Production" checked
    - Click "Save"
 
@@ -185,11 +178,9 @@ RSM-Math-Tutor/
 
 ## 💰 **Cost:**
 
-- **Hugging Face:** FREE (10,000 requests/month)
+- **Anthropic:** Free trial credits included; typical use ~$0.50–$1/month after that
 - **Vercel:** FREE (100GB bandwidth/month)
-- **Total:** $0/month
-
-With typical use (1 hour/day), you'll stay well within free limits.
+- **Total:** Near $0/month for typical home use
 
 ---
 
@@ -228,10 +219,11 @@ Once set up:
 
 ## 🎓 **What Your Child Gets:**
 
-✅ Real AI tutor using Meta's Llama model (open-source)
+✅ Real AI tutor powered by Anthropic's Claude model
 ✅ Follows RSM teaching methods (Socratic questioning)
+✅ Warm-up questions that vary every session
+✅ Difficulty that adapts to your child's skill level
 ✅ Works on any device with internet
-✅ Completely free
 ✅ Private (your data stays with you)
 ✅ No ads, no tracking
 

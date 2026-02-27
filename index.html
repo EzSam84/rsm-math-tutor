@@ -963,9 +963,54 @@
 
             // Sufficiency threshold: tutor confirmed student solved it via chat
             const [isProblemSolved, setIsProblemSolved] = useState(false);
-            
+
+            // Adaptive difficulty state
+            const [adaptiveDifficulty, setAdaptiveDifficulty] = useState(1);
+            const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
+            const [consecutiveWrong, setConsecutiveWrong] = useState(0);
+            const [hintUsedOnCurrentProblem, setHintUsedOnCurrentProblem] = useState(false);
+            const [warmupQueue, setWarmupQueue] = useState([]);
+            const [applicationProblemsShown, setApplicationProblemsShown] = useState(0);
+            const seenQuestionsRef = useRef(new Set());
+
             const canvasRef = useRef(null);
             const chatMessagesRef = useRef(null);
+
+            // Build a shuffled warmup pool by mixing the lesson's own warmup questions
+            // with QUESTION_BANK difficulty-1 questions for variety each session.
+            function buildShuffledWarmup(lesson) {
+                const bankDiff1 = (QUESTION_BANK[lesson.topic] || []).filter(q => q.difficulty === 1);
+                const combined = [...lesson.warmup, ...bankDiff1];
+                // Deduplicate by question text
+                const seen = new Set();
+                const unique = combined.filter(q => {
+                    if (seen.has(q.question)) return false;
+                    seen.add(q.question);
+                    return true;
+                });
+                // Fisher-Yates shuffle
+                for (let i = unique.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [unique[i], unique[j]] = [unique[j], unique[i]];
+                }
+                return unique.slice(0, 4);
+            }
+
+            // Pick a random unseen question from QUESTION_BANK at the target difficulty.
+            // Falls back to any unseen question if the difficulty level is exhausted.
+            function pickAdaptiveQuestion(topic, difficulty) {
+                const seen = seenQuestionsRef.current;
+                let pool = (QUESTION_BANK[topic] || []).filter(
+                    q => q.difficulty === difficulty && !seen.has(q.question)
+                );
+                if (pool.length === 0) {
+                    pool = (QUESTION_BANK[topic] || []).filter(q => !seen.has(q.question));
+                }
+                if (pool.length === 0) return null;
+                const picked = pool[Math.floor(Math.random() * pool.length)];
+                seen.add(picked.question);
+                return picked;
+            }
 
             function selectUser(user) {
                 setCurrentUser(user);
@@ -978,11 +1023,23 @@
 
             function startLesson(lessonId) {
                 const lesson = LESSONS[lessonId];
+
+                // Reset seen-question tracking and build a fresh shuffled warmup
+                seenQuestionsRef.current = new Set();
+                const queue = buildShuffledWarmup(lesson);
+                queue.forEach(q => seenQuestionsRef.current.add(q.question));
+
+                setWarmupQueue(queue);
                 setCurrentLesson(lesson);
                 setCurrentTopic(lesson.topic);
                 setLessonPhase('warmup');
                 setPhaseIndex(0);
-                setCurrentProblem(lesson.warmup[0]);
+                setCurrentProblem(queue[0]);
+                setAdaptiveDifficulty(1);
+                setConsecutiveCorrect(0);
+                setConsecutiveWrong(0);
+                setHintUsedOnCurrentProblem(false);
+                setApplicationProblemsShown(0);
                 setView('lesson');
                 setUserAnswer('');
                 setFeedback(null);
@@ -994,43 +1051,59 @@
 
             function nextProblemInLesson() {
                 const lesson = currentLesson;
-                const currentPhaseProblems = lesson[lessonPhase];
+                const APPLICATION_MAX = 6; // number of adaptive practice problems before exit ticket
 
-                if (phaseIndex + 1 < currentPhaseProblems.length) {
-                    setPhaseIndex(phaseIndex + 1);
-                    setCurrentProblem(currentPhaseProblems[phaseIndex + 1]);
-                    setUserAnswer('');
-                    setFeedback(null);
-                    setShowHint(false);
-                    setShowTutor(false);
-                    setChatMessages([]);
-                    setIsProblemSolved(false);
-                } else {
-                    if (lessonPhase === 'warmup') {
+                // Per-problem UI resets (shared across all branches)
+                setUserAnswer('');
+                setFeedback(null);
+                setShowHint(false);
+                setShowTutor(false);
+                setChatMessages([]);
+                setIsProblemSolved(false);
+                setHintUsedOnCurrentProblem(false);
+
+                if (lessonPhase === 'warmup') {
+                    if (phaseIndex + 1 < warmupQueue.length) {
+                        setPhaseIndex(phaseIndex + 1);
+                        setCurrentProblem(warmupQueue[phaseIndex + 1]);
+                    } else {
                         setLessonPhase('discovery');
                         setPhaseIndex(0);
                         setCurrentProblem(lesson.discovery[0]);
-                        setUserAnswer('');
-                        setFeedback(null);
-                    } else if (lessonPhase === 'discovery') {
+                    }
+                } else if (lessonPhase === 'discovery') {
+                    if (phaseIndex + 1 < lesson.discovery.length) {
+                        setPhaseIndex(phaseIndex + 1);
+                        setCurrentProblem(lesson.discovery[phaseIndex + 1]);
+                    } else {
+                        // Discovery complete → adaptive application phase
                         setLessonPhase('application');
+                        setApplicationProblemsShown(0);
                         setPhaseIndex(0);
-                        setCurrentProblem(lesson.application[0]);
-                        setUserAnswer('');
-                        setFeedback(null);
-                    } else if (lessonPhase === 'application') {
+                        const firstApp = pickAdaptiveQuestion(lesson.topic, adaptiveDifficulty)
+                            || lesson.application[0];
+                        setCurrentProblem(firstApp);
+                    }
+                } else if (lessonPhase === 'application') {
+                    const nextShown = applicationProblemsShown + 1;
+                    if (nextShown < APPLICATION_MAX) {
+                        const nextQ = pickAdaptiveQuestion(lesson.topic, adaptiveDifficulty)
+                            || lesson.application[Math.min(phaseIndex + 1, lesson.application.length - 1)];
+                        setApplicationProblemsShown(nextShown);
+                        setPhaseIndex(nextShown);
+                        setCurrentProblem(nextQ);
+                    } else {
                         setLessonPhase('exitTicket');
                         setPhaseIndex(0);
                         setCurrentProblem(lesson.exitTicket[0]);
-                        setUserAnswer('');
-                        setFeedback(null);
+                    }
+                } else if (lessonPhase === 'exitTicket') {
+                    if (phaseIndex + 1 < lesson.exitTicket.length) {
+                        setPhaseIndex(phaseIndex + 1);
+                        setCurrentProblem(lesson.exitTicket[phaseIndex + 1]);
                     } else {
                         setView('lessonComplete');
                     }
-                    setShowHint(false);
-                    setShowTutor(false);
-                    setChatMessages([]);
-                    setIsProblemSolved(false);
                 }
             }
 
@@ -1093,6 +1166,20 @@
                         }
                     }
                     
+                    // Adaptive difficulty: track performance on correct answers.
+                    // Difficulty only adjusts during the application phase to avoid
+                    // disrupting the fixed discovery sequence.
+                    {
+                        const noHint = !hintUsedOnCurrentProblem;
+                        const newCorrect = noHint ? consecutiveCorrect + 1 : 0;
+                        setConsecutiveCorrect(newCorrect);
+                        setConsecutiveWrong(0);
+                        if (lessonPhase === 'application' && newCorrect >= 2) {
+                            setAdaptiveDifficulty(d => Math.min(d + 1, 5));
+                            setConsecutiveCorrect(0);
+                        }
+                    }
+
                     // ARTICULATION CHECKPOINT (end of Discovery)
                     if (lessonPhase === 'discovery' && !hasArticulated) {
                         const lesson = LESSONS[currentLesson];
@@ -1131,7 +1218,19 @@
                     }));
                 } else {
                     setFeedback({ correct: false, message: 'Not quite. Try again!' });
-                    
+
+                    // Adaptive difficulty: two consecutive wrong answers in application
+                    // eases the difficulty so the student doesn't get stuck.
+                    {
+                        const newWrong = consecutiveWrong + 1;
+                        setConsecutiveWrong(newWrong);
+                        setConsecutiveCorrect(0);
+                        if (lessonPhase === 'application' && newWrong >= 2) {
+                            setAdaptiveDifficulty(d => Math.max(d - 1, 1));
+                            setConsecutiveWrong(0);
+                        }
+                    }
+
                     // Auto-open tutor and provide guidance
                     if (!showTutor) {
                         setShowTutor(true);
@@ -1897,7 +1996,7 @@
                                                 {' '}
 
                                     
-                                                <button className="btn-hint" onClick={() => setShowHint(!showHint)}>
+                                                <button className="btn-hint" onClick={() => { if (!showHint) setHintUsedOnCurrentProblem(true); setShowHint(!showHint); }}>
 
                                     
                                                     {showHint ? 'Hide' : 'Show'} Hint
@@ -2036,9 +2135,10 @@
                     'exitTicket': 'Exit Ticket'
                 };
                 
-                const currentPhaseProblems = currentLesson[lessonPhase];
-                const progress = phaseIndex + 1;
-                const total = currentPhaseProblems.length;
+                const progress = lessonPhase === 'application' ? applicationProblemsShown + 1 : phaseIndex + 1;
+                const total = lessonPhase === 'application' ? 6
+                    : lessonPhase === 'warmup' ? (warmupQueue.length || currentLesson.warmup.length)
+                    : currentLesson[lessonPhase].length;
                 
                 return (
                     <div>
@@ -2131,7 +2231,7 @@
                                                 {' '}
 
                                     
-                                                <button className="btn-hint" onClick={() => setShowHint(!showHint)}>
+                                                <button className="btn-hint" onClick={() => { if (!showHint) setHintUsedOnCurrentProblem(true); setShowHint(!showHint); }}>
 
                                     
                                                     {showHint ? 'Hide' : 'Show'} Hint
