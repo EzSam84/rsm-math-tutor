@@ -1837,6 +1837,23 @@
                 }
             }, [chatMessages]);
 
+            // Allow Enter to advance to the next problem once the student has succeeded,
+            // but not during discovery gates that block progression.
+            useEffect(() => {
+                const canAdvance = (feedback?.correct || isProblemSolved)
+                    && !awaitingPatternResponse
+                    && !awaitingArticulation;
+                if (!canAdvance) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key !== 'Enter') return;
+                    if (currentLesson) nextProblemInLesson();
+                    else startTopic(currentTopic);
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [feedback?.correct, isProblemSolved, awaitingPatternResponse, awaitingArticulation]);
+
             // RENDER FUNCTIONS - Defined outside to prevent recreation
             const renderLogin = () => (
                 <div className="login-container">
