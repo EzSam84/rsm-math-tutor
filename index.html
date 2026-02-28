@@ -272,6 +272,33 @@
 
         .btn-reject:hover { opacity: 0.8; }
 
+        .reset-password-btn {
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .reset-password-form {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reset-password-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .reset-password-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         .pending-approval-card {
             background: var(--bg-primary);
             border-radius: 16px;
@@ -1642,9 +1669,15 @@
             const [regPassword, setRegPassword] = useState('');
             const [regParentUsername, setRegParentUsername] = useState('');
             const [regAvatar, setRegAvatar] = useState(AVATARS[0]);
+            const [regEmail, setRegEmail] = useState('');
             const [regError, setRegError] = useState('');
             const [regSuccess, setRegSuccess] = useState('');
             const [regGrade, setRegGrade] = useState(6);
+            // Password reset state (parent resets a child's password)
+            const [resetPasswordFor, setResetPasswordFor] = useState(null);
+            const [resetNewPassword, setResetNewPassword] = useState('');
+            const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+            const [resetPasswordError, setResetPasswordError] = useState('');
 
             // Build a shuffled warmup pool by mixing the lesson's own warmup questions
             // with QUESTION_BANK difficulty-1 questions for variety each session.
@@ -1710,15 +1743,18 @@
 
             function resetRegForm() {
                 setRegName(''); setRegUsername(''); setRegPassword('');
-                setRegParentUsername(''); setRegAvatar(AVATARS[0]);
+                setRegEmail(''); setRegParentUsername(''); setRegAvatar(AVATARS[0]);
                 setRegError(''); setRegSuccess(''); setRegGrade(6);
             }
 
             function login() {
-                const uname = loginUsername.trim().toLowerCase();
-                const user = users.find(u => u.username === uname);
+                const input = loginUsername.trim().toLowerCase();
+                // Parents log in by email; students log in by username
+                const user = input.includes('@')
+                    ? users.find(u => u.email === input)
+                    : users.find(u => u.username === input);
                 if (!user || !verifyPassword(loginPassword, user.passwordHash)) {
-                    setLoginError('Incorrect username or password.');
+                    setLoginError('Incorrect email/username or password.');
                     return;
                 }
                 setLoginError('');
@@ -1748,14 +1784,18 @@
             function registerParent() {
                 const name = regName.trim();
                 const uname = regUsername.trim().toLowerCase();
+                const email = regEmail.trim().toLowerCase();
                 const pass = regPassword;
                 if (!name) { setRegError('Display name is required.'); return; }
+                if (!email || !email.includes('@') || !email.includes('.')) { setRegError('A valid email address is required.'); return; }
                 if (!uname) { setRegError('Username is required.'); return; }
                 if (pass.length < 4) { setRegError('Password must be at least 4 characters.'); return; }
+                if (users.some(u => u.email === email)) { setRegError('An account with that email already exists.'); return; }
                 if (users.some(u => u.username === uname)) { setRegError('That username is already taken.'); return; }
                 const newParent = {
                     id: Date.now().toString(),
                     username: uname,
+                    email,
                     passwordHash: hashPassword(pass),
                     role: 'parent',
                     name,
@@ -1811,6 +1851,31 @@
 
             function rejectChild(childId) {
                 setUsers(prev => prev.filter(u => u.id !== childId));
+            }
+
+            function resetChildPassword(childId) {
+                if (resetNewPassword.length < 4) {
+                    setResetPasswordError('Password must be at least 4 characters.');
+                    return;
+                }
+                if (resetNewPassword !== resetConfirmPassword) {
+                    setResetPasswordError('Passwords do not match.');
+                    return;
+                }
+                setUsers(prev => prev.map(u =>
+                    u.id === childId ? { ...u, passwordHash: hashPassword(resetNewPassword) } : u
+                ));
+                setResetPasswordFor(null);
+                setResetNewPassword('');
+                setResetConfirmPassword('');
+                setResetPasswordError('');
+            }
+
+            function cancelResetPassword() {
+                setResetPasswordFor(null);
+                setResetNewPassword('');
+                setResetConfirmPassword('');
+                setResetPasswordError('');
             }
 
             function startLesson(lessonId) {
@@ -2683,15 +2748,15 @@
                     <form className="login-form" onSubmit={e => { e.preventDefault(); login(); }}>
                         {loginError && <div className="login-error">{loginError}</div>}
 
-                        <label className="form-label">Username</label>
+                        <label className="form-label">Email or Username</label>
                         <input
                             className="answer-input"
                             type="text"
-                            placeholder="Enter your username"
+                            placeholder="Parent email · Student username"
                             value={loginUsername}
                             onChange={e => { setLoginUsername(e.target.value); setLoginError(''); }}
                             autoFocus
-                            autoComplete="username"
+                            autoComplete="email username"
                         />
 
                         <label className="form-label">Password</label>
@@ -2735,6 +2800,11 @@
                         <input className="answer-input" type="text" placeholder="e.g. Jane Smith"
                             value={regName} onChange={e => { setRegName(e.target.value); setRegError(''); }}
                             maxLength={40} autoFocus />
+
+                        <label className="form-label">Email</label>
+                        <input className="answer-input" type="email" placeholder="your@email.com"
+                            value={regEmail} onChange={e => { setRegEmail(e.target.value); setRegError(''); }}
+                            maxLength={100} autoComplete="email" />
 
                         <label className="form-label">Username</label>
                         <input className="answer-input" type="text" placeholder="Choose a username"
@@ -3566,6 +3636,38 @@
                                             </div>
                                         ))}
                                     </div>
+
+                                    {resetPasswordFor === student.id ? (
+                                        <div className="reset-password-form">
+                                            <p className="reset-password-title">Reset password for {student.name}</p>
+                                            {resetPasswordError && <div className="login-error">{resetPasswordError}</div>}
+                                            <input className="answer-input" type="password"
+                                                placeholder="New password (min 4 characters)"
+                                                value={resetNewPassword}
+                                                onChange={e => { setResetNewPassword(e.target.value); setResetPasswordError(''); }}
+                                                autoComplete="new-password" />
+                                            <input className="answer-input" type="password"
+                                                placeholder="Confirm new password"
+                                                value={resetConfirmPassword}
+                                                onChange={e => { setResetConfirmPassword(e.target.value); setResetPasswordError(''); }}
+                                                autoComplete="new-password" />
+                                            <div className="reset-password-actions">
+                                                <button className="btn-primary" style={{ flex: 1 }}
+                                                    onClick={() => resetChildPassword(student.id)}>
+                                                    Save Password
+                                                </button>
+                                                <button className="btn-secondary" style={{ flex: 1 }}
+                                                    onClick={cancelResetPassword}>
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <button className="btn-secondary reset-password-btn"
+                                            onClick={() => setResetPasswordFor(student.id)}>
+                                            Reset Password
+                                        </button>
+                                    )}
                                 </div>
                             ))}
 
