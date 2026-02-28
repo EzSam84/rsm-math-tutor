@@ -1174,10 +1174,11 @@
             'algebra-lesson-2': {
     title: 'Two-Step Equations',
     topic: 'algebra',
+    warmupDifficulty: 2,
     ruleToDiscover: 'To solve a two-step equation, undo operations in reverse order — first undo addition/subtraction, then undo multiplication/division.',
     warmup: [
-        { question: 'What is 2x + 3 when x = 4?', answer: '11', hint: 'First substitute x = 4, then follow the order of operations.', explanation: '2 × 4 = 8, then 8 + 3 = 11.', xp: 5 },
-        { question: 'What is 3x - 5 when x = 6?', answer: '13', hint: 'First multiply 3 by x, then subtract 5.', explanation: '3 × 6 = 18, then 18 - 5 = 13.', xp: 5 },
+        { question: 'Solve: x + 9 = 14. What is x?', answer: '5', hint: 'Subtract 9 from both sides.', explanation: 'x = 14 − 9 = 5. Check: 5 + 9 = 14.', xp: 8 },
+        { question: 'Solve: 4x = 24. What is x?', answer: '6', hint: 'Divide both sides by 4.', explanation: '24 ÷ 4 = 6, so x = 6. Check: 4 × 6 = 24.', xp: 8 },
     ],
     discovery: [
         { question: 'x + 5 = 9. What do you do to both sides to get x by itself?', answer: 'subtract 5', hint: 'Think about what operation is being done to x. How do you undo it?', explanation: 'Adding 5 is undone by subtracting 5. x + 5 - 5 = 9 - 5, so x = 4.', xp: 10, alternateAnswers: ['subtract 5 from both sides', '-5', 'take away 5'] },
@@ -1213,6 +1214,7 @@
 'geometry-lesson-2': {
     title: 'Area of Triangles',
     topic: 'geometry',
+    warmupDifficulty: 2,
     ruleToDiscover: 'A triangle is exactly half of a rectangle with the same base and height, so its area = (base × height) ÷ 2.',
     warmup: [
         { question: 'What is the area of a rectangle with length 5 and width 4?', answer: '20', hint: 'Area = length × width.', explanation: 'Area = 5 × 4 = 20 square units.', xp: 5 },
@@ -1251,10 +1253,11 @@
 'fractions-lesson-2': {
     title: 'Multiplying Fractions',
     topic: 'fractions',
+    warmupDifficulty: 2,
     ruleToDiscover: 'To multiply fractions, multiply the numerators together and the denominators together. No common denominator needed!',
     warmup: [
-        { question: 'A pizza is cut into 4 equal slices and you eat 3. What fraction did you eat?', answer: '3/4', hint: 'Part eaten ÷ total slices.', explanation: '3 out of 4 slices = 3/4.', xp: 5 },
-        { question: 'A ribbon is cut into 8 equal pieces and you take 5. What fraction do you have?', answer: '5/8', hint: 'Pieces you have ÷ total pieces.', explanation: '5 out of 8 pieces = 5/8.', xp: 5 },
+        { question: '1/4 + 2/4 = ?', answer: '3/4', hint: 'Same denominator — add the numerators and keep the bottom.', explanation: '1 + 2 = 3, keep the 4. Answer: 3/4.', xp: 8 },
+        { question: '3/8 + 2/8 = ?', answer: '5/8', hint: 'Add the numerators; the denominator stays the same.', explanation: '3 + 2 = 5, keep the 8. Answer: 5/8.', xp: 8 },
     ],
     discovery: [
         { question: 'Take a square, shade 1/2 of it. Then cut that shaded half in half again. What fraction of the whole square is now shaded?', answer: '1/4', hint: 'The square is now in 4 equal pieces. How many are shaded?', explanation: '1/2 × 1/2 = 1/4. Multiply top × top, bottom × bottom.', xp: 10 },
@@ -1764,7 +1767,8 @@
             }
 
             function buildShuffledWarmup(lesson) {
-                const bankDiff1 = (QUESTION_BANK[lesson.topic] || []).filter(q => q.difficulty === 1);
+                const warmupDiff = lesson.warmupDifficulty ?? 1;
+                const bankDiff1 = (QUESTION_BANK[lesson.topic] || []).filter(q => q.difficulty === warmupDiff);
                 const combined = [...lesson.warmup, ...bankDiff1];
                 // Deduplicate by question text
                 const seen = new Set();
