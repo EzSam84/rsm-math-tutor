@@ -918,31 +918,22 @@
             flex-wrap: wrap;
         }
 
-        /* Grade picker — child registration */
-        .lessons-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-
-        .lessons-header h2 {
-            margin: 0;
-        }
-
-        .lesson-tabs {
+        /* Subject tabs — home page lesson navigation */
+        .subject-tabs {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            margin-bottom: 16px;
         }
 
-        .lesson-tab-btn {
-            padding: 6px 16px;
+        .subject-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
             border: 2px solid var(--border);
-            border-radius: 20px;
-            font-size: 0.875rem;
+            border-radius: 12px;
+            font-size: 0.9375rem;
             font-weight: 600;
             cursor: pointer;
             background: var(--bg-primary);
@@ -951,17 +942,48 @@
             transition: all 0.15s ease;
         }
 
-        .lesson-tab-btn.active {
+        .subject-tab-btn.active {
             border-color: var(--primary);
             background: rgba(37, 99, 235, 0.08);
             color: var(--primary);
         }
 
-        .lesson-tab-btn:hover:not(.active) {
+        .subject-tab-btn:hover:not(.active) {
             border-color: var(--text-secondary);
             color: var(--text-primary);
         }
 
+        .level-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .level-picker-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .level-select {
+            padding: 6px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .level-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Grade picker — child registration */
         .grade-picker {
             display: flex;
             gap: 8px;
@@ -1654,16 +1676,22 @@
 
         const ORDINAL = { 5: '5th', 6: '6th', 7: '7th', 8: '8th', 9: '9th' };
 
-        // Lesson metadata catalog — drives the home page grid and grade-level tabs.
-        // gradeBand: primary grade (5 = Grade 5 tab, ≥6 = Grade 6+ tab).
+        // Subject tab config and lesson metadata — drive the home page navigation.
+        const SUBJECTS = [
+            { id: 'algebra',   label: 'Algebra',   icon: '🔢' },
+            { id: 'fractions', label: 'Fractions', icon: '🍕' },
+            { id: 'geometry',  label: 'Geometry',  icon: '📏' },
+            { id: 'ratios',    label: 'Ratios',    icon: '⚖️' },
+        ];
+
         const LESSON_CATALOG = [
-            { id: 'fractions-lesson-1', icon: '🍕', title: 'Fractions 1',  subtitle: 'Adding Same Denominator',  gradeBand: 5, badge: 'Grade 5' },
-            { id: 'fractions-lesson-2', icon: '✖️', title: 'Fractions 2',  subtitle: 'Multiplying Fractions',    gradeBand: 5, badge: 'Grade 5–6' },
-            { id: 'geometry-lesson-1',  icon: '📏', title: 'Geometry 1',   subtitle: 'Perimeter & Area',         gradeBand: 5, badge: 'Grade 5–6' },
-            { id: 'ratios-lesson-1',    icon: '⚖️', title: 'Ratios 1',     subtitle: 'Introduction to Ratios',   gradeBand: 6, badge: 'Grade 6' },
-            { id: 'geometry-lesson-2',  icon: '📐', title: 'Geometry 2',   subtitle: 'Area of Triangles',        gradeBand: 6, badge: 'Grade 6' },
-            { id: 'algebra-lesson-1',   icon: '🔢', title: 'Algebra 1',    subtitle: 'One-Step Equations',       gradeBand: 6, badge: 'Grade 6–7' },
-            { id: 'algebra-lesson-2',   icon: '🧮', title: 'Algebra 2',    subtitle: 'Two-Step Equations',       gradeBand: 7, badge: 'Grade 6–7' },
+            { id: 'fractions-lesson-1', icon: '🍕', title: 'Fractions 1', subtitle: 'Adding Same Denominator', subject: 'fractions', level: 1, badge: 'Grade 5' },
+            { id: 'fractions-lesson-2', icon: '✖️', title: 'Fractions 2', subtitle: 'Multiplying Fractions',   subject: 'fractions', level: 2, badge: 'Grade 5–6' },
+            { id: 'geometry-lesson-1',  icon: '📏', title: 'Geometry 1',  subtitle: 'Perimeter & Area',        subject: 'geometry',  level: 1, badge: 'Grade 5–6' },
+            { id: 'geometry-lesson-2',  icon: '📐', title: 'Geometry 2',  subtitle: 'Area of Triangles',       subject: 'geometry',  level: 2, badge: 'Grade 6' },
+            { id: 'ratios-lesson-1',    icon: '⚖️', title: 'Ratios 1',    subtitle: 'Introduction to Ratios',  subject: 'ratios',    level: 1, badge: 'Grade 6' },
+            { id: 'algebra-lesson-1',   icon: '🔢', title: 'Algebra 1',   subtitle: 'One-Step Equations',      subject: 'algebra',   level: 1, badge: 'Grade 6–7' },
+            { id: 'algebra-lesson-2',   icon: '🧮', title: 'Algebra 2',   subtitle: 'Two-Step Equations',      subject: 'algebra',   level: 2, badge: 'Grade 6–7' },
         ];
 
         function MathLearningApp() {
@@ -1729,7 +1757,8 @@
             const [regAvatar, setRegAvatar] = useState(AVATARS[0]);
             const [regEmail, setRegEmail] = useState('');
             const [regError, setRegError] = useState('');
-            const [lessonTab, setLessonTab] = useState('all');
+            const [lessonSubject, setLessonSubject] = useState('algebra');
+            const [lessonLevel, setLessonLevel] = useState(0); // 0 = all levels
             const [regSuccess, setRegSuccess] = useState('');
             const [regGrade, setRegGrade] = useState(6);
             // Password reset state (parent resets a child's password)
@@ -3009,24 +3038,39 @@
                                 Sign Out
                             </button>
 
-                            <div className="lessons-header">
-                                <h2>Lessons (RSM Style)</h2>
-                                <div className="lesson-tabs">
-                                    {[['all', 'All'], ['grade5', 'Grade 5'], ['grade6plus', 'Grade 6+']].map(([key, label]) => (
-                                        <button key={key}
-                                            className={`lesson-tab-btn${lessonTab === key ? ' active' : ''}`}
-                                            onClick={() => setLessonTab(key)}>
-                                            {label}
-                                        </button>
-                                    ))}
-                                </div>
+                            <h2 style={{ marginTop: '30px', marginBottom: '16px' }}>Lessons</h2>
+
+                            <div className="subject-tabs">
+                                {SUBJECTS.map(s => (
+                                    <button key={s.id}
+                                        className={`subject-tab-btn${lessonSubject === s.id ? ' active' : ''}`}
+                                        onClick={() => { setLessonSubject(s.id); setLessonLevel(0); }}>
+                                        <span>{s.icon}</span> {s.label}
+                                    </button>
+                                ))}
                             </div>
+
+                            {(() => {
+                                const levels = [...new Set(
+                                    LESSON_CATALOG.filter(l => l.subject === lessonSubject).map(l => l.level)
+                                )].sort((a, b) => a - b);
+                                if (levels.length < 2) return null;
+                                return (
+                                    <div className="level-picker">
+                                        <span className="level-picker-label">Level:</span>
+                                        <select className="level-select"
+                                            value={lessonLevel}
+                                            onChange={e => setLessonLevel(Number(e.target.value))}>
+                                            <option value={0}>All</option>
+                                            {levels.map(lv => <option key={lv} value={lv}>{lv}</option>)}
+                                        </select>
+                                    </div>
+                                );
+                            })()}
 
                             <div className="topic-grid">
                                 {LESSON_CATALOG
-                                    .filter(l => lessonTab === 'all'      ? true
-                                               : lessonTab === 'grade5'   ? l.gradeBand === 5
-                                               :                            l.gradeBand >= 6)
+                                    .filter(l => l.subject === lessonSubject && (lessonLevel === 0 || l.level === lessonLevel))
                                     .map(l => (
                                         <div key={l.id} className="topic-card" onClick={() => startLesson(l.id)}>
                                             <div className="topic-icon">{l.icon}</div>
