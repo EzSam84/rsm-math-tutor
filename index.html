@@ -919,6 +919,49 @@
         }
 
         /* Grade picker — child registration */
+        .lessons-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .lessons-header h2 {
+            margin: 0;
+        }
+
+        .lesson-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .lesson-tab-btn {
+            padding: 6px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .lesson-tab-btn.active {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+        }
+
+        .lesson-tab-btn:hover:not(.active) {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
         .grade-picker {
             display: flex;
             gap: 8px;
@@ -1608,6 +1651,18 @@
 
         const ORDINAL = { 5: '5th', 6: '6th', 7: '7th', 8: '8th', 9: '9th' };
 
+        // Lesson metadata catalog — drives the home page grid and grade-level tabs.
+        // gradeBand: primary grade (5 = Grade 5 tab, ≥6 = Grade 6+ tab).
+        const LESSON_CATALOG = [
+            { id: 'fractions-lesson-1', icon: '🍕', title: 'Fractions 1',  subtitle: 'Adding Same Denominator',  gradeBand: 5, badge: 'Grade 5' },
+            { id: 'fractions-lesson-2', icon: '✖️', title: 'Fractions 2',  subtitle: 'Multiplying Fractions',    gradeBand: 5, badge: 'Grade 5–6' },
+            { id: 'geometry-lesson-1',  icon: '📏', title: 'Geometry 1',   subtitle: 'Perimeter & Area',         gradeBand: 5, badge: 'Grade 5–6' },
+            { id: 'ratios-lesson-1',    icon: '⚖️', title: 'Ratios 1',     subtitle: 'Introduction to Ratios',   gradeBand: 6, badge: 'Grade 6' },
+            { id: 'geometry-lesson-2',  icon: '📐', title: 'Geometry 2',   subtitle: 'Area of Triangles',        gradeBand: 6, badge: 'Grade 6' },
+            { id: 'algebra-lesson-1',   icon: '🔢', title: 'Algebra 1',    subtitle: 'One-Step Equations',       gradeBand: 6, badge: 'Grade 6–7' },
+            { id: 'algebra-lesson-2',   icon: '🧮', title: 'Algebra 2',    subtitle: 'Two-Step Equations',       gradeBand: 7, badge: 'Grade 6–7' },
+        ];
+
         function MathLearningApp() {
             const [users, setUsers] = useState(() => {
                 try {
@@ -1671,6 +1726,7 @@
             const [regAvatar, setRegAvatar] = useState(AVATARS[0]);
             const [regEmail, setRegEmail] = useState('');
             const [regError, setRegError] = useState('');
+            const [lessonTab, setLessonTab] = useState('all');
             const [regSuccess, setRegSuccess] = useState('');
             const [regGrade, setRegGrade] = useState(6);
             // Password reset state (parent resets a child's password)
@@ -2949,51 +3005,33 @@
                                 Sign Out
                             </button>
 
-                            <h2 style={{ marginTop: '30px', marginBottom: '20px' }}>Lessons (RSM Style)</h2>
+                            <div className="lessons-header">
+                                <h2>Lessons (RSM Style)</h2>
+                                <div className="lesson-tabs">
+                                    {[['all', 'All'], ['grade5', 'Grade 5'], ['grade6plus', 'Grade 6+']].map(([key, label]) => (
+                                        <button key={key}
+                                            className={`lesson-tab-btn${lessonTab === key ? ' active' : ''}`}
+                                            onClick={() => setLessonTab(key)}>
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
                             <div className="topic-grid">
-                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-1')}>
-                                    <div className="topic-icon">🍕</div>
-                                    <div className="topic-title">Fractions 1</div>
-                                    <p>Adding Same Denominator</p>
-                                    <span className="grade-badge">Grade 5</span>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-2')}>
-                                    <div className="topic-icon">✖️</div>
-                                    <div className="topic-title">Fractions 2</div>
-                                    <p>Multiplying Fractions</p>
-                                    <span className="grade-badge">Grade 5–6</span>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('geometry-lesson-1')}>
-                                    <div className="topic-icon">📏</div>
-                                    <div className="topic-title">Geometry 1</div>
-                                    <p>Perimeter & Area</p>
-                                    <span className="grade-badge">Grade 5–6</span>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('ratios-lesson-1')}>
-                                    <div className="topic-icon">⚖️</div>
-                                    <div className="topic-title">Ratios 1</div>
-                                    <p>Introduction to Ratios</p>
-                                    <span className="grade-badge">Grade 6</span>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('geometry-lesson-2')}>
-                                    <div className="topic-icon">📐</div>
-                                    <div className="topic-title">Geometry 2</div>
-                                    <p>Area of Triangles</p>
-                                    <span className="grade-badge">Grade 6</span>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-1')}>
-                                    <div className="topic-icon">🔢</div>
-                                    <div className="topic-title">Algebra 1</div>
-                                    <p>One-Step Equations</p>
-                                    <span className="grade-badge">Grade 6–7</span>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-2')}>
-                                    <div className="topic-icon">🧮</div>
-                                    <div className="topic-title">Algebra 2</div>
-                                    <p>Two-Step Equations</p>
-                                    <span className="grade-badge">Grade 6–7</span>
-                                </div>
+                                {LESSON_CATALOG
+                                    .filter(l => lessonTab === 'all'      ? true
+                                               : lessonTab === 'grade5'   ? l.gradeBand === 5
+                                               :                            l.gradeBand >= 6)
+                                    .map(l => (
+                                        <div key={l.id} className="topic-card" onClick={() => startLesson(l.id)}>
+                                            <div className="topic-icon">{l.icon}</div>
+                                            <div className="topic-title">{l.title}</div>
+                                            <p>{l.subtitle}</p>
+                                            <span className="grade-badge">{l.badge}</span>
+                                        </div>
+                                    ))
+                                }
                             </div>
 
                             <h2 style={{ marginTop: '40px', marginBottom: '20px' }}>Practice Mode</h2>
