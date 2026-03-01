@@ -133,46 +133,186 @@
             font-weight: 500;
         }
 
-        .user-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-            max-width: 900px;
+        .login-form {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 36px;
+            max-width: 420px;
             margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
         }
 
-        .user-card {
-            background: var(--bg-primary);
-            padding: 32px;
-            border-radius: 20px;
+        .role-toggle {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 4px;
+            gap: 4px;
+            margin-bottom: 28px;
+        }
+
+        .role-toggle button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .role-toggle button.active {
+            background: var(--bg-primary);
+            color: var(--primary);
             box-shadow: var(--shadow-sm);
         }
 
-        .user-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary);
-        }
-
-        .user-avatar {
-            font-size: 4rem;
+        .login-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
             margin-bottom: 16px;
         }
 
-        .user-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
+        .login-links {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
 
-        .user-stats {
-            font-size: 0.875rem;
+        .login-links p {
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            font-weight: 500;
+        }
+
+        .login-links-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .link-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .pending-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 48px 36px;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .pending-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .approve-reject-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .btn-approve:hover { opacity: 0.9; }
+
+        .btn-reject {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reject:hover { opacity: 0.8; }
+
+        .reset-password-btn {
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .reset-password-form {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reset-password-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .reset-password-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pending-approval-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pending-approval-card .student-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
         }
 
         .content {
@@ -582,8 +722,7 @@
             letter-spacing: -0.025em;
         }
 
-        /* Parent dashboard: Add Student form */
-        .add-student-form {
+        .form-card {
             background: white;
             border-radius: 15px;
             padding: 24px;
@@ -591,10 +730,19 @@
             border: 2px solid var(--primary);
         }
 
-        .add-student-form h3 {
+        .form-card h3 {
             font-size: 1.1rem;
             margin-bottom: 16px;
             color: var(--text-primary);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            margin-top: 14px;
         }
 
         .avatar-picker {
@@ -624,10 +772,256 @@
             background: rgba(37, 99, 235, 0.08);
         }
 
-        .add-student-actions {
+        .form-actions {
             display: flex;
             gap: 12px;
-            margin-top: 4px;
+            margin-top: 20px;
+        }
+
+        /* Skill tree — parent dashboard */
+        .skill-tree-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .skill-domain-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .skill-domain-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .skill-node {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            cursor: default;
+        }
+
+        .skill-not-started { background: var(--bg-secondary); color: var(--text-secondary); }
+        .skill-learning    { background: #fef9c3; color: #854d0e; }
+        .skill-practicing  { background: #dbeafe; color: #1e40af; }
+        .skill-mastered    { background: #dcfce7; color: #166534; }
+        .skill-struggling  { background: #fee2e2; color: #991b1b; }
+
+        .skill-node-name  { font-weight: 500; }
+        .skill-node-count { font-weight: 700; font-size: 0.8rem; opacity: 0.85; }
+
+        /* Exit ticket bridge — mini-tutorial card */
+        .bridge-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 36px;
+            margin-top: 28px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--accent);
+        }
+
+        .bridge-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .bridge-card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .bridge-card > p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .bridge-example {
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            padding: 24px;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+        }
+
+        .bridge-problem {
+            font-size: 1.0625rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .bridge-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .bridge-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+        }
+
+        .bridge-step-num {
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .bridge-answer {
+            font-weight: 700;
+            color: var(--secondary-dark);
+            font-size: 1rem;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .bridge-actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        /* Subject tabs — home page lesson navigation */
+        .subject-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .subject-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .subject-tab-btn.active {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+        }
+
+        .subject-tab-btn:hover:not(.active) {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        .level-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .level-picker-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .level-select {
+            padding: 6px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .level-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Grade picker — child registration */
+        .grade-picker {
+            display: flex;
+            gap: 8px;
+            margin: 8px 0 20px;
+        }
+
+        .grade-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-family: inherit;
+            transition: all 0.15s ease;
+        }
+
+        .grade-btn.active {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+        }
+
+        /* Grade badge on lesson cards */
+        .grade-badge {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-top: 6px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -682,21 +1076,30 @@
                     { question: "x / 2 = 6. What is x?", answer: "12", hint: "Multiply both sides by 2", explanation: "x = 6 * 2 = 12", xp: 10 },
                 ],
                 application: [
-                    { question: "Solve for x: 2x + 5 = 15", answer: "5", hint: "First subtract 5 from both sides", explanation: "2x + 5 = 15 → 2x = 10 → x = 5", xp: 15 },
-                    { question: "What is x if 3x - 7 = 14?", answer: "7", hint: "Add 7 to both sides first", explanation: "3x - 7 = 14 → 3x = 21 → x = 7", xp: 15 },
-                    { question: "Solve: 4x - 8 = 12", answer: "5", hint: "Add 8, then divide by 4", explanation: "4x - 8 = 12 → 4x = 20 → x = 5", xp: 15 },
-                    { question: "If 5x + 3 = 28, what is x?", answer: "5", hint: "What's your first step?", explanation: "5x + 3 = 28 → 5x = 25 → x = 5", xp: 15 },
-                    { question: "Solve: 3x + 4 = 19", answer: "5", hint: "Subtract 4 first, then divide by 3", explanation: "3x + 4 = 19 → 3x = 15 → x = 5", xp: 15 },
-                    { question: "Solve: 6x - 12 = 18", answer: "5", hint: "Add 12 to both sides, then divide by 6", explanation: "6x - 12 = 18 → 6x = 30 → x = 5", xp: 15 },
-                    { question: "Solve: 2x + 9 = 23", answer: "7", hint: "Subtract 9 from both sides first", explanation: "2x + 9 = 23 → 2x = 14 → x = 7", xp: 15 },
-                    { question: "Solve: 7x - 14 = 35", answer: "7", hint: "Add 14 to both sides, then divide", explanation: "7x - 14 = 35 → 7x = 49 → x = 7", xp: 15 },
+                    { question: "Solve: x + 7 = 15", answer: "8", hint: "What operation undoes addition?", explanation: "x + 7 = 15 → x = 15 - 7 = 8", xp: 15 },
+                    { question: "Solve: x - 4 = 9", answer: "13", hint: "Add 4 to both sides", explanation: "x - 4 = 9 → x = 9 + 4 = 13", xp: 15 },
+                    { question: "Solve: 3x = 18", answer: "6", hint: "What operation undoes multiplication?", explanation: "3x = 18 → x = 18 ÷ 3 = 6", xp: 15 },
+                    { question: "Solve: x / 4 = 5", answer: "20", hint: "Multiply both sides by 4", explanation: "x / 4 = 5 → x = 5 × 4 = 20", xp: 15 },
+                    { question: "Solve: x + 11 = 20", answer: "9", hint: "Subtract 11 from both sides", explanation: "x + 11 = 20 → x = 20 - 11 = 9", xp: 15 },
+                    { question: "Solve: 6x = 42", answer: "7", hint: "Divide both sides by 6", explanation: "6x = 42 → x = 42 ÷ 6 = 7", xp: 15 },
+                    { question: "Solve: x - 8 = 13", answer: "21", hint: "Add 8 to both sides", explanation: "x - 8 = 13 → x = 13 + 8 = 21", xp: 15 },
+                    { question: "Solve: x / 3 = 7", answer: "21", hint: "Multiply both sides by 3", explanation: "x / 3 = 7 → x = 7 × 3 = 21", xp: 15 },
                 ],
                 exitTicket: [
-                    { question: "Solve: 6x - 9 = 15", answer: "4", hint: "Use the same steps you learned", explanation: "6x - 9 = 15 → 6x = 24 → x = 4", xp: 20 },
-                    { question: "A number multiplied by 7, then decreased by 5, equals 30. What is the number?", answer: "5", hint: "Write this as 7x - 5 = 30", explanation: "7x - 5 = 30 → 7x = 35 → x = 5", xp: 25 },
-                    { question: "Solve: 8x + 5 = 53", answer: "6", hint: "What's your first step?", explanation: "8x + 5 = 53 → 8x = 48 → x = 6", xp: 20 },
-                    { question: "Twice a number minus 9 equals 11. What is the number?", answer: "10", hint: "Write this as 2x - 9 = 11", explanation: "2x - 9 = 11 → 2x = 20 → x = 10", xp: 25 },
-                ]
+                    { question: "A number plus 8 equals 17. What is the number?", answer: "9", hint: "Write it as x + 8 = 17", explanation: "x + 8 = 17 → x = 17 - 8 = 9", xp: 20 },
+                    { question: "4 times a number equals 36. What is the number?", answer: "9", hint: "Write it as 4x = 36, then divide", explanation: "4x = 36 → x = 36 ÷ 4 = 9", xp: 20 },
+                    { question: "A number divided by 5 equals 6. What is the number?", answer: "30", hint: "Write it as x / 5 = 6, then multiply", explanation: "x / 5 = 6 → x = 6 × 5 = 30", xp: 25 },
+                    { question: "7 less than a number equals 12. What is the number?", answer: "19", hint: "Write it as x - 7 = 12", explanation: "x - 7 = 12 → x = 12 + 7 = 19", xp: 25 },
+                ],
+                exitTicketBridge: {
+                    concept: 'Word Problems',
+                    explanation: "The exit ticket uses word problems — real situations described in words that you translate into a one-step equation, then solve. The steps are exactly the same ones you just practiced!",
+                    example: {
+                        problem: '"A number plus 8 equals 17. What is the number?"',
+                        steps: ['Write it as an equation: x + 8 = 17', 'Apply the inverse: subtract 8 from both sides', 'x = 17 − 8 = 9'],
+                        answer: 'x = 9',
+                    },
+                },
             },
             'geometry-lesson-1': {
                 title: 'Perimeter and Area of Rectangles',
@@ -733,7 +1136,16 @@
                     { question: "A rectangular garden has area 48 m² and width 6 m. What is its length?", answer: "8", hint: "Area = length * width, so length = area / width", explanation: "48 / 6 = 8 m", xp: 20 },
                     { question: "A square has a perimeter of 36 cm. What is the length of one side?", answer: "9", hint: "Perimeter = 4 * side, so side = perimeter / 4", explanation: "36 / 4 = 9 cm", xp: 20 },
                     { question: "A rectangle has area 72 m² and length 9 m. What is its width?", answer: "8", hint: "Area = length * width, so width = area / length", explanation: "72 / 9 = 8 m", xp: 20 },
-                ]
+                ],
+                exitTicketBridge: {
+                    concept: 'Working Backwards',
+                    explanation: "Instead of finding perimeter or area from given dimensions, these problems give you the result and ask for a missing side. Use the same formulas — just rearrange them.",
+                    example: {
+                        problem: '"A rectangle has a perimeter of 24 cm and a length of 8 cm. What is its width?"',
+                        steps: ['Use the formula: 2(length + width) = perimeter', 'Plug in: 2(8 + w) = 24 → 8 + w = 12', 'Subtract 8: w = 4 cm'],
+                        answer: 'Width = 4 cm',
+                    },
+                },
             },
             'fractions-lesson-1': {
                 title: 'Adding Fractions with Same Denominator',
@@ -770,8 +1182,174 @@
                     { question: "Sarah ate 2/8 of a pizza. Tom ate 3/8. How much did they eat together?", answer: "5/8", hint: "Add the two fractions", explanation: "2/8 + 3/8 = 5/8 of the pizza", xp: 20 },
                     { question: "Add: 3/11 + 7/11", answer: "10/11", hint: "Add the numerators, keep the denominator 11", explanation: "3/11 + 7/11 = 10/11", xp: 15 },
                     { question: "Jake ate 3/6 of a pizza and Maria ate 2/6. How much did they eat together?", answer: "5/6", hint: "Add the two fractions with the same denominator", explanation: "3/6 + 2/6 = 5/6 of the pizza", xp: 20 },
-                ]
+                ],
+                exitTicketBridge: {
+                    concept: 'Fractions in the Real World',
+                    explanation: "You'll apply fraction addition to real-life situations. The math is the same — just read the situation, identify the fractions, and add them like you practiced.",
+                    example: {
+                        problem: '"Sara ate 1/6 of a cake and Tom ate 2/6. How much did they eat together?"',
+                        steps: ['Identify the fractions: 1/6 and 2/6', 'Same denominator — just add numerators: 1 + 2 = 3', 'Answer: 3/6 of the cake'],
+                        answer: '3/6',
+                    },
+                },
             },
+            'algebra-lesson-2': {
+    title: 'Two-Step Equations',
+    topic: 'algebra',
+    warmupDifficulty: 2,
+    ruleToDiscover: 'To solve a two-step equation, undo operations in reverse order — first undo addition/subtraction, then undo multiplication/division.',
+    warmup: [
+        { question: 'Solve: x + 9 = 14. What is x?', answer: '5', hint: 'Subtract 9 from both sides.', explanation: 'x = 14 − 9 = 5. Check: 5 + 9 = 14.', xp: 8 },
+        { question: 'Solve: 4x = 24. What is x?', answer: '6', hint: 'Divide both sides by 4.', explanation: '24 ÷ 4 = 6, so x = 6. Check: 4 × 6 = 24.', xp: 8 },
+    ],
+    discovery: [
+        { question: 'x + 5 = 9. What do you do to both sides to get x by itself?', answer: 'subtract 5', hint: 'Think about what operation is being done to x. How do you undo it?', explanation: 'Adding 5 is undone by subtracting 5. x + 5 - 5 = 9 - 5, so x = 4.', xp: 10, alternateAnswers: ['subtract 5 from both sides', '-5', 'take away 5'] },
+        { question: '2x = 10. What do you do to both sides to find x?', answer: 'divide by 2', hint: 'x is being multiplied by 2. What is the opposite of multiplying?', explanation: 'Multiplying by 2 is undone by dividing by 2. 2x ÷ 2 = 10 ÷ 2, so x = 5.', xp: 10, alternateAnswers: ['divide both sides by 2', '÷2', 'divide 2'] },
+        { question: '2x + 1 = 7. There are TWO steps. Which do you undo first — the +1 or the ×2?', answer: '+1', hint: 'Undo operations in reverse order. The +1 was done last, so undo it first.', explanation: 'Undo +1 first: 2x = 6. Then undo ×2: x = 3.', xp: 10, alternateAnswers: ['the addition', 'the plus 1', 'undo the addition first'] },
+        { question: 'Finish it: 2x + 1 = 7. After subtracting 1 from both sides you get 2x = 6. What is x?', answer: '3', hint: 'Divide both sides by 2.', explanation: '2x = 6, so x = 6 ÷ 2 = 3. Check: 2(3) + 1 = 7.', xp: 10 },
+        { question: 'Solve: 3x - 2 = 10. What is x?', answer: '4', hint: 'Step 1: add 2 to both sides. Step 2: divide both sides by 3.', explanation: '3x = 12, x = 4. Check: 3(4) - 2 = 10.', xp: 10 },
+    ],
+    application: [
+        { question: 'Solve: 4x + 3 = 19. What is x?', answer: '4', hint: 'First subtract 3, then divide by 4.', explanation: '4x = 16, x = 4.', xp: 12 },
+        { question: 'Solve: 5x - 7 = 18. What is x?', answer: '5', hint: 'First add 7, then divide by 5.', explanation: '5x = 25, x = 5.', xp: 12 },
+        { question: 'Solve: 2x + 9 = 21. What is x?', answer: '6', hint: 'Undo addition first, then multiplication.', explanation: '2x = 12, x = 6.', xp: 12 },
+        { question: 'Solve: 6x - 4 = 14. What is x?', answer: '3', hint: 'Add 4 to both sides first.', explanation: '6x = 18, x = 3.', xp: 12 },
+        { question: 'Solve: 3x + 7 = 25. What is x?', answer: '6', hint: 'Subtract 7 first, then divide by 3.', explanation: '3x = 18, x = 6.', xp: 12 },
+        { question: 'Solve: 10x - 5 = 45. What is x?', answer: '5', hint: 'Add 5 to both sides, then divide by 10.', explanation: '10x = 50, x = 5.', xp: 12 },
+    ],
+    exitTicket: [
+        { question: 'A number is doubled and then increased by 5 to get 17. What is the number?', answer: '6', hint: 'Write the equation: 2x + 5 = 17.', explanation: '2x = 12, x = 6.', xp: 20 },
+        { question: 'Maya earns $8 per hour. After buying lunch for $4, she has $28 left. How many hours did she work?', answer: '4', hint: '8x - 4 = 28.', explanation: '8x = 32, x = 4 hours.', xp: 20 },
+        { question: 'Three times a number, minus 9, equals 15. What is the number?', answer: '8', hint: '3x - 9 = 15.', explanation: '3x = 24, x = 8.', xp: 20 },
+        { question: 'A box of crayons costs $5. Sam also bought a notebook for $3. He spent $23 in total. How many boxes did he buy?', answer: '4', hint: '5x + 3 = 23.', explanation: '5x = 20, x = 4 boxes.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Two-Step Word Problems',
+        explanation: 'Word problems often hide a two-step equation. Find the quantity being multiplied or divided, assign it a variable, then write and solve the equation in reverse order.',
+        example: {
+            problem: '"A number is tripled and then 4 is subtracted to get 11. What is the number?"',
+            steps: ['Write the equation: 3x − 4 = 11', 'Step 1 — undo subtraction: add 4 → 3x = 15', 'Step 2 — undo multiplication: divide by 3 → x = 5', 'Check: 3(5) − 4 = 11. Correct!'],
+            answer: '5',
+        },
+    },
+},
+'geometry-lesson-2': {
+    title: 'Area of Triangles',
+    topic: 'geometry',
+    warmupDifficulty: 2,
+    ruleToDiscover: 'A triangle is exactly half of a rectangle with the same base and height, so its area = (base × height) ÷ 2.',
+    warmup: [
+        { question: 'What is the area of a rectangle with length 5 and width 4?', answer: '20', hint: 'Area = length × width.', explanation: 'Area = 5 × 4 = 20 square units.', xp: 8 },
+        { question: 'What is the area of a rectangle with base 7 and height 3?', answer: '21', hint: 'Multiply base × height.', explanation: 'Area = 7 × 3 = 21 square units.', xp: 8 },
+    ],
+    discovery: [
+        { question: 'A rectangle is 4 units wide and 6 units tall. What is its area?', answer: '24', hint: 'Area = base × height.', explanation: '4 × 6 = 24 square units.', xp: 10 },
+        { question: 'Draw a diagonal from corner to corner of that rectangle. What fraction of the rectangle is each triangle created?', answer: '1/2', hint: 'The diagonal splits the rectangle into two equal pieces.', explanation: 'Two equal triangles are created. Each is 1/2 of the rectangle.', xp: 10, alternateAnswers: ['half', 'one half', '0.5'] },
+        { question: 'The rectangle was 4 × 6 = 24 square units. Each triangle is half. What is the area of one triangle?', answer: '12', hint: 'Half of 24 is...?', explanation: '24 ÷ 2 = 12 square units.', xp: 10 },
+        { question: 'Which formula gives the area of a triangle with base b and height h? (A) b × h  (B) b × h ÷ 2  (C) b + h', answer: 'B', hint: 'The triangle is half the rectangle.', explanation: 'Area = (base × height) ÷ 2. Answer B.', xp: 10, alternateAnswers: ['b × h ÷ 2', 'base times height divided by 2'] },
+    ],
+    application: [
+        { question: 'Find the area of a triangle with base 6 and height 4.', answer: '12', hint: 'Area = (base × height) ÷ 2.', explanation: '(6 × 4) ÷ 2 = 12.', xp: 12 },
+        { question: 'Find the area of a triangle with base 10 and height 5.', answer: '25', hint: 'Multiply then halve.', explanation: '(10 × 5) ÷ 2 = 25.', xp: 12 },
+        { question: 'Find the area of a triangle with base 8 and height 9.', answer: '36', hint: 'Area = (b × h) ÷ 2.', explanation: '(8 × 9) ÷ 2 = 36.', xp: 12 },
+        { question: 'Find the area of a triangle with base 3 and height 14.', answer: '21', hint: 'Multiply first, then halve.', explanation: '(3 × 14) ÷ 2 = 21.', xp: 12 },
+        { question: 'Find the area of a triangle with base 11 and height 6.', answer: '33', hint: 'Area = (base × height) ÷ 2.', explanation: '(11 × 6) ÷ 2 = 33.', xp: 12 },
+        { question: 'A right triangle has legs 7 and 8. What is its area?', answer: '28', hint: 'The two legs are the base and height.', explanation: '(7 × 8) ÷ 2 = 28.', xp: 12 },
+    ],
+    exitTicket: [
+        { question: 'A triangular garden has base 12 m and height 5 m. What is its area?', answer: '30', hint: 'Use the triangle area formula.', explanation: '(12 × 5) ÷ 2 = 30 sq m.', xp: 20 },
+        { question: 'A triangular sail has area 40 sq ft and base 8 ft. What is its height?', answer: '10', hint: 'Rearrange: height = (area × 2) ÷ base.', explanation: '(40 × 2) ÷ 8 = 10 ft.', xp: 20 },
+        { question: 'A triangle has area 27 sq units and height 6. What is its base?', answer: '9', hint: 'base = (area × 2) ÷ height.', explanation: '(27 × 2) ÷ 6 = 9 units.', xp: 20 },
+        { question: 'Two triangles each have base 5 cm and height 8 cm. What is their combined area?', answer: '40', hint: 'Find the area of one, then double it.', explanation: 'One triangle: 20 sq cm. Two: 40 sq cm.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Working Backwards with Area',
+        explanation: 'When you know the area and need a missing side, rearrange the formula. Since area = (base × height) ÷ 2, you can write: base × height = area × 2, then divide by the known side.',
+        example: {
+            problem: '"A triangle has area 18 sq units and base 9. Find the height."',
+            steps: ['Write the formula: 18 = (9 × height) ÷ 2', 'Multiply both sides by 2: 36 = 9 × height', 'Divide by 9: height = 4', 'Check: (9 × 4) ÷ 2 = 18. Correct!'],
+            answer: '4',
+        },
+    },
+},
+'fractions-lesson-2': {
+    title: 'Multiplying Fractions',
+    topic: 'fractions',
+    warmupDifficulty: 2,
+    ruleToDiscover: 'To multiply fractions, multiply the numerators together and the denominators together. No common denominator needed!',
+    warmup: [
+        { question: '1/4 + 2/4 = ?', answer: '3/4', hint: 'Same denominator — add the numerators and keep the bottom.', explanation: '1 + 2 = 3, keep the 4. Answer: 3/4.', xp: 8 },
+        { question: '3/8 + 2/8 = ?', answer: '5/8', hint: 'Add the numerators; the denominator stays the same.', explanation: '3 + 2 = 5, keep the 8. Answer: 5/8.', xp: 8 },
+    ],
+    discovery: [
+        { question: 'Take a square, shade 1/2 of it. Then cut that shaded half in half again. What fraction of the whole square is now shaded?', answer: '1/4', hint: 'The square is now in 4 equal pieces. How many are shaded?', explanation: '1/2 × 1/2 = 1/4. Multiply top × top, bottom × bottom.', xp: 10 },
+        { question: 'So what is 1/2 × 1/2?', answer: '1/4', hint: 'Use the pattern: multiply numerators, multiply denominators.', explanation: '(1 × 1) ÷ (2 × 2) = 1/4.', xp: 10 },
+        { question: 'What is 2/3 × 1/2? (Multiply top × top, bottom × bottom.)', answer: '1/3', hint: 'Numerator: 2 × 1. Denominator: 3 × 2. Simplify your answer.', explanation: '2/6 = 1/3.', xp: 10, alternateAnswers: ['2/6'] },
+        { question: 'What is 3/4 × 2/5?', answer: '6/20', hint: 'Multiply the two numerators. Multiply the two denominators.', explanation: '(3 × 2) ÷ (4 × 5) = 6/20 = 3/10.', xp: 10, alternateAnswers: ['3/10'] },
+    ],
+    application: [
+        { question: 'Multiply: 1/3 × 1/4', answer: '1/12', hint: '1 × 1 = 1. 3 × 4 = 12.', explanation: '1/12.', xp: 12 },
+        { question: 'Multiply: 2/3 × 3/4', answer: '1/2', hint: 'Top × top, bottom × bottom, then simplify.', explanation: '6/12 = 1/2.', xp: 12, alternateAnswers: ['6/12'] },
+        { question: 'Multiply: 3/5 × 2/3', answer: '2/5', hint: 'Multiply across top and bottom, then simplify.', explanation: '6/15 = 2/5.', xp: 12, alternateAnswers: ['6/15'] },
+        { question: 'Multiply: 4/7 × 1/2', answer: '2/7', hint: '4 × 1 = 4. 7 × 2 = 14. Simplify 4/14.', explanation: '4/14 = 2/7.', xp: 12, alternateAnswers: ['4/14'] },
+        { question: 'Multiply: 5/6 × 3/5', answer: '1/2', hint: 'Top × top, bottom × bottom, then simplify.', explanation: '15/30 = 1/2.', xp: 12, alternateAnswers: ['15/30'] },
+        { question: 'Multiply: 2/9 × 3/4', answer: '1/6', hint: 'Multiply numerators and denominators, then simplify.', explanation: '6/36 = 1/6.', xp: 12, alternateAnswers: ['6/36'] },
+    ],
+    exitTicket: [
+        { question: '1/3 of 18 apples — how many apples?', answer: '6', hint: '"Of" means multiply. 1/3 × 18 = 18 ÷ 3.', explanation: '18 ÷ 3 = 6 apples.', xp: 20 },
+        { question: 'A rope is 20 m long. You use 2/5 of it. How many meters did you use?', answer: '8', hint: '2/5 × 20: divide by 5, then multiply by 2.', explanation: '(20 ÷ 5) × 2 = 8 m.', xp: 20 },
+        { question: 'A class has 24 students. 3/4 of them packed lunch. How many packed lunch?', answer: '18', hint: 'Divide 24 by 4, then multiply by 3.', explanation: '(24 ÷ 4) × 3 = 18 students.', xp: 20 },
+        { question: 'A bag of flour weighs 5/6 kg. You use 1/2 of the bag. How many kg did you use?', answer: '5/12', hint: '5/6 × 1/2: top × top, bottom × bottom.', explanation: '5/12 kg.', xp: 20 },
+    ],
+    exitTicketBridge: {
+        concept: 'Fractions of a Whole Number',
+        explanation: 'When you see "fraction of a number", it always means multiply. To keep numbers manageable, divide by the denominator first, then multiply by the numerator.',
+        example: {
+            problem: '"Find 3/4 of 12."',
+            steps: ['"Of" means ×: write 3/4 × 12', 'Divide by denominator first: 12 ÷ 4 = 3', 'Multiply by numerator: 3 × 3 = 9', 'Check: 3/4 × 12 = 36/4 = 9. Correct!'],
+            answer: '9',
+        },
+    },
+},
+'ratios-lesson-1': {
+    title: 'Introduction to Ratios',
+    topic: 'ratios',
+    ruleToDiscover: 'A ratio compares two quantities. Equivalent ratios are formed by multiplying or dividing both parts by the same number — just like equivalent fractions.',
+    warmup: [
+        { question: 'There are 4 apples and 6 oranges in a bowl. How many fruits are there in total?', answer: '10', hint: 'Add apples and oranges.', explanation: '4 + 6 = 10 fruits.', xp: 5 },
+        { question: 'In a class there are 3 boys and 5 girls. For every 3 boys, how many girls are there?', answer: '5', hint: 'Read the comparison directly.', explanation: 'For every 3 boys there are 5 girls — that is the ratio 3:5.', xp: 5 },
+    ],
+    discovery: [
+        { question: 'There are 4 red tiles and 6 blue tiles. Write the ratio of red to blue.', answer: '4:6', hint: 'Red comes first because the question says "red to blue."', explanation: '4 red to 6 blue = 4:6.', xp: 10 },
+        { question: 'The ratio 4:6 can be simplified. Divide both numbers by 2. What is the simplified ratio?', answer: '2:3', hint: '4 ÷ 2 = ?, 6 ÷ 2 = ?', explanation: '4 ÷ 2 = 2, 6 ÷ 2 = 3. Simplified: 2:3.', xp: 10 },
+        { question: 'Are 2:3 and 4:6 equivalent? Explain by multiplying 2:3 by 2.', answer: 'yes', hint: 'Multiply both parts of 2:3 by 2.', explanation: '2 × 2 = 4, 3 × 2 = 6. So 2:3 = 4:6. They are equivalent.', xp: 10, alternateAnswers: ['yes they are', 'they are equivalent', 'yes, equivalent'] },
+        { question: 'Starting from 1:4, what ratio do you get if you multiply both parts by 3?', answer: '3:12', hint: '1 × 3 = ?, 4 × 3 = ?', explanation: '1 × 3 = 3, 4 × 3 = 12. Equivalent ratio: 3:12.', xp: 10 },
+        { question: 'Simplify the ratio 10:15 by dividing both parts by 5.', answer: '2:3', hint: '10 ÷ 5 = ?, 15 ÷ 5 = ?', explanation: '10 ÷ 5 = 2, 15 ÷ 5 = 3. Simplified: 2:3.', xp: 10 },
+    ],
+    application: [
+        { question: 'Write the ratio of cats to dogs if there are 5 cats and 8 dogs.', answer: '5:8', hint: 'Cats come first in the question.', explanation: '5 cats to 8 dogs = 5:8.', xp: 12 },
+        { question: 'Simplify the ratio 6:9.', answer: '2:3', hint: 'What number divides evenly into both 6 and 9?', explanation: '6 ÷ 3 = 2, 9 ÷ 3 = 3. Simplified: 2:3.', xp: 12 },
+        { question: 'Find the missing value: 2:5 = 6:?', answer: '15', hint: '2 × ? = 6. Apply the same multiplier to 5.', explanation: '2 × 3 = 6, so 5 × 3 = 15. The ratio is 6:15.', xp: 14 },
+        { question: '12 out of 18 students packed lunch. The rest bought lunch. Write the ratio of packed to bought in simplest form.', answer: '2:1', hint: 'First find how many bought lunch. Then simplify the ratio.', explanation: '18 − 12 = 6 bought lunch. Ratio is 12:6 = 2:1.', xp: 15 },
+        { question: 'Find the missing value: 4:7 = ?:28', answer: '16', hint: '7 × ? = 28. Apply the same multiplier to 4.', explanation: '7 × 4 = 28, so 4 × 4 = 16. The ratio is 16:28.', xp: 16 },
+        { question: 'Lemon juice to water ratio in a recipe is 1:3. How many cups of lemon juice do you need for 12 cups of water?', answer: '4', hint: 'Water goes from 3 to 12 — what did it multiply by? Apply that to lemon juice.', explanation: '3 × 4 = 12, so 1 × 4 = 4 cups of lemon juice.', xp: 18 },
+    ],
+    exitTicket: [
+        { question: 'A recipe needs 2 cups of flour for every 3 cups of sugar. How many cups of flour for 9 cups of sugar?', answer: '6', hint: '3 × ? = 9. Apply the same multiplier to flour.', explanation: '3 × 3 = 9, so 2 × 3 = 6 cups of flour.', xp: 20 },
+        { question: 'A car travels 60 miles in 2 hours. At the same speed, how far does it travel in 5 hours?', answer: '150', hint: 'Find miles per hour first: 60 ÷ 2. Then multiply by 5.', explanation: '30 mph × 5 hours = 150 miles.', xp: 20 },
+        { question: 'A map scale is 1 cm = 5 km. Two towns are 7 cm apart on the map. How far apart are they in real life?', answer: '35', hint: 'Multiply the map distance by the scale factor.', explanation: '7 × 5 = 35 km.', xp: 20 },
+        { question: 'A photo is 3 cm wide and 5 cm tall. You scale it up so the width becomes 9 cm. How tall is the scaled photo?', answer: '15', hint: 'Width went from 3 to 9 — what did it multiply by? Apply that to the height.', explanation: '3 × 3 = 9, so 5 × 3 = 15 cm tall.', xp: 25 },
+    ],
+    exitTicketBridge: {
+        concept: 'Scaling with Ratios',
+        explanation: 'To find an equivalent ratio, decide what number you need to multiply one part by, then apply that same multiplier to the other part. This is the same idea as scaling up a recipe.',
+        example: {
+            problem: '"A paint mix uses blue:white = 2:3. How much blue for 12 cups of white?"',
+            steps: ['Write the ratio: 2:3', 'White goes from 3 to 12: multiply by 4', 'Apply the same to blue: 2 × 4 = 8', 'Check: 8:12 → divide by 4 → 2:3. Correct!'],
+            answer: '8',
+        },
+    },
+},
         };
 
         const PROBLEMS = {
@@ -971,38 +1549,182 @@
                 { difficulty: 5, question: "3/4 + 1/6 = ?", answer: "11/12", hint: "Find the common denominator: both go into 12", explanation: "9/12 + 2/12 = 11/12", xp: 25 },
                 { difficulty: 5, question: "What fraction of 12 is 9?", answer: "3/4", hint: "Write it as 9/12 and simplify", explanation: "9/12 = 3/4", xp: 25 },
             ],
+            ratios: [
+                // --- Difficulty 1: Reading and writing ratios (17 questions) ---
+                { difficulty: 1, question: "There are 3 red balls and 2 blue balls. What is the ratio of red to blue?", answer: "3:2", hint: "Red comes first. Write red:blue.", explanation: "3 red to 2 blue = 3:2", xp: 5 },
+                { difficulty: 1, question: "A bag has 5 apples and 4 oranges. Write the ratio of apples to oranges.", answer: "5:4", hint: "Apples first, then oranges.", explanation: "5 apples to 4 oranges = 5:4", xp: 5 },
+                { difficulty: 1, question: "Write the ratio of 7 to 3.", answer: "7:3", hint: "Write them in the order given.", explanation: "7 to 3 is written as 7:3", xp: 5 },
+                { difficulty: 1, question: "In a class there are 12 boys and 15 girls. What is the ratio of boys to girls?", answer: "12:15", hint: "Boys first, girls second.", explanation: "12 boys to 15 girls = 12:15", xp: 5 },
+                { difficulty: 1, question: "A recipe uses 2 cups of oats and 1 cup of sugar. What is the ratio of oats to sugar?", answer: "2:1", hint: "Oats are mentioned first.", explanation: "2 cups oats : 1 cup sugar = 2:1", xp: 5 },
+                { difficulty: 1, question: "A pet store has 6 dogs and 9 cats. What is the ratio of dogs to cats?", answer: "6:9", hint: "Dogs come first in the question.", explanation: "6 dogs to 9 cats = 6:9", xp: 5 },
+                { difficulty: 1, question: "Write the ratio of 1 to 4.", answer: "1:4", hint: "First number to second number.", explanation: "1 to 4 is written as 1:4", xp: 5 },
+                { difficulty: 1, question: "A parking lot has 8 trucks and 20 cars. What is the ratio of trucks to cars?", answer: "8:20", hint: "Trucks come first.", explanation: "8 trucks to 20 cars = 8:20", xp: 5 },
+                { difficulty: 1, question: "A jar holds 4 green marbles and 3 yellow marbles. What is the ratio of yellow to green?", answer: "3:4", hint: "Yellow is asked first this time.", explanation: "3 yellow to 4 green = 3:4", xp: 5 },
+                { difficulty: 1, question: "There are 10 students and 2 teachers in a room. What is the ratio of students to teachers?", answer: "10:2", hint: "Students are mentioned first in the question.", explanation: "10 students to 2 teachers = 10:2", xp: 5 },
+                { difficulty: 1, question: "A garden has 5 rose bushes and 7 daisy plants. What is the ratio of daisies to roses?", answer: "7:5", hint: "Daisies are asked first.", explanation: "7 daisies to 5 roses = 7:5", xp: 5 },
+                { difficulty: 1, question: "Write the ratio of 9 to 4.", answer: "9:4", hint: "Write them in order: first to second.", explanation: "9 to 4 is written as 9:4", xp: 5 },
+                { difficulty: 1, question: "A smoothie uses 3 bananas and 2 cups of strawberries. What is the ratio of bananas to strawberries?", answer: "3:2", hint: "Bananas come first.", explanation: "3 bananas to 2 cups strawberries = 3:2", xp: 5 },
+                { difficulty: 1, question: "A team scored 5 goals and allowed 1 goal. What is the ratio of goals scored to goals allowed?", answer: "5:1", hint: "Scored first, allowed second.", explanation: "5 scored to 1 allowed = 5:1", xp: 5 },
+                { difficulty: 1, question: "A bookshelf has 14 fiction books and 6 non-fiction books. What is the ratio of fiction to non-fiction?", answer: "14:6", hint: "Fiction is mentioned first.", explanation: "14 fiction to 6 non-fiction = 14:6", xp: 5 },
+                { difficulty: 1, question: "Write the ratio of 11 to 5.", answer: "11:5", hint: "First number to second number.", explanation: "11 to 5 is written as 11:5", xp: 5 },
+                { difficulty: 1, question: "A class voted on a field trip: 18 said yes and 7 said no. What is the ratio of yes to no?", answer: "18:7", hint: "Yes votes come first in the question.", explanation: "18 yes to 7 no = 18:7", xp: 5 },
+                // --- Difficulty 2: Equivalent ratios and simplifying (17 questions) ---
+                { difficulty: 2, question: "Simplify the ratio 4:6.", answer: "2:3", hint: "Divide both numbers by their greatest common factor.", explanation: "4 ÷ 2 = 2, 6 ÷ 2 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Simplify the ratio 10:15.", answer: "2:3", hint: "What number divides both 10 and 15?", explanation: "10 ÷ 5 = 2, 15 ÷ 5 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Are 3:4 and 9:12 equivalent ratios?", answer: "yes", hint: "Multiply both parts of 3:4 by 3. What do you get?", explanation: "3 × 3 = 9, 4 × 3 = 12. So 3:4 = 9:12. Yes, equivalent.", xp: 10, alternateAnswers: ["yes they are", "they are equivalent"] },
+                { difficulty: 2, question: "Find the missing value: 2:5 = ?:15", answer: "6", hint: "5 × 3 = 15. Multiply the other part by 3 too.", explanation: "5 × 3 = 15, so 2 × 3 = 6. The ratio is 6:15.", xp: 10 },
+                { difficulty: 2, question: "Find the missing value: 3:7 = 9:?", answer: "21", hint: "3 × 3 = 9. What do you do to 7?", explanation: "3 × 3 = 9, so 7 × 3 = 21. The ratio is 9:21.", xp: 10 },
+                { difficulty: 2, question: "Simplify the ratio 8:12.", answer: "2:3", hint: "Divide both by 4.", explanation: "8 ÷ 4 = 2, 12 ÷ 4 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Simplify the ratio 6:9.", answer: "2:3", hint: "Divide both by 3.", explanation: "6 ÷ 3 = 2, 9 ÷ 3 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Find the missing value: 5:2 = 25:?", answer: "10", hint: "5 × 5 = 25. Apply the same multiplier to 2.", explanation: "5 × 5 = 25, so 2 × 5 = 10. The ratio is 25:10.", xp: 10 },
+                { difficulty: 2, question: "Are 2:5 and 4:10 equivalent ratios?", answer: "yes", hint: "Multiply both parts of 2:5 by 2.", explanation: "2 × 2 = 4, 5 × 2 = 10. So 2:5 = 4:10. Yes, equivalent.", xp: 10, alternateAnswers: ["yes they are", "they are equivalent"] },
+                { difficulty: 2, question: "Simplify the ratio 15:20.", answer: "3:4", hint: "Divide both by 5.", explanation: "15 ÷ 5 = 3, 20 ÷ 5 = 4. Simplified: 3:4", xp: 10 },
+                { difficulty: 2, question: "Find the missing value: 4:3 = ?:12", answer: "16", hint: "3 × 4 = 12. Multiply the top part by 4 too.", explanation: "3 × 4 = 12, so 4 × 4 = 16. The ratio is 16:12.", xp: 10 },
+                { difficulty: 2, question: "Simplify the ratio 14:21.", answer: "2:3", hint: "Divide both by 7.", explanation: "14 ÷ 7 = 2, 21 ÷ 7 = 3. Simplified: 2:3", xp: 10 },
+                { difficulty: 2, question: "Find the missing value: 1:6 = 5:?", answer: "30", hint: "1 × 5 = 5. What happens to 6?", explanation: "1 × 5 = 5, so 6 × 5 = 30. The ratio is 5:30.", xp: 10 },
+                { difficulty: 2, question: "Are 5:8 and 10:16 equivalent ratios?", answer: "yes", hint: "Multiply both parts of 5:8 by 2.", explanation: "5 × 2 = 10, 8 × 2 = 16. Yes, equivalent.", xp: 10, alternateAnswers: ["yes they are", "they are equivalent"] },
+                { difficulty: 2, question: "Simplify the ratio 9:12.", answer: "3:4", hint: "Divide both by 3.", explanation: "9 ÷ 3 = 3, 12 ÷ 3 = 4. Simplified: 3:4", xp: 10 },
+                { difficulty: 2, question: "Find the missing value: 7:2 = 21:?", answer: "6", hint: "7 × 3 = 21. Apply the same multiplier to 2.", explanation: "7 × 3 = 21, so 2 × 3 = 6. The ratio is 21:6.", xp: 10 },
+                { difficulty: 2, question: "Simplify the ratio 20:25.", answer: "4:5", hint: "Divide both by 5.", explanation: "20 ÷ 5 = 4, 25 ÷ 5 = 5. Simplified: 4:5", xp: 10 },
+                // --- Difficulty 3: Unit rate and word problems (16 questions) ---
+                { difficulty: 3, question: "A car travels 120 miles in 3 hours. What is its speed in miles per hour?", answer: "40", hint: "Divide total miles by total hours to get miles per 1 hour.", explanation: "120 ÷ 3 = 40 miles per hour.", xp: 15 },
+                { difficulty: 3, question: "5 apples cost $2.50. How much does 1 apple cost?", answer: "0.50", hint: "Divide the total price by the number of apples.", explanation: "$2.50 ÷ 5 = $0.50 per apple.", xp: 15, alternateAnswers: ["$0.50", "50 cents"] },
+                { difficulty: 3, question: "A recipe for 4 people needs 6 cups of flour. How much flour is needed for 1 person?", answer: "1.5", hint: "Divide total flour by number of people.", explanation: "6 ÷ 4 = 1.5 cups per person.", xp: 15, alternateAnswers: ["3/2", "1 1/2"] },
+                { difficulty: 3, question: "The ratio of wins to losses is 4:1. Out of 20 games total, how many were wins?", answer: "16", hint: "4 wins + 1 loss = 5 games per cycle. How many cycles in 20 games?", explanation: "20 ÷ 5 = 4 cycles. Wins = 4 × 4 = 16.", xp: 15 },
+                { difficulty: 3, question: "A map scale is 1 cm = 5 km. If two cities are 8 cm apart on the map, how far apart are they in real life?", answer: "40", hint: "Multiply the map distance by the scale factor.", explanation: "8 cm × 5 km/cm = 40 km.", xp: 15 },
+                { difficulty: 3, question: "A runner jogs 15 miles in 3 hours. How many miles does she run per hour?", answer: "5", hint: "Divide total distance by total time.", explanation: "15 ÷ 3 = 5 miles per hour.", xp: 15 },
+                { difficulty: 3, question: "A store sells 8 notebooks for $12. What is the cost per notebook?", answer: "1.50", hint: "Divide the total cost by the number of notebooks.", explanation: "$12 ÷ 8 = $1.50 per notebook.", xp: 15, alternateAnswers: ["$1.50", "1.5"] },
+                { difficulty: 3, question: "The ratio of cats to dogs at a shelter is 3:2. If there are 18 cats, how many dogs are there?", answer: "12", hint: "3:2 means for every 3 cats there are 2 dogs. How many groups of 3 in 18?", explanation: "18 ÷ 3 = 6 groups. Dogs = 6 × 2 = 12.", xp: 15 },
+                { difficulty: 3, question: "A factory makes 240 parts in 8 hours. How many parts does it make per hour?", answer: "30", hint: "Divide total parts by total hours.", explanation: "240 ÷ 8 = 30 parts per hour.", xp: 15 },
+                { difficulty: 3, question: "A map scale is 2 cm = 3 km. Two parks are 10 cm apart on the map. How far apart are they in real life?", answer: "15", hint: "First find km per cm, then multiply by 10.", explanation: "3 km ÷ 2 cm = 1.5 km/cm. 1.5 × 10 = 15 km.", xp: 15 },
+                { difficulty: 3, question: "The ratio of red to blue paint in a mixture is 2:3. If you use 10 liters of red paint, how many liters of blue do you need?", answer: "15", hint: "2:3 — if red is 10, how many groups of 2 is that?", explanation: "10 ÷ 2 = 5 groups. Blue = 5 × 3 = 15 liters.", xp: 15 },
+                { difficulty: 3, question: "A cyclist rides 56 miles in 4 hours. What is her average speed in miles per hour?", answer: "14", hint: "Divide total distance by total time.", explanation: "56 ÷ 4 = 14 miles per hour.", xp: 15 },
+                { difficulty: 3, question: "A bag of 6 oranges costs $3.00. What is the cost per orange?", answer: "0.50", hint: "Divide total cost by number of oranges.", explanation: "$3.00 ÷ 6 = $0.50 per orange.", xp: 15, alternateAnswers: ["$0.50", "50 cents"] },
+                { difficulty: 3, question: "In a school, the ratio of students to teachers is 25:1. If there are 10 teachers, how many students are there?", answer: "250", hint: "Multiply the ratio by the number of teachers.", explanation: "25 × 10 = 250 students.", xp: 15 },
+                { difficulty: 3, question: "A recipe calls for 3 cups of sugar for every 5 cups of flour. How many cups of sugar are needed with 20 cups of flour?", answer: "12", hint: "20 ÷ 5 = 4 groups. Multiply sugar by the same factor.", explanation: "20 ÷ 5 = 4 groups. Sugar = 3 × 4 = 12 cups.", xp: 15 },
+                { difficulty: 3, question: "A train travels 180 km in 2 hours. What is its speed in km per hour?", answer: "90", hint: "Divide total distance by total time.", explanation: "180 ÷ 2 = 90 km per hour.", xp: 15 },
+                // --- Difficulty 4: Part-to-whole ratios and multi-step proportions (10 questions) ---
+                { difficulty: 4, question: "In a class of 30 students, the ratio of boys to girls is 2:3. How many boys are there?", answer: "12", hint: "Add the ratio parts: 2 + 3 = 5. How many students per part?", explanation: "30 ÷ 5 = 6 per part. Boys = 2 × 6 = 12.", xp: 18 },
+                { difficulty: 4, question: "A fruit basket has apples and bananas in ratio 3:5. There are 40 pieces total. How many apples?", answer: "15", hint: "3 + 5 = 8 total parts. Find the value of one part.", explanation: "40 ÷ 8 = 5 per part. Apples = 3 × 5 = 15.", xp: 18 },
+                { difficulty: 4, question: "A mixture of red and white paint is in ratio 1:4. How much red paint is in 20 liters of mixture?", answer: "4", hint: "1 + 4 = 5 total parts. What is one part?", explanation: "20 ÷ 5 = 4 per part. Red = 1 × 4 = 4 liters.", xp: 18 },
+                { difficulty: 4, question: "The ratio of a to b is 5:3. If a = 35, what is b?", answer: "21", hint: "If 5 parts = 35, find 1 part, then multiply by 3.", explanation: "35 ÷ 5 = 7 per part. b = 3 × 7 = 21.", xp: 18 },
+                { difficulty: 4, question: "Marbles are red and green in ratio 3:7. There are 21 red marbles. How many green marbles?", answer: "49", hint: "3 parts = 21 red. Find 1 part, then find 7 parts.", explanation: "21 ÷ 3 = 7 per part. Green = 7 × 7 = 49.", xp: 18 },
+                { difficulty: 4, question: "Juice to water ratio in a drink is 2:5. You use 14 liters of juice. How many liters of water do you need?", answer: "35", hint: "2 parts = 14 liters. Find 1 part, then find 5 parts.", explanation: "14 ÷ 2 = 7 per part. Water = 5 × 7 = 35 liters.", xp: 18 },
+                { difficulty: 4, question: "A recipe uses milk and flour in ratio 3:8. You have 24 cups of flour. How many cups of milk do you need?", answer: "9", hint: "8 parts = 24 cups. Find 1 part, then find 3 parts.", explanation: "24 ÷ 8 = 3 per part. Milk = 3 × 3 = 9 cups.", xp: 18 },
+                { difficulty: 4, question: "Dogs, cats, and fish are in ratio 2:5:3. There are 100 animals total. How many cats?", answer: "50", hint: "2 + 5 + 3 = 10 total parts. Find one part.", explanation: "100 ÷ 10 = 10 per part. Cats = 5 × 10 = 50.", xp: 18 },
+                { difficulty: 4, question: "Two quantities are in ratio 7:3. The larger quantity is 56. What is the smaller quantity?", answer: "24", hint: "7 parts = 56. Find 1 part, then find 3 parts.", explanation: "56 ÷ 7 = 8 per part. Smaller = 3 × 8 = 24.", xp: 18 },
+                { difficulty: 4, question: "Red to blue beads are in ratio 5:2. Total beads = 56. How many red beads are there?", answer: "40", hint: "5 + 2 = 7 total parts. Find one part, then find 5 parts.", explanation: "56 ÷ 7 = 8 per part. Red = 5 × 8 = 40.", xp: 18 },
+                // --- Difficulty 5: Complex multi-step ratio and proportion problems (10 questions) ---
+                { difficulty: 5, question: "Two numbers are in ratio 4:7. Their sum is 99. What is the larger number?", answer: "63", hint: "4 + 7 = 11 total parts. Find 1 part from the sum, then find 7 parts.", explanation: "99 ÷ 11 = 9 per part. Larger = 7 × 9 = 63.", xp: 25 },
+                { difficulty: 5, question: "A solution is 3 parts acid and 7 parts water. You have 50 liters total. How many liters of acid?", answer: "15", hint: "3 + 7 = 10 total parts. Find one part from the total.", explanation: "50 ÷ 10 = 5 per part. Acid = 3 × 5 = 15 liters.", xp: 25 },
+                { difficulty: 5, question: "John and Maria share money in ratio 5:3. John gets $40 more than Maria. How much does John get?", answer: "100", hint: "The difference is 5 - 3 = 2 parts = $40. Find 1 part, then John's 5 parts.", explanation: "1 part = $20. John = 5 × $20 = $100.", xp: 25 },
+                { difficulty: 5, question: "A school has 3 classes in ratio 2:3:4. There are 270 students total. How many are in the largest class?", answer: "120", hint: "2 + 3 + 4 = 9 total parts. Find 1 part, then find 4 parts.", explanation: "270 ÷ 9 = 30 per part. Largest = 4 × 30 = 120.", xp: 25 },
+                { difficulty: 5, question: "Sand and gravel are mixed in ratio 3:5 to make 240 kg of mix. How many kg of sand are needed?", answer: "90", hint: "3 + 5 = 8 total parts. Find 1 part from 240 kg.", explanation: "240 ÷ 8 = 30 per part. Sand = 3 × 30 = 90 kg.", xp: 25 },
+                { difficulty: 5, question: "The angles of a triangle are in ratio 2:3:5. What is the largest angle in degrees?", answer: "90", hint: "The angles of a triangle sum to 180°. 2 + 3 + 5 = 10 parts.", explanation: "180 ÷ 10 = 18° per part. Largest = 5 × 18 = 90°.", xp: 25 },
+                { difficulty: 5, question: "Cement, sand, and gravel are mixed in ratio 1:2:4. To make 140 kg of concrete, how many kg of sand are needed?", answer: "40", hint: "1 + 2 + 4 = 7 total parts. Find one part from 140 kg.", explanation: "140 ÷ 7 = 20 per part. Sand = 2 × 20 = 40 kg.", xp: 25 },
+                { difficulty: 5, question: "The perimeter of a rectangle is 80 cm. Length and width are in ratio 3:1. What is the length?", answer: "30", hint: "Use 2(length + width) = 80. If width = x, length = 3x.", explanation: "2(3x + x) = 80 → 8x = 80 → x = 10. Length = 3 × 10 = 30 cm.", xp: 25 },
+                { difficulty: 5, question: "A car travels 150 km on 12.5 liters of fuel. How many km per liter does it get?", answer: "12", hint: "Divide total distance by total fuel.", explanation: "150 ÷ 12.5 = 12 km per liter.", xp: 25 },
+                { difficulty: 5, question: "Red, blue, and yellow paint are mixed in ratio 4:2:1. You have 35 liters total. How many liters of blue paint are used?", answer: "10", hint: "4 + 2 + 1 = 7 total parts. Find one part, then find 2 parts.", explanation: "35 ÷ 7 = 5 per part. Blue = 2 × 5 = 10 liters.", xp: 25 },
+            ],
         };
 
-        const STORAGE_KEY = 'rsm-math-quest-users';
+        // ─── Skill hierarchy: one tree per domain, 5 nodes each mapping to QUESTION_BANK difficulty 1-5 ───
+        const SKILL_TREE = {
+            algebra: [
+                { id: 'variable-substitution',    name: 'Variables & Substitution',    difficulty: 1,
+                  description: 'Reading and evaluating algebraic expressions' },
+                { id: 'one-step-equations',       name: 'One-Step Equations',          difficulty: 2,
+                  description: 'Solving equations with a single inverse operation' },
+                { id: 'two-step-equations',       name: 'Two-Step Equations',          difficulty: 3,
+                  description: 'Solving ax ± b = c with two inverse operations' },
+                { id: 'multi-step-word-problems', name: 'Multi-Step & Word Problems',  difficulty: 4,
+                  description: 'Distribution, combining like terms, problem translation' },
+                { id: 'variables-both-sides',     name: 'Variables on Both Sides',     difficulty: 5,
+                  description: 'Equations requiring consolidation of variable terms' },
+            ],
+            geometry: [
+                { id: 'shape-properties',         name: 'Shape Properties',            difficulty: 1,
+                  description: 'Sides, angles, and vocabulary of basic shapes' },
+                { id: 'perimeter-area-direct',    name: 'Perimeter & Area',            difficulty: 2,
+                  description: 'Computing perimeter and area from given dimensions' },
+                { id: 'inverse-dimensions',       name: 'Missing Dimensions',          difficulty: 3,
+                  description: 'Finding a side length from perimeter or area' },
+                { id: 'multi-step-geometry',      name: 'Multi-Step Geometry',         difficulty: 4,
+                  description: 'Combining formulas, algebraic setup, word problems' },
+                { id: 'advanced-geometry',        name: 'Advanced Geometry',           difficulty: 5,
+                  description: 'Pythagorean theorem, angle equations, compound shapes' },
+            ],
+            fractions: [
+                { id: 'fraction-concepts',        name: 'Fraction Concepts',           difficulty: 1,
+                  description: 'Understanding numerator, denominator, and part-whole' },
+                { id: 'same-denominator',         name: 'Same-Denominator Arithmetic', difficulty: 2,
+                  description: 'Adding and subtracting with matching denominators' },
+                { id: 'simplification',           name: 'Simplification & Equivalence',difficulty: 3,
+                  description: 'Reducing fractions using GCD, equivalent fractions' },
+                { id: 'unlike-denominators',      name: 'Unlike Denominators',         difficulty: 4,
+                  description: 'Finding LCM and converting to common denominators' },
+                { id: 'multiply-divide',          name: 'Multiply & Divide',           difficulty: 5,
+                  description: 'Fraction multiplication, division, complex operations' },
+            ],
+            ratios: [
+                { id: 'ratio-concepts',    name: 'Ratio Concepts',    difficulty: 1, description: 'Understanding what a ratio means and how to write one' },
+                { id: 'equivalent-ratios', name: 'Equivalent Ratios', difficulty: 2, description: 'Scaling ratios up and down like equivalent fractions' },
+                { id: 'unit-rate',         name: 'Unit Rate',         difficulty: 3, description: 'Finding the rate per one unit' },
+                { id: 'part-to-whole',     name: 'Part-to-Whole',     difficulty: 4, description: 'Dividing quantities using part-to-whole reasoning' },
+                { id: 'complex-ratios',    name: 'Complex Ratios',    difficulty: 5, description: 'Multi-step problems with ratios, mixtures, and proportions' },
+            ],
+        };
 
-        const DEFAULT_USERS = [
-            {
-                id: 1,
-                name: 'Demo Student',
-                avatar: AVATARS[0],
-                isParent: false,
-                stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
-                badges: [],
-                lastPlayed: null,
-            },
-            {
-                id: 'parent',
-                name: 'Parent',
-                avatar: { emoji: '👨‍👩‍👧‍👦', name: 'Parent' },
-                isParent: true,
-                stats: null,
-                badges: [],
-                lastPlayed: null,
-            },
+        const STORAGE_KEY = 'rsm-math-quest-v2';
+
+        // djb2 non-cryptographic hash — sufficient for localStorage-only child app
+        function hashPassword(str) {
+            let hash = 5381;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) + hash) + str.charCodeAt(i);
+                hash = hash & hash;
+            }
+            return (hash >>> 0).toString(16);
+        }
+
+        function verifyPassword(input, storedHash) {
+            return hashPassword(input) === storedHash;
+        }
+
+        // Returns the student's current grade, auto-advancing each school year.
+        function getCurrentGrade(user) {
+            if (!user?.gradeInfo) return null;
+            const yearsElapsed = new Date().getFullYear() - user.gradeInfo.enrollYear;
+            return user.gradeInfo.grade + yearsElapsed;
+        }
+
+        const ORDINAL = { 5: '5th', 6: '6th', 7: '7th', 8: '8th', 9: '9th' };
+
+        // Subject tab config and lesson metadata — drive the home page navigation.
+        const SUBJECTS = [
+            { id: 'algebra',   label: 'Algebra',   icon: '🔢' },
+            { id: 'fractions', label: 'Fractions', icon: '🍕' },
+            { id: 'geometry',  label: 'Geometry',  icon: '📏' },
+            { id: 'ratios',    label: 'Ratios',    icon: '⚖️' },
+        ];
+
+        const LESSON_CATALOG = [
+            { id: 'fractions-lesson-1', icon: '🍕', title: 'Fractions 1', subtitle: 'Adding Same Denominator', subject: 'fractions', level: 1, badge: 'Grade 5' },
+            { id: 'fractions-lesson-2', icon: '✖️', title: 'Fractions 2', subtitle: 'Multiplying Fractions',   subject: 'fractions', level: 2, badge: 'Grade 5–6' },
+            { id: 'geometry-lesson-1',  icon: '📏', title: 'Geometry 1',  subtitle: 'Perimeter & Area',        subject: 'geometry',  level: 1, badge: 'Grade 5–6' },
+            { id: 'geometry-lesson-2',  icon: '📐', title: 'Geometry 2',  subtitle: 'Area of Triangles',       subject: 'geometry',  level: 2, badge: 'Grade 6' },
+            { id: 'ratios-lesson-1',    icon: '⚖️', title: 'Ratios 1',    subtitle: 'Introduction to Ratios',  subject: 'ratios',    level: 1, badge: 'Grade 6' },
+            { id: 'algebra-lesson-1',   icon: '🔢', title: 'Algebra 1',   subtitle: 'One-Step Equations',      subject: 'algebra',   level: 1, badge: 'Grade 6–7' },
+            { id: 'algebra-lesson-2',   icon: '🧮', title: 'Algebra 2',   subtitle: 'Two-Step Equations',      subject: 'algebra',   level: 2, badge: 'Grade 6–7' },
         ];
 
         function MathLearningApp() {
             const [users, setUsers] = useState(() => {
                 try {
                     const saved = localStorage.getItem(STORAGE_KEY);
-                    return saved ? JSON.parse(saved) : DEFAULT_USERS;
+                    return saved ? JSON.parse(saved) : [];
                 } catch {
-                    return DEFAULT_USERS;
+                    return [];
                 }
             });
             const [currentUser, setCurrentUser] = useState(null);
@@ -1047,15 +1769,59 @@
                 catch { /* storage unavailable — progress won't survive refresh */ }
             }, [users]);
 
-            // State for the parent-dashboard "Add Student" form
-            const [showAddStudent, setShowAddStudent] = useState(false);
-            const [newStudentName, setNewStudentName] = useState('');
-            const [newStudentAvatar, setNewStudentAvatar] = useState(AVATARS[0]);
+            // Auth form state
+            const [loginUsername, setLoginUsername] = useState('');
+            const [loginPassword, setLoginPassword] = useState('');
+            const [loginError, setLoginError] = useState('');
+            // Shared registration form state (used by both parent and child register views)
+            const [regName, setRegName] = useState('');
+            const [regUsername, setRegUsername] = useState('');
+            const [regPassword, setRegPassword] = useState('');
+            const [regParentUsername, setRegParentUsername] = useState('');
+            const [regAvatar, setRegAvatar] = useState(AVATARS[0]);
+            const [regEmail, setRegEmail] = useState('');
+            const [regError, setRegError] = useState('');
+            const [lessonSubject, setLessonSubject] = useState('algebra');
+            const [lessonLevel, setLessonLevel] = useState(0); // 0 = all levels
+            const [regSuccess, setRegSuccess] = useState('');
+            const [regGrade, setRegGrade] = useState(6);
+            // Password reset state (parent resets a child's password)
+            const [resetPasswordFor, setResetPasswordFor] = useState(null);
+            const [resetNewPassword, setResetNewPassword] = useState('');
+            const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+            const [resetPasswordError, setResetPasswordError] = useState('');
 
             // Build a shuffled warmup pool by mixing the lesson's own warmup questions
             // with QUESTION_BANK difficulty-1 questions for variety each session.
+
+            // Returns the SKILL_TREE node key for the current problem, e.g. "algebra.one-step-equations".
+            // QUESTION_BANK problems have an explicit .difficulty; lesson problems infer it from phase.
+            function getSkillNodeKey(topic, problem, phase, adaptiveDiff) {
+                if (!topic || !SKILL_TREE[topic]) return null;
+                const diffLevel = problem.difficulty
+                    ?? (phase === 'warmup'      ? 1
+                      : phase === 'discovery'   ? 2
+                      : phase === 'exitTicket'  ? 3
+                      : phase === 'application' ? adaptiveDiff
+                      : null);
+                if (!diffLevel) return null;
+                const node = SKILL_TREE[topic].find(n => n.difficulty === diffLevel);
+                return node ? `${topic}.${node.id}` : null;
+            }
+
+            // Returns a mastery tier string based on correct/attempted counts.
+            function getMasteryLevel(entry) {
+                if (!entry || !entry.attempted) return 'not-started';
+                const rate = entry.correct / entry.attempted;
+                if (entry.correct >= 5 && rate >= 0.70) return 'mastered';
+                if (entry.correct >= 3 && rate >= 0.50) return 'practicing';
+                if (entry.correct >= 1)                 return 'learning';
+                return 'struggling';
+            }
+
             function buildShuffledWarmup(lesson) {
-                const bankDiff1 = (QUESTION_BANK[lesson.topic] || []).filter(q => q.difficulty === 1);
+                const warmupDiff = lesson.warmupDifficulty ?? 1;
+                const bankDiff1 = (QUESTION_BANK[lesson.topic] || []).filter(q => q.difficulty === warmupDiff);
                 const combined = [...lesson.warmup, ...bankDiff1];
                 // Deduplicate by question text
                 const seen = new Set();
@@ -1069,7 +1835,7 @@
                     const j = Math.floor(Math.random() * (i + 1));
                     [unique[i], unique[j]] = [unique[j], unique[i]];
                 }
-                return unique.slice(0, 4);
+                return unique.slice(0, 2);
             }
 
             // Pick a random unseen question from QUESTION_BANK at the target difficulty.
@@ -1088,46 +1854,141 @@
                 return picked;
             }
 
-            function selectUser(user) {
-                let updatedUser = user;
-                if (!user.isParent && user.stats) {
+            function resetRegForm() {
+                setRegName(''); setRegUsername(''); setRegPassword('');
+                setRegEmail(''); setRegParentUsername(''); setRegAvatar(AVATARS[0]);
+                setRegError(''); setRegSuccess(''); setRegGrade(6);
+            }
+
+            function login() {
+                const input = loginUsername.trim().toLowerCase();
+                // Parents log in by email; students log in by username
+                const user = input.includes('@')
+                    ? users.find(u => u.email === input)
+                    : users.find(u => u.username === input);
+                if (!user || !verifyPassword(loginPassword, user.passwordHash)) {
+                    setLoginError('Incorrect email/username or password.');
+                    return;
+                }
+                setLoginError('');
+                setLoginUsername('');
+                setLoginPassword('');
+                if (user.role === 'child' && user.pendingApproval) {
+                    setCurrentUser(user);
+                    setView('pending-approval');
+                    return;
+                }
+                // Update streak on child login
+                let activeUser = user;
+                if (user.role === 'child' && user.stats) {
                     const today = new Date().toDateString();
                     const yesterday = new Date(Date.now() - 86_400_000).toDateString();
                     const last = user.lastPlayed;
                     const newStreak = last === today ? user.stats.streak
                         : last === yesterday ? user.stats.streak + 1
                         : 1;
-                    updatedUser = {
-                        ...user,
-                        lastPlayed: today,
-                        stats: { ...user.stats, streak: newStreak },
-                    };
-                    setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
+                    activeUser = { ...user, lastPlayed: today, stats: { ...user.stats, streak: newStreak } };
+                    setUsers(prev => prev.map(u => u.id === user.id ? activeUser : u));
                 }
-                setCurrentUser(updatedUser);
-                setView(updatedUser.isParent ? 'parent' : 'home');
+                setCurrentUser(activeUser);
+                setView(activeUser.role === 'parent' ? 'parent' : 'home');
             }
 
-            function createStudent() {
-                const name = newStudentName.trim();
-                if (!name) return;
-                const newUser = {
-                    id: Date.now(),
+            function registerParent() {
+                const name = regName.trim();
+                const uname = regUsername.trim().toLowerCase();
+                const email = regEmail.trim().toLowerCase();
+                const pass = regPassword;
+                if (!name) { setRegError('Display name is required.'); return; }
+                if (!email || !email.includes('@') || !email.includes('.')) { setRegError('A valid email address is required.'); return; }
+                if (!uname) { setRegError('Username is required.'); return; }
+                if (pass.length < 4) { setRegError('Password must be at least 4 characters.'); return; }
+                if (users.some(u => u.email === email)) { setRegError('An account with that email already exists.'); return; }
+                if (users.some(u => u.username === uname)) { setRegError('That username is already taken.'); return; }
+                const newParent = {
+                    id: Date.now().toString(),
+                    username: uname,
+                    email,
+                    passwordHash: hashPassword(pass),
+                    role: 'parent',
                     name,
-                    avatar: newStudentAvatar,
-                    isParent: false,
-                    stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
+                    avatar: regAvatar,
+                    parentId: null,
+                    pendingApproval: false,
+                    stats: null,
                     badges: [],
+                    conceptMastery: {},
                     lastPlayed: null,
                 };
-                setUsers(prev => {
-                    const parent = prev.find(u => u.isParent);
-                    const students = prev.filter(u => !u.isParent);
-                    return parent ? [...students, newUser, parent] : [...students, newUser];
-                });
-                setNewStudentName('');
-                setNewStudentAvatar(AVATARS[0]);
-                setShowAddStudent(false);
+                setUsers(prev => [...prev, newParent]);
+                resetRegForm();
+                setCurrentUser(newParent);
+                setView('parent');
+            }
+
+            function registerChild() {
+                const name = regName.trim();
+                const uname = regUsername.trim().toLowerCase();
+                const pass = regPassword;
+                const puname = regParentUsername.trim().toLowerCase();
+                if (!name) { setRegError('Display name is required.'); return; }
+                if (!uname) { setRegError('Username is required.'); return; }
+                if (pass.length < 4) { setRegError('Password must be at least 4 characters.'); return; }
+                if (!puname) { setRegError("Enter your parent's username."); return; }
+                if (users.some(u => u.username === uname)) { setRegError('That username is already taken.'); return; }
+                const parent = users.find(u => u.username === puname && u.role === 'parent');
+                if (!parent) { setRegError("No parent account found with that username."); return; }
+                const newChild = {
+                    id: Date.now().toString(),
+                    username: uname,
+                    passwordHash: hashPassword(pass),
+                    role: 'child',
+                    name,
+                    avatar: regAvatar,
+                    parentId: parent.id,
+                    pendingApproval: true,
+                    gradeInfo: { grade: regGrade, enrollYear: new Date().getFullYear() },
+                    stats: { xp: 0, level: 1, problemsSolved: 0, streak: 0, accuracy: 100 },
+                    badges: [],
+                    conceptMastery: {},
+                    lastPlayed: null,
+                };
+                setUsers(prev => [...prev, newChild]);
+                resetRegForm();
+                setRegSuccess(`Account created! Ask ${parent.name} to log in and approve your profile.`);
+            }
+
+            function approveChild(childId) {
+                setUsers(prev => prev.map(u => u.id === childId ? { ...u, pendingApproval: false } : u));
+            }
+
+            function rejectChild(childId) {
+                setUsers(prev => prev.filter(u => u.id !== childId));
+            }
+
+            function resetChildPassword(childId) {
+                if (resetNewPassword.length < 4) {
+                    setResetPasswordError('Password must be at least 4 characters.');
+                    return;
+                }
+                if (resetNewPassword !== resetConfirmPassword) {
+                    setResetPasswordError('Passwords do not match.');
+                    return;
+                }
+                setUsers(prev => prev.map(u =>
+                    u.id === childId ? { ...u, passwordHash: hashPassword(resetNewPassword) } : u
+                ));
+                setResetPasswordFor(null);
+                setResetNewPassword('');
+                setResetConfirmPassword('');
+                setResetPasswordError('');
+            }
+
+            function cancelResetPassword() {
+                setResetPasswordFor(null);
+                setResetNewPassword('');
+                setResetConfirmPassword('');
+                setResetPasswordError('');
             }
 
             function startLesson(lessonId) {
@@ -1201,6 +2062,9 @@
                         setApplicationProblemsShown(nextShown);
                         setPhaseIndex(nextShown);
                         setCurrentProblem(nextQ);
+                    } else if (lesson.exitTicketBridge) {
+                        setLessonPhase('exitTicketBridge');
+                        setCurrentProblem(null);
                     } else {
                         setLessonPhase('exitTicket');
                         setPhaseIndex(0);
@@ -1311,6 +2175,7 @@
                         }
                     }
                     
+                    const skillKey = getSkillNodeKey(currentTopic, currentProblem, lessonPhase, adaptiveDifficulty);
                     setUsers(prevUsers => prevUsers.map(u => {
                         if (u.id === currentUser.id) {
                             const newStats = {
@@ -1319,7 +2184,15 @@
                                 problemsSolved: u.stats.problemsSolved + 1,
                                 level: Math.floor((u.stats.xp + currentProblem.xp) / 100) + 1
                             };
-                            const updatedUser = { ...u, stats: newStats };
+                            const cm = u.conceptMastery || {};
+                            const newCM = skillKey ? {
+                                ...cm,
+                                [skillKey]: {
+                                    correct:   (cm[skillKey]?.correct   || 0) + 1,
+                                    attempted: (cm[skillKey]?.attempted || 0) + 1,
+                                },
+                            } : cm;
+                            const updatedUser = { ...u, stats: newStats, conceptMastery: newCM };
                             setCurrentUser(updatedUser);
                             return updatedUser;
                         }
@@ -1338,6 +2211,22 @@
                             setAdaptiveDifficulty(d => Math.max(d - 1, 1));
                             setConsecutiveWrong(0);
                         }
+                    }
+
+                    // Track wrong attempt in concept mastery so accuracy is reflected
+                    const skillKeyWrong = getSkillNodeKey(currentTopic, currentProblem, lessonPhase, adaptiveDifficulty);
+                    if (skillKeyWrong) {
+                        setUsers(prev => prev.map(u => {
+                            if (u.id !== currentUser.id) return u;
+                            const cm = u.conceptMastery || {};
+                            return { ...u, conceptMastery: {
+                                ...cm,
+                                [skillKeyWrong]: {
+                                    correct:   cm[skillKeyWrong]?.correct   || 0,
+                                    attempted: (cm[skillKeyWrong]?.attempted || 0) + 1,
+                                },
+                            }};
+                        }));
                     }
 
                     // Auto-open tutor and provide guidance
@@ -1522,25 +2411,19 @@
                     }
                     
                 } else if (currentTopic === 'algebra') {
-                    // Parse equation from question
+                    // Try full form: ax ± b = c
                     const eqMatch = question.match(/(\d*)x\s*([+\-])\s*(\d+)\s*=\s*(\d+)/);
-                    
-                    if (eqMatch) {
-                        const coef = eqMatch[1] ? parseInt(eqMatch[1]) : 1;
-                        const op = eqMatch[2];
-                        const num = parseInt(eqMatch[3]);
-                        const result = parseInt(eqMatch[4]);
-                        
-                        // Draw balance scale
+                    // Fall back to simple form: ax = c  (no additive constant)
+                    const simpleMatch = !eqMatch && question.match(/(\d*)x\s*=\s*(\d+)/);
+
+                    const drawBalanceScale = (coef, op, num, result) => {
                         ctx.strokeStyle = '#666';
                         ctx.lineWidth = 2;
-                        
                         // Scale beam
                         ctx.beginPath();
                         ctx.moveTo(80, 70);
                         ctx.lineTo(320, 70);
                         ctx.stroke();
-                        
                         // Fulcrum
                         ctx.beginPath();
                         ctx.moveTo(200, 70);
@@ -1550,32 +2433,76 @@
                         ctx.moveTo(180, 90);
                         ctx.lineTo(220, 90);
                         ctx.stroke();
-                        
-                        // Left side (equation)
+                        // Left side
                         ctx.fillStyle = '#1cb0f6';
                         ctx.fillRect(100, 35, 40, 30);
                         ctx.font = 'bold 16px Arial';
                         ctx.fillStyle = 'white';
                         ctx.fillText(`${coef > 1 ? coef : ''}x`, 110, 55);
-                        
                         if (num > 0) {
                             ctx.fillStyle = op === '+' ? '#58cc02' : '#ff4b4b';
                             ctx.fillRect(145, 35, 35, 30);
                             ctx.fillStyle = 'white';
                             ctx.fillText(`${op}${num}`, 150, 55);
                         }
-                        
-                        // Right side (result)
+                        // Right side
                         ctx.fillStyle = '#ffc800';
                         ctx.fillRect(260, 35, 40, 30);
                         ctx.font = 'bold 16px Arial';
                         ctx.fillStyle = 'white';
                         ctx.fillText(result.toString(), 270, 55);
-                        
-                        // Show hint
                         ctx.font = '14px Arial';
                         ctx.fillStyle = '#666';
                         ctx.fillText('Keep the scale balanced!', 120, 120);
+                    };
+
+                    if (eqMatch) {
+                        drawBalanceScale(
+                            eqMatch[1] ? parseInt(eqMatch[1]) : 1,
+                            eqMatch[2],
+                            parseInt(eqMatch[3]),
+                            parseInt(eqMatch[4])
+                        );
+                    } else if (simpleMatch) {
+                        drawBalanceScale(
+                            simpleMatch[1] ? parseInt(simpleMatch[1]) : 1,
+                            '+', 0,
+                            parseInt(simpleMatch[2])
+                        );
+                    }
+
+                } else if (currentTopic === 'ratios') {
+                    // Draw a tape/bar diagram for any ratio found in the question
+                    const ratioMatch = question.match(/(\d+):(\d+)/);
+                    if (ratioMatch) {
+                        const part1 = parseInt(ratioMatch[1]);
+                        const part2 = parseInt(ratioMatch[2]);
+                        const total = part1 + part2;
+                        const maxWidth = 280;
+                        const barH = 28;
+                        const startX = 60;
+
+                        const w1 = Math.round((part1 / total) * maxWidth);
+                        ctx.fillStyle = 'rgba(28, 176, 246, 0.65)';
+                        ctx.fillRect(startX, 40, w1, barH);
+                        ctx.strokeStyle = '#1cb0f6';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(startX, 40, w1, barH);
+
+                        const w2 = Math.round((part2 / total) * maxWidth);
+                        ctx.fillStyle = 'rgba(88, 204, 2, 0.65)';
+                        ctx.fillRect(startX, 40 + barH + 8, w2, barH);
+                        ctx.strokeStyle = '#58cc02';
+                        ctx.strokeRect(startX, 40 + barH + 8, w2, barH);
+
+                        ctx.font = 'bold 14px Arial';
+                        ctx.fillStyle = '#fff';
+                        ctx.fillText(part1.toString(), startX + w1 / 2 - 5, 40 + barH / 2 + 5);
+                        ctx.fillText(part2.toString(), startX + w2 / 2 - 5, 40 + barH + 8 + barH / 2 + 5);
+
+                        ctx.font = '14px Arial';
+                        ctx.fillStyle = '#666';
+                        ctx.fillText(`Ratio ${part1}:${part2}`, startX, 120);
                     }
                 }
             }
@@ -1967,20 +2894,181 @@
             const renderLogin = () => (
                 <div className="login-container">
                     <h1 className="login-title">RSM Math Quest</h1>
-                    <p className="login-subtitle">Select your profile to start learning</p>
-                    
-                    <div className="user-grid">
-                        {users.map(user => (
-                            <div key={user.id} className="user-card" onClick={() => selectUser(user)}>
-                                <div className="user-avatar">{user.avatar.emoji}</div>
-                                <div className="user-name">{user.name}</div>
-                                {user.stats && (
-                                    <div className="user-stats">
-                                        Level {user.stats.level} • {user.stats.xp} XP
-                                    </div>
-                                )}
+                    <p className="login-subtitle">Sign in to continue learning</p>
+
+                    <form className="login-form" onSubmit={e => { e.preventDefault(); login(); }}>
+                        {loginError && <div className="login-error">{loginError}</div>}
+
+                        <label className="form-label">Email or Username</label>
+                        <input
+                            className="answer-input"
+                            type="text"
+                            placeholder="Parent email · Student username"
+                            value={loginUsername}
+                            onChange={e => { setLoginUsername(e.target.value); setLoginError(''); }}
+                            autoFocus
+                            autoComplete="email username"
+                        />
+
+                        <label className="form-label">Password</label>
+                        <input
+                            className="answer-input"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={loginPassword}
+                            onChange={e => { setLoginPassword(e.target.value); setLoginError(''); }}
+                            autoComplete="current-password"
+                        />
+
+                        <button type="submit" className="btn-primary" style={{ width: '100%' }}>
+                            Log In
+                        </button>
+
+                        <div className="login-links">
+                            <p>New here?</p>
+                            <div className="login-links-row">
+                                <button className="link-btn" onClick={() => { resetRegForm(); setView('register-parent'); }}>
+                                    Create parent account
+                                </button>
+                                <span style={{ color: 'var(--text-tertiary)' }}>·</span>
+                                <button className="link-btn" onClick={() => { resetRegForm(); setView('register-child'); }}>
+                                    Register as student
+                                </button>
                             </div>
-                        ))}
+                        </div>
+                    </form>
+                </div>
+            );
+
+            const renderRegisterParent = () => (
+                <div className="login-container">
+                    <h1 className="login-title">RSM Math Quest</h1>
+                    <p className="login-subtitle">Create a parent account</p>
+                    <div className="login-form">
+                        {regError && <div className="login-error">{regError}</div>}
+
+                        <label className="form-label">Your Name</label>
+                        <input className="answer-input" type="text" placeholder="e.g. Jane Smith"
+                            value={regName} onChange={e => { setRegName(e.target.value); setRegError(''); }}
+                            maxLength={40} autoFocus />
+
+                        <label className="form-label">Email</label>
+                        <input className="answer-input" type="email" placeholder="your@email.com"
+                            value={regEmail} onChange={e => { setRegEmail(e.target.value); setRegError(''); }}
+                            maxLength={100} autoComplete="email" />
+
+                        <label className="form-label">Username</label>
+                        <input className="answer-input" type="text" placeholder="Choose a username"
+                            value={regUsername} onChange={e => { setRegUsername(e.target.value); setRegError(''); }}
+                            maxLength={30} autoComplete="username" />
+
+                        <label className="form-label">Password</label>
+                        <input className="answer-input" type="password" placeholder="At least 4 characters"
+                            value={regPassword} onChange={e => { setRegPassword(e.target.value); setRegError(''); }}
+                            maxLength={100} autoComplete="new-password"
+                            onKeyDown={e => e.key === 'Enter' && registerParent()} />
+
+                        <label className="form-label">Avatar</label>
+                        <div className="avatar-picker">
+                            {AVATARS.map(av => (
+                                <button key={av.name}
+                                    className={`avatar-option${regAvatar.name === av.name ? ' selected' : ''}`}
+                                    onClick={() => setRegAvatar(av)} title={av.name}>
+                                    {av.emoji}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="form-actions">
+                            <button className="btn-primary" onClick={registerParent}>Create Account</button>
+                            <button className="btn-secondary" onClick={() => { resetRegForm(); setView('login'); }}>Back</button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderRegisterChild = () => (
+                <div className="login-container">
+                    <h1 className="login-title">RSM Math Quest</h1>
+                    <p className="login-subtitle">Create a student account</p>
+                    <div className="login-form">
+                        {regError && <div className="login-error">{regError}</div>}
+                        {regSuccess && (
+                            <div style={{ background: '#d1fae5', color: '#065f46', border: '1px solid #6ee7b7',
+                                borderRadius: '10px', padding: '12px 16px', marginBottom: '16px', fontWeight: 500 }}>
+                                {regSuccess}
+                                <div style={{ marginTop: '10px' }}>
+                                    <button className="link-btn" onClick={() => { resetRegForm(); setView('login'); }}>
+                                        Back to login
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {!regSuccess && (<>
+                            <label className="form-label">Your Name</label>
+                            <input className="answer-input" type="text" placeholder="e.g. Alex"
+                                value={regName} onChange={e => { setRegName(e.target.value); setRegError(''); }}
+                                maxLength={40} autoFocus />
+
+                            <label className="form-label">Username</label>
+                            <input className="answer-input" type="text" placeholder="Choose a username"
+                                value={regUsername} onChange={e => { setRegUsername(e.target.value); setRegError(''); }}
+                                maxLength={30} autoComplete="username" />
+
+                            <label className="form-label">Password</label>
+                            <input className="answer-input" type="password" placeholder="At least 4 characters"
+                                value={regPassword} onChange={e => { setRegPassword(e.target.value); setRegError(''); }}
+                                maxLength={100} autoComplete="new-password" />
+
+                            <label className="form-label">Parent's Username</label>
+                            <input className="answer-input" type="text" placeholder="Ask your parent for their username"
+                                value={regParentUsername} onChange={e => { setRegParentUsername(e.target.value); setRegError(''); }}
+                                maxLength={30}
+                                onKeyDown={e => e.key === 'Enter' && registerChild()} />
+
+                            <label className="form-label">Avatar</label>
+                            <div className="avatar-picker">
+                                {AVATARS.map(av => (
+                                    <button key={av.name}
+                                        className={`avatar-option${regAvatar.name === av.name ? ' selected' : ''}`}
+                                        onClick={() => setRegAvatar(av)} title={av.name}>
+                                        {av.emoji}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <label className="form-label">Current Grade</label>
+                            <div className="grade-picker">
+                                {[5, 6, 7, 8].map(g => (
+                                    <button key={g}
+                                        className={`grade-btn${regGrade === g ? ' active' : ''}`}
+                                        onClick={() => setRegGrade(g)}>
+                                        {ORDINAL[g]}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="form-actions">
+                                <button className="btn-primary" onClick={registerChild}>Request Account</button>
+                                <button className="btn-secondary" onClick={() => { resetRegForm(); setView('login'); }}>Back</button>
+                            </div>
+                        </>)}
+                    </div>
+                </div>
+            );
+
+            const renderPendingApproval = () => (
+                <div className="login-container">
+                    <div className="pending-card">
+                        <div className="pending-icon">⏳</div>
+                        <h2 style={{ marginBottom: '12px' }}>Waiting for Approval</h2>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '28px' }}>
+                            Your account is waiting for your parent to approve it.
+                            Ask your parent to log in and approve your profile from their dashboard.
+                        </p>
+                        <button className="btn-secondary" onClick={() => { setCurrentUser(null); setView('login'); }}>
+                            Back to Login
+                        </button>
                     </div>
                 </div>
             );
@@ -1993,7 +3081,7 @@
                         <div className="header">
                             <div className="header-left">
                                 <h1>Hi, {currentUser.name}!</h1>
-                                <p>Level {currentUser.stats.level} • {currentUser.stats.xp} XP</p>
+                                <p>Level {currentUser.stats.level} · {currentUser.stats.xp} XP{getCurrentGrade(currentUser) ? ` · ${ORDINAL[getCurrentGrade(currentUser)] ?? getCurrentGrade(currentUser) + 'th'} Grade` : ''}</p>
                             </div>
                             <div className="header-stats">
                                 <div className="stat-item">
@@ -2008,35 +3096,59 @@
                         </div>
                         
                         <div className="content">
-                            <button className="btn-secondary" onClick={() => setView('login')}>
-                                Back to Login
+                            <button className="btn-secondary" onClick={() => { setCurrentUser(null); setView('login'); }}>
+                                Sign Out
                             </button>
-                            
-                            <h2 style={{ marginTop: '30px', marginBottom: '20px' }}>Lessons (RSM Style)</h2>
-                            
+
+                            <h2 style={{ marginTop: '30px', marginBottom: '16px' }}>Lessons</h2>
+
+                            <div className="subject-tabs">
+                                {SUBJECTS.map(s => (
+                                    <button key={s.id}
+                                        className={`subject-tab-btn${lessonSubject === s.id ? ' active' : ''}`}
+                                        onClick={() => { setLessonSubject(s.id); setLessonLevel(0); }}>
+                                        <span>{s.icon}</span> {s.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {(() => {
+                                const levels = [...new Set(
+                                    LESSON_CATALOG.filter(l => l.subject === lessonSubject).map(l => l.level)
+                                )].sort((a, b) => a - b);
+                                if (levels.length < 2) return null;
+                                return (
+                                    <div className="level-picker">
+                                        <span className="level-picker-label">Level:</span>
+                                        <select className="level-select"
+                                            value={lessonLevel}
+                                            onChange={e => setLessonLevel(Number(e.target.value))}>
+                                            <option value={0}>All</option>
+                                            {levels.map(lv => <option key={lv} value={lv}>{lv}</option>)}
+                                        </select>
+                                    </div>
+                                );
+                            })()}
+
                             <div className="topic-grid">
-                                <div className="topic-card" onClick={() => startLesson('algebra-lesson-1')}>
-                                    <div className="topic-icon">📐</div>
-                                    <div className="topic-title">Algebra Lesson 1</div>
-                                    <p>Linear Equations</p>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('geometry-lesson-1')}>
-                                    <div className="topic-icon">📏</div>
-                                    <div className="topic-title">Geometry Lesson 1</div>
-                                    <p>Perimeter & Area</p>
-                                </div>
-                                <div className="topic-card" onClick={() => startLesson('fractions-lesson-1')}>
-                                    <div className="topic-icon">🍕</div>
-                                    <div className="topic-title">Fractions Lesson 1</div>
-                                    <p>Adding Same Denominator</p>
-                                </div>
+                                {LESSON_CATALOG
+                                    .filter(l => l.subject === lessonSubject && (lessonLevel === 0 || l.level === lessonLevel))
+                                    .map(l => (
+                                        <div key={l.id} className="topic-card" onClick={() => startLesson(l.id)}>
+                                            <div className="topic-icon">{l.icon}</div>
+                                            <div className="topic-title">{l.title}</div>
+                                            <p>{l.subtitle}</p>
+                                            <span className="grade-badge">{l.badge}</span>
+                                        </div>
+                                    ))
+                                }
                             </div>
 
                             <h2 style={{ marginTop: '40px', marginBottom: '20px' }}>Practice Mode</h2>
-                            
+
                             <div className="topic-grid">
                                 <div className="topic-card" onClick={() => startTopic('algebra')}>
-                                    <div className="topic-icon">📐</div>
+                                    <div className="topic-icon">🔢</div>
                                     <div className="topic-title">Algebra</div>
                                     <p>Random Problems</p>
                                 </div>
@@ -2048,6 +3160,11 @@
                                 <div className="topic-card" onClick={() => startTopic('fractions')}>
                                     <div className="topic-icon">🍕</div>
                                     <div className="topic-title">Fractions</div>
+                                    <p>Random Problems</p>
+                                </div>
+                                <div className="topic-card" onClick={() => startTopic('ratios')}>
+                                    <div className="topic-icon">⚖️</div>
+                                    <div className="topic-title">Ratios</div>
                                     <p>Random Problems</p>
                                 </div>
                             </div>
@@ -2252,20 +3369,77 @@
             };
 
             const renderLesson = () => {
-                if (!currentProblem || !currentLesson) return null;
-                
+                if (!currentLesson) return null;
+
+                // Bridge screen shown between application and exit ticket
+                if (lessonPhase === 'exitTicketBridge') {
+                    const bridge = currentLesson.exitTicketBridge;
+                    return (
+                        <div>
+                            <div className="header">
+                                <div className="header-left">
+                                    <h1>{currentLesson.title}</h1>
+                                    <p>Phase: Exit Ticket</p>
+                                </div>
+                            </div>
+                            <div className="content">
+                                <button className="btn-secondary" onClick={() => setView('home')}>
+                                    Back to Home
+                                </button>
+                                <div className="bridge-card">
+                                    <div className="bridge-badge">New Concept</div>
+                                    <h2>{bridge.concept}</h2>
+                                    <p>{bridge.explanation}</p>
+                                    <div className="bridge-example">
+                                        <div className="bridge-problem">{bridge.example.problem}</div>
+                                        <div className="bridge-steps">
+                                            {bridge.example.steps.map((s, i) => (
+                                                <div key={i} className="bridge-step">
+                                                    <span className="bridge-step-num">{i + 1}</span>
+                                                    <span>{s}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="bridge-answer">Answer: {bridge.example.answer}</div>
+                                    </div>
+                                    <div className="bridge-actions">
+                                        <button className="btn-primary" onClick={() => {
+                                            setLessonPhase('exitTicket');
+                                            setPhaseIndex(0);
+                                            setCurrentProblem(currentLesson.exitTicket[0]);
+                                            setFeedback(null);
+                                            setUserAnswer('');
+                                            setShowTutor(false);
+                                        }}>
+                                            Try the Exit Ticket
+                                        </button>
+                                        <button className="btn-secondary" onClick={() => setView('lessonComplete')}>
+                                            Finish Lesson
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                if (!currentProblem) return null;
+
                 const phaseNames = {
                     'warmup': 'Warm-Up',
                     'discovery': 'Discovery',
                     'application': 'Application',
-                    'exitTicket': 'Exit Ticket'
+                    'exitTicket': 'Exit Ticket',
+                    'exitTicketBridge': 'Exit Ticket',
                 };
-                
+
                 const progress = lessonPhase === 'application' ? applicationProblemsShown + 1 : phaseIndex + 1;
                 const total = lessonPhase === 'application' ? 6
                     : lessonPhase === 'warmup' ? (warmupQueue.length || currentLesson.warmup.length)
-                    : currentLesson[lessonPhase].length;
-                
+                    : currentLesson[lessonPhase]?.length ?? 0;
+
+                const isExitTicketActive = lessonPhase === 'exitTicket' || lessonPhase === 'exitTicketBridge';
+
                 return (
                     <div>
                         <div className="header">
@@ -2280,35 +3454,35 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="content">
                             <button className="btn-secondary" onClick={() => setView('home')}>
                                 Back
                             </button>
-                            
-                            <div style={{ 
-                                background: '#f0f0f0', 
-                                borderRadius: '10px', 
-                                padding: '20px', 
+
+                            <div style={{
+                                background: '#f0f0f0',
+                                borderRadius: '10px',
+                                padding: '20px',
                                 marginTop: '20px',
                                 marginBottom: '20px'
                             }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                                    <span style={{ 
+                                    <span style={{
                                         fontWeight: lessonPhase === 'warmup' ? 'bold' : 'normal',
                                         color: lessonPhase === 'warmup' ? 'var(--primary)' : '#666'
                                     }}>Warm-Up</span>
-                                    <span style={{ 
+                                    <span style={{
                                         fontWeight: lessonPhase === 'discovery' ? 'bold' : 'normal',
                                         color: lessonPhase === 'discovery' ? 'var(--primary)' : '#666'
                                     }}>Discovery</span>
-                                    <span style={{ 
+                                    <span style={{
                                         fontWeight: lessonPhase === 'application' ? 'bold' : 'normal',
                                         color: lessonPhase === 'application' ? 'var(--primary)' : '#666'
                                     }}>Application</span>
-                                    <span style={{ 
-                                        fontWeight: lessonPhase === 'exitTicket' ? 'bold' : 'normal',
-                                        color: lessonPhase === 'exitTicket' ? 'var(--primary)' : '#666'
+                                    <span style={{
+                                        fontWeight: isExitTicketActive ? 'bold' : 'normal',
+                                        color: isExitTicketActive ? 'var(--primary)' : '#666'
                                     }}>Exit Ticket</span>
                                 </div>
                             </div>
@@ -2511,76 +3685,61 @@
             );
 
             const renderParentDashboard = () => {
-                const studentUsers = users.filter(u => !u.isParent);
+                if (!currentUser) return null;
+                const pendingChildren = users.filter(u => u.role === 'child' && u.parentId === currentUser.id && u.pendingApproval);
+                const activeChildren = users.filter(u => u.role === 'child' && u.parentId === currentUser.id && !u.pendingApproval);
 
                 return (
                     <div>
                         <div className="header">
                             <div className="header-left">
-                                <h1>Parent Dashboard</h1>
+                                <h1>{currentUser.name}'s Dashboard</h1>
                                 <p>Monitor your children's progress</p>
                             </div>
                         </div>
 
                         <div className="parent-dashboard">
-                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-                                <button className="btn-secondary" onClick={() => setView('login')}>
-                                    Back to Login
-                                </button>
-                                <button className="btn-primary" onClick={() => setShowAddStudent(s => !s)}>
-                                    {showAddStudent ? 'Cancel' : '＋ Add Student'}
-                                </button>
-                            </div>
+                            <button className="btn-secondary" style={{ marginBottom: '24px' }}
+                                onClick={() => { setCurrentUser(null); setView('login'); }}>
+                                Sign Out
+                            </button>
 
-                            {showAddStudent && (
-                                <div className="add-student-form">
-                                    <h3>New Student Profile</h3>
-                                    <input
-                                        className="answer-input"
-                                        type="text"
-                                        placeholder="Student name"
-                                        value={newStudentName}
-                                        onChange={e => setNewStudentName(e.target.value)}
-                                        onKeyDown={e => e.key === 'Enter' && createStudent()}
-                                        maxLength={40}
-                                        autoFocus
-                                    />
-                                    <div className="avatar-picker">
-                                        {AVATARS.map(av => (
-                                            <button
-                                                key={av.name}
-                                                className={`avatar-option${newStudentAvatar.name === av.name ? ' selected' : ''}`}
-                                                onClick={() => setNewStudentAvatar(av)}
-                                                title={av.name}
-                                            >
-                                                {av.emoji}
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <div className="add-student-actions">
-                                        <button className="btn-primary" onClick={createStudent} disabled={!newStudentName.trim()}>
-                                            Create Profile
-                                        </button>
-                                        <button className="btn-secondary" onClick={() => {
-                                            setShowAddStudent(false);
-                                            setNewStudentName('');
-                                            setNewStudentAvatar(AVATARS[0]);
-                                        }}>
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
+                            {pendingChildren.length > 0 && (
+                                <>
+                                    <h2 style={{ margin: '0 0 16px' }}>Pending Approvals</h2>
+                                    {pendingChildren.map(child => (
+                                        <div key={child.id} className="pending-approval-card">
+                                            <div className="student-info">
+                                                <div style={{ fontSize: '2.5em' }}>{child.avatar.emoji}</div>
+                                                <div>
+                                                    <strong>{child.name}</strong>
+                                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                                                        @{child.username}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="approve-reject-row">
+                                                <button className="btn-approve" onClick={() => approveChild(child.id)}>
+                                                    ✓ Approve
+                                                </button>
+                                                <button className="btn-reject" onClick={() => rejectChild(child.id)}>
+                                                    ✕ Reject
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </>
                             )}
 
                             <h2 style={{ margin: '30px 0 20px' }}>Student Progress</h2>
 
-                            {studentUsers.map(student => (
+                            {activeChildren.map(student => (
                                 <div key={student.id} className="student-card">
                                     <div className="student-header">
                                         <div style={{ fontSize: '3em' }}>{student.avatar.emoji}</div>
                                         <div style={{ flex: 1 }}>
                                             <h3 style={{ fontSize: '1.5em', marginBottom: '5px' }}>{student.name}</h3>
-                                            <p style={{ color: '#666' }}>Level {student.stats.level} • {student.stats.xp} XP</p>
+                                            <p style={{ color: '#666' }}>@{student.username} · Level {student.stats.level} · {student.stats.xp} XP{getCurrentGrade(student) ? ` · ${ORDINAL[getCurrentGrade(student)] ?? getCurrentGrade(student) + 'th'} Grade` : ''}</p>
                                         </div>
                                     </div>
 
@@ -2602,19 +3761,69 @@
                                             <p>{student.stats.xp}</p>
                                         </div>
                                     </div>
+
+                                    <div className="skill-tree-section">
+                                        {Object.entries(SKILL_TREE).map(([domain, nodes]) => (
+                                            <div key={domain} className="skill-domain-block">
+                                                <div className="skill-domain-label">
+                                                    {({ algebra: '📐 Algebra', geometry: '📏 Geometry', fractions: '🍕 Fractions', ratios: '⚖️ Ratios' })[domain]}
+                                                </div>
+                                                {nodes.map(node => {
+                                                    const key = `${domain}.${node.id}`;
+                                                    const entry = student.conceptMastery?.[key];
+                                                    const level = getMasteryLevel(entry);
+                                                    return (
+                                                        <div key={key} className={`skill-node skill-${level}`} title={node.description}>
+                                                            <span className="skill-node-name">{node.name}</span>
+                                                            <span className="skill-node-count">
+                                                                {entry ? `${entry.correct}/${entry.attempted}` : '—'}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {resetPasswordFor === student.id ? (
+                                        <div className="reset-password-form">
+                                            <p className="reset-password-title">Reset password for {student.name}</p>
+                                            {resetPasswordError && <div className="login-error">{resetPasswordError}</div>}
+                                            <input className="answer-input" type="password"
+                                                placeholder="New password (min 4 characters)"
+                                                value={resetNewPassword}
+                                                onChange={e => { setResetNewPassword(e.target.value); setResetPasswordError(''); }}
+                                                autoComplete="new-password" />
+                                            <input className="answer-input" type="password"
+                                                placeholder="Confirm new password"
+                                                value={resetConfirmPassword}
+                                                onChange={e => { setResetConfirmPassword(e.target.value); setResetPasswordError(''); }}
+                                                autoComplete="new-password" />
+                                            <div className="reset-password-actions">
+                                                <button className="btn-primary" style={{ flex: 1 }}
+                                                    onClick={() => resetChildPassword(student.id)}>
+                                                    Save Password
+                                                </button>
+                                                <button className="btn-secondary" style={{ flex: 1 }}
+                                                    onClick={cancelResetPassword}>
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <button className="btn-secondary reset-password-btn"
+                                            onClick={() => setResetPasswordFor(student.id)}>
+                                            Reset Password
+                                        </button>
+                                    )}
                                 </div>
                             ))}
 
-                            {studentUsers.length === 0 && !showAddStudent && (
-                                <div style={{
-                                    textAlign: 'center',
-                                    padding: '60px 20px',
-                                    background: 'white',
-                                    borderRadius: '15px'
-                                }}>
+                            {activeChildren.length === 0 && pendingChildren.length === 0 && (
+                                <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: '15px' }}>
                                     <h3 style={{ color: '#666' }}>No students yet</h3>
                                     <p style={{ color: '#999', marginTop: '10px' }}>
-                                        Use "＋ Add Student" above to create the first profile.
+                                        Have your child register at the login screen using your username.
                                     </p>
                                 </div>
                             )}
@@ -2626,6 +3835,9 @@
             return (
                 <div className="container">
                     {view === 'login' && renderLogin()}
+                    {view === 'register-parent' && renderRegisterParent()}
+                    {view === 'register-child' && renderRegisterChild()}
+                    {view === 'pending-approval' && renderPendingApproval()}
                     {view === 'home' && renderHome()}
                     {view === 'problem' && renderProblem()}
                     {view === 'lesson' && renderLesson()}
